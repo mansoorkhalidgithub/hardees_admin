@@ -3,10 +3,16 @@
 namespace App\Exceptions;
 
 use Exception;
+use App\Traits\RestTrait;
+use App\Traits\RestExceptionHandlerTrait;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
 {
+	use RestTrait;
+    use RestExceptionHandlerTrait;
+
     /**
      * A list of the exception types that are not reported.
      *
@@ -46,6 +52,24 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $exception)
     {
-        return parent::render($request, $exception);
+        if(!$this->isApiCall($request)) {
+            $retval = parent::render($request, $exception);
+        } else {
+			$json = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'message' => 'Some error occur, please contact to support !',
+				'error' => $exception->getMessage(),
+
+				// 'status' => $exception->getCode(),
+
+			];
+
+			$retval = response()->json($json, 400);
+			//$retval = $this->getJsonResponseForException($request, $exception);
+           // $retval = parent::render($request, $exception);
+        }
+
+        return $retval;
     }
 }
