@@ -21,7 +21,7 @@ class AuthPermissions extends Seeder
 			'restaurants',
 			'users',
 			'menu',
-			'menu_categories',
+			'menu-categories',
 			'orders',
 			'customers',
 			'riders',

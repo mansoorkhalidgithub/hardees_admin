@@ -23,8 +23,6 @@ Route::group([
 	'middleware' => 'auth'
 ], function() {
 	Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
-	Route::get('restaurants', 'RestaurantController@index')->name('restaurants');
-	Route::get('auth-users', 'AuthController@index')->name('auth-users');
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('menu', 'MenuController@index')->name('menu');
 	Route::get('orders', 'OrderController@index')->name('orders');
@@ -39,3 +37,27 @@ Route::group([
 	Route::get('earnings', 'HomeController@earnings')->name('earnings');
 	Route::get('transactions', 'HomeController@transactions')->name('transactions');
 });
+
+Route::group([
+	'middleware' => 'auth'
+], function() {
+	Route::get('restaurants', 'RestaurantController@index')->name('restaurants');
+	Route::get('add-restaurant', 'RestaurantController@add')->name('add-restaurant');
+	Route::post('save-restaurant', 'RestaurantController@save')->name('save-restaurant');
+});
+Route::group([
+	'middleware' => 'auth'
+], function() {
+	Route::get('auth-users', 'AuthController@index')->name('auth-users');
+	Route::get('add-user', 'AuthController@index')->name('add-user');
+});
+Route::group([
+	'middleware' => 'auth'
+], function() {
+	Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
+	Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
+});
+
+Auth::routes();
+
+Route::get('/home', 'HomeController@index')->name('home');

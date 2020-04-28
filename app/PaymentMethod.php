@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Restuarant extends Model
+class PaymentMethod extends Model
 {
-    //
+    public $timestamps = false;
 }

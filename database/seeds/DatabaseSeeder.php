@@ -1,5 +1,6 @@
 <?php
 
+use App\Category;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -11,12 +12,16 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+		factory(Category::class, 10)->create();
         $this->call([
 			Permissions::class,
             Roles::class,
             AdminPermissions::class,
             SubAdminPermissions::class,
             AuthPermissions::class,
+            PaymentMethodSeeder::class,
+            RestaurantSeeder::class,
+            MenuSeeder::class,
         ]);
     }
 }

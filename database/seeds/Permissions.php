@@ -25,7 +25,7 @@ class Permissions extends Seeder
         Permission::create(['name' => 'restaurants']);
         Permission::create(['name' => 'users']);
         Permission::create(['name' => 'menu']);
-        Permission::create(['name' => 'menu_categories']);
+        Permission::create(['name' => 'menu-categories']);
 		Permission::create(['name' => 'orders']);
 		Permission::create(['name' => 'customers']);
         Permission::create(['name' => 'riders']);

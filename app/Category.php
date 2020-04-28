@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class MenuCategory extends Model
+class Category extends Model
 {
-	public $timestamps = false;
+    //
 }

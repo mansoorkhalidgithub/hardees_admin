@@ -132,7 +132,7 @@
 									<li class="nav-item">
 										<a href="{{ route('menu-categories') }}" class="nav-link {{ (request()->is('menu-categories')) ? 'active' : '' }}">
 											<i class="fab fa-product-hunt"></i>
-											<p class="ml-2"> Menu </p>
+											<p class="ml-2"> Menu Categories </p>
 										</a>
 									</li>
 								@endcan
@@ -317,7 +317,7 @@
     <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 
     @if(request()->is('add-restaurant'))
-    {!! JsValidator::formRequest('App\Http\Requests\StoreRequest') !!}
+    {!! JsValidator::formRequest('App\Http\Requests\RestaurantRequest') !!}
     @elseif(request()->is('add-user'))
     {!! JsValidator::formRequest('App\Http\Requests\UserRequest') !!}
     @endif
