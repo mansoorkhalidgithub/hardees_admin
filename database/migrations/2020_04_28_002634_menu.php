@@ -27,6 +27,8 @@ class Menu extends Migration
             $table->unsignedInteger('quantity')->nullable();
             $table->double('price', 8, 2)->nullable();
             $table->double('discount', 8, 2)->nullable();
+			$table->double('weight', 8, 2)->nullable();
+            $table->integer('is_favourite')->nullable();
             $table->string('image')->nullable();
             $table->text('ingredients')->nullable();
             $table->timestamps();

@@ -65,9 +65,9 @@ class Handler extends ExceptionHandler
 
 			];
 
-			//$retval = response()->json($json, 400);
+			$retval = response()->json($json, 400);
 			//$retval = $this->getJsonResponseForException($request, $exception);
-           $retval = parent::render($request, $exception);
+           //$retval = parent::render($request, $exception);
         }
 
         return $retval;

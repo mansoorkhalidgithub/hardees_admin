@@ -24,7 +24,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 1,
             'image' => 'uploads/menu_items/burger1.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -36,7 +38,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 0,
             'image' => 'uploads/menu_items/burger2.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -48,7 +52,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 1,
             'image' => 'uploads/menu_items/burger3.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -60,7 +66,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 1,
             'image' => 'uploads/menu_items/burger4.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -72,7 +80,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 1,
             'image' => 'uploads/menu_items/burger5.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -84,7 +94,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 0,
             'image' => 'uploads/menu_items/burger5.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);
@@ -96,7 +108,9 @@ class MenuSeeder extends Seeder
             'restaurant_id' => 1,
             'quantity' => 10,
             'price' => 10,
+            'weight' => 350,
             'discount' => 50,
+            'is_favourite' => 0,
             'image' => 'uploads/menu_items/burger5.png',
             'ingredients' => serialize(['Egg', 'Mustard', 'Sauce', 'Onion', 'Garlic', 'Medium Groung Beaf']),
         ]);

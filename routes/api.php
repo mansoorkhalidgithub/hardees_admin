@@ -21,5 +21,6 @@ Route::post('signup', 'Api\AuthApiController@signup');
 Route::post('login', 'Api\AuthApiController@login');
 
 Route::group(['middleware' => 'auth:api'], function() {
-	
+	Route::get('get-menu', 'Api\HardeesApiController@menu');
+
 });

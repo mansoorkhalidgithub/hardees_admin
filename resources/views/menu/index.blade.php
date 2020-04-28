@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Products')
+@section('title', 'Menu')
 
 @section('content')
 
@@ -8,35 +8,35 @@
 	<div class="col-12">
 		<div class="card">
 			<div class="card-header">
-				<h3 class="card-title"> Manage @yield('title') </h3>
+				<h3 class="card-title"> Manage @yield('title') Items </h3>
 				<div class="card-tools">
-					<a href="{{ route('add-product') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') </a>
+					<a href="{{ route('add-menu-item') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') Item </a>
 				</div>
 			</div>
 			<!-- /.card-header -->
 			<div class="card-body">
 				<div class="">
-					<table id="products" class="table table-striped">
+					<table id="items" class="table table-striped">
 						<thead>
 							<tr>
 								<th scope="col">ID</th>
 								<th scope="col">Name</th>
-								<th scope="col">Category</th>
+								<th scope="col"> Menu Category </th>
 								<th scope="col">Restaurant</th>
 								<th scope="col">Price</th>
-								<th scope="col">Register Date</th>
+								<th scope="col">Discount</th>
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
 						<tbody>
-							@foreach($model as $key => $product)
+							@foreach($model as $key => $item)
 							<tr>
 								<th scope="row"> {{ ++$key }} </th>
-								<td> {{ $product->name }} </td>
-								<td> {{ $product->category->title }} </td>
-								<td> {{ $product->restaurant->name }} </td>
-								<td> {{ $product->price }} </td>
-								<td> {{ $product->created_at }} </td>
+								<td> {{ $item->name }} </td>
+								<td> {{ $item->menu_category_id }} </td>
+								<td> {{ $item->restaurant_id }} </td>
+								<td> {{ $item->price }} </td>
+								<td> {{ $item->discount }} </td>
 								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
 							</tr>
 							@endforeach
@@ -70,6 +70,6 @@
 <script>
 	$(document).ready(function() {
 		$.noConflict();
-		var table = $('#products').DataTable();
+		var table = $('#items').DataTable();
 	});
 </script>
