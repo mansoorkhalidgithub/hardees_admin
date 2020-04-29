@@ -17,6 +17,10 @@ class User extends Authenticatable
      *
      * @var array
      */
+	protected $append = [
+		'name'
+	];
+	
     protected $fillable = [
         'username',
 		'first_name',
@@ -58,4 +62,14 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+	
+	public function getNameAttribute()
+	{
+		return $this->first_name . " " . $this->last_name;
+	}
+	
+	public function getPoints()
+	{
+		return 1500;
+	}
 }

@@ -15,14 +15,18 @@ class HardeesApiController extends Controller
 	
 	public function menu(Request $request)
 	{
-		$menu = MenuItem::all();
+		$singleItems = MenuItem::all();
+		$deals = MenuItem::all();
 		
 		$response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
             'message' => 'Menu fetched successfully',
 			'data' => [
-				'menu' => $menu
+				'menu' => [
+					'singleItems' => $singleItems,
+					'deals' => $singleItems,
+				]
 			]
         ];
 
