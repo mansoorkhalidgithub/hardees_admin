@@ -57,7 +57,7 @@ class Handler extends ExceptionHandler
         } else {
 			$json = [
 				'status' => 0,
-				'method' => $request->route()->getActionMethod(),
+				//'method' => $request->route()->getActionMethod(),
 				'message' => 'Some error occur, please contact to support !',
 				'error' => $exception->getMessage(),
 

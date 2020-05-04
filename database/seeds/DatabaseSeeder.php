@@ -1,6 +1,7 @@
 <?php
 
 use App\Category;
+use App\DealItem;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -22,6 +23,8 @@ class DatabaseSeeder extends Seeder
             PaymentMethodSeeder::class,
             RestaurantSeeder::class,
             MenuSeeder::class,
+            DealSeeder::class,
         ]);
+		factory(DealItem::class, 30)->create();
     }
 }

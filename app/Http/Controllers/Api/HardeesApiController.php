@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Deal;
 use App\MenuItem;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -16,7 +17,7 @@ class HardeesApiController extends Controller
 	public function menu(Request $request)
 	{
 		$singleItems = MenuItem::all();
-		$deals = MenuItem::all();
+		$deals = Deal::all();
 		
 		$response = [
             'status' => 1,
@@ -25,9 +26,20 @@ class HardeesApiController extends Controller
 			'data' => [
 				'menu' => [
 					'singleItems' => $singleItems,
-					'deals' => $singleItems,
+					'deals' => $deals,
 				]
 			]
+        ];
+
+        return response()->json($response);
+	}
+	
+	public function createCustomDeal(Request $request)
+	{
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Custom deal work is pending'
         ];
 
         return response()->json($response);

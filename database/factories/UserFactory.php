@@ -3,6 +3,7 @@
 /** @var \Illuminate\Database\Eloquent\Factory $factory */
 use App\User;
 use App\Category;
+use App\DealItem;
 use Illuminate\Support\Str;
 use Faker\Generator as Faker;
 
@@ -31,5 +32,13 @@ $factory->define(Category::class, function (Faker $faker) {
     return [
         'title' => $faker->unique()->word,
         'description' => $faker->paragraph(1),
+    ];
+});
+
+$factory->define(DealItem::class, function (Faker $faker) {
+    return [
+        'deal_id' => rand(1, 4),
+        'menu_item_id' => rand(1, 5),
+        'quantity' => rand(1, 3),
     ];
 });

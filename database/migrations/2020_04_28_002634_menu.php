@@ -38,24 +38,6 @@ class Menu extends Migration
             $table->foreign('created_by')->references('id')->on('auth')->onDelete('cascade');
         });
 		
-		Schema::create('deals', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->string('name')->nullable();
-            $table->unsignedBigInteger('restaurant_id')->nullable();
-            $table->string('image')->nullable();
-            $table->timestamps();
-
-            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
-        });
-
-        Schema::create('deal_items', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->unsignedBigInteger('deal_id')->nullable();
-            $table->unsignedBigInteger('menu_item_id')->nullable();
-
-            $table->foreign('deal_id')->references('id')->on('deals')->onDelete('cascade');
-            $table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
-        });
     }
 
     /**
@@ -65,6 +47,7 @@ class Menu extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('menu_items');
+        Schema::dropIfExists('menu_categories');
     }
 }

@@ -104,4 +104,18 @@ class AuthApiController extends Controller
 
         return response()->json($response);
 	}
+	
+	public function forgetPassword(Request $request)
+	{
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Forget password request URL',
+			'data' => [
+				'redirect_url' => url('password/reset')
+			]
+        ];
+
+        return response()->json($response);
+	}
 }
