@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Auth;
 use Illuminate\Http\Request;
 
 class AuthController extends Controller
@@ -13,6 +14,8 @@ class AuthController extends Controller
 	
 	public function index()
 	{
-		return view('restaurant/index');
+		$model  = Auth::all();
+		
+		return view('restaurant/index', compact('model'));
 	}
 }

@@ -15,6 +15,7 @@ class RestaurantSeeder extends Seeder
         Restaurant::create([
             'created_by' => '1',
             'name' => 'Hardee’s, DHA, Lahore',
+            'email' => 'email@hardees.com',
             'tags' => 's:8:"j1 j2 j3";',
             'status' => 1,
             'address' => 'Hardee’s, DHA, Lahore, Pakistan',
@@ -38,6 +39,7 @@ class RestaurantSeeder extends Seeder
         Restaurant::create([
             'created_by' => '1',
             'name' => 'Hardees Restaurant- MM Alam Road',
+			'email' => 'email@hardees.com',
             'tags' => 's:8:"j1 j2 j3";',
             'status' => 1,
             'address' => 'Hardees Restaurant- MM Alam Road, MM Alam Road, Lahore, Pakistan',
@@ -61,6 +63,7 @@ class RestaurantSeeder extends Seeder
         Restaurant::create([
             'created_by' => '1',
             'name' => "Hardee's, Emporium",
+			'email' => 'email@hardees.com',
             'tags' => 's:8:"j1 j2 j3";',
             'status' => 1,
             'address' => "Hardee's, Emporium, Abdul Haque Road, Lahore, Pakistan",
@@ -84,6 +87,7 @@ class RestaurantSeeder extends Seeder
 		Restaurant::create([
             'created_by' => '1',
             'name' => "Hardee's, Multan Road",
+			'email' => 'email@hardees.com',
             'tags' => 's:8:"j1 j2 j3";',
             'status' => 1,
             'address' => "Hardee's, Multan Road, Lahore, Pakistan",
@@ -107,6 +111,7 @@ class RestaurantSeeder extends Seeder
 		Restaurant::create([
             'created_by' => '1',
             'name' => "Hardee's, 2 Gulberg",
+			'email' => 'email@hardees.com',
             'tags' => 's:8:"j1 j2 j3";',
             'status' => 1,
             'address' => "Hardee's, 2 Gulberg, Lahore, Pakistan",

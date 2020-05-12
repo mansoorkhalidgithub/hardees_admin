@@ -48,8 +48,9 @@ Route::group([
 Route::group([
 	'middleware' => 'auth'
 ], function() {
-	Route::get('auth-users', 'AuthController@index')->name('auth-users');
-	Route::get('add-user', 'AuthController@index')->name('add-user');
+	Route::get('restaurant-users', 'RestaurantUserController@index')->name('restaurant-users');
+	Route::get('add-restaurant-user', 'RestaurantUserController@create')->name('add-restaurant-user');
+	Route::post('save-restaurant-user', 'RestaurantUserController@save')->name('save-restaurant-user');
 });
 Route::group([
 	'middleware' => 'auth'

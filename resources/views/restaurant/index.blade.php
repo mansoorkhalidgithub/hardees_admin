@@ -23,8 +23,8 @@
 								<th scope="col">Name</th>
 								<th scope="col">Email</th>
 								<th scope="col">Phone</th>
-								<th scope="col">Owner Name</th>
-								<th scope="col">Register Date</th>
+								<th scope="col">Status</th>
+								<th scope="col">Category</th>
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
@@ -33,10 +33,10 @@
 							<tr>
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $restaurant->name }} </td>
-								<td> {{ $restaurant->restaurant_email }} </td>
-								<td> {{ $restaurant->contact_number }} </td>
-								<td> {{ $restaurant->createdBy }} </td>
-								<td> {{ $restaurant->created_at }} </td>
+								<td> {{ $restaurant->email }} </td>
+								<td> {{ $restaurant->contact_name }} </td>
+								<td> Active </td>
+								<td> {{ $restaurant->category->title }} </td>
 								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
 							</tr>
 							@endforeach

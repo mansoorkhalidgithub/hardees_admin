@@ -16,7 +16,9 @@
         "proengsoft/laravel-jsvalidation": ">2.2.0",
         "spatie/laravel-permission": "^3.11",
         "twilio/sdk": "^5.41",
-		"intervention/image": "^2.5"
+		"intervention/image": "^2.5",
+		"phpmailer/phpmailer": "^6.0",
+		"kreait/laravel-firebase": "^1.2"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",

@@ -121,9 +121,9 @@
 								
 								@can('users')
 									<li class="nav-item">
-										<a href="{{ route('auth-users') }}" class="nav-link {{ (request()->is('auth-users')) ? 'active' : '' }}">
+										<a href="{{ route('restaurant-users') }}" class="nav-link {{ (request()->is('restaurant-users')) ? 'active' : '' }}">
 											<i class="fas fa-users"></i>
-											<p class="ml-2">  Users </p>
+											<p class="ml-2"> Restaurant Users </p>
 										</a>
 									</li>
 								@endcan
@@ -159,7 +159,7 @@
 									<li class="nav-item">
 										<a href="{{ route('customers') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
 											<i class="fa fa-user"></i>
-											<p class="ml-2">Customers </p>
+											<p class="ml-2"> Users </p>
 										</a>
 									</li>
                                 @endcan
