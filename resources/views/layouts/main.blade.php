@@ -108,8 +108,15 @@
 											<p class="ml-2"> Dashboard </p>
 										</a>
 									</li>
-								@endcan
 								
+								
+                                                                <li class="nav-item">
+										<a href="{{ route('booking') }}" class="nav-link {{ (request()->is('booking')) ? 'active' : '' }}">
+											<i class="fas fa-list"></i>
+											<p class="ml-2"> New Booking </p>
+										</a>
+									</li>
+                                                                   @endcan     
 								@can('restaurants')
 									<li class="nav-item">
 										<a href="{{ route('restaurants') }}" class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}">

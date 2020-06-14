@@ -25,4 +25,8 @@ class HomeController extends Controller
     {
         return view('home');
     }
+    public function booking()
+    {
+        return view('booking.booking_form');
+    }
 }

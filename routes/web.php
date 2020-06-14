@@ -62,3 +62,4 @@ Route::group([
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+Route::get('/booking', 'HomeController@booking')->name('booking');

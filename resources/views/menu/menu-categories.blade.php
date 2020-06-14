@@ -35,17 +35,11 @@
 							</tr>
 							@endforeach
 						</tbody>
-						<tfoot>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								<th scope="col">Category</th>
-								<th scope="col">Restaurant</th>
-								<th scope="col">Price</th>
-								<th scope="col">Register Date</th>
-								<th scope="col">Action</th>
-							</tr>
-						</tfoot>
+						
+							
+								
+							
+						
 					</table>
 				</div>
 			</div>

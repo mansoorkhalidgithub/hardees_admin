@@ -245,7 +245,6 @@
     </div>
 
 </div>
-</div>
 @stop
 <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
 <script src="{{ asset('admin') }}/dist/js/mapInput.js"></script>
