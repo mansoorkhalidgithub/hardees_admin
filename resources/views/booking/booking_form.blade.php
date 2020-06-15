@@ -240,6 +240,47 @@ button:hover {
   </div>
   <div class="tab">
       <h3>Order Summary</h3>
+       <div class="row">
+          <table id="restaurants" class="table table-striped">
+						<thead>
+							<tr>
+								<th scope="col">Sr. #</th>
+								<th scope="col">Item</th>
+								<th scope="col">Price (PKR)</th>
+								<th scope="col">Qty.</th>
+								<th scope="col">Total</th>
+                                                                <th>Action</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<th scope="row"> 1 </th>
+								<td> Angus Burger </td>
+								<td> 890 </td>
+								<td> 2 </td>
+								<td> 1780 </td>
+                                                                <td><img src="{{asset('/img/plus-button copy.png')}}" width="20px" height="20px"></td>
+							</tr>
+                                                        <tr>
+								<th scope="row"> 2 </th>
+								<td> Jalapeno Burger </td>
+								<td> 690 </td>
+								<td> 2 </td>
+								<td> 1380 </td>
+                                                                <td><img src="{{asset('/img/plus-button copy.png')}}" width="20px" height="20px"></td>
+							</tr>
+                                                        <tr>
+								<th scope="row"> 3 </th>
+								<td> Cheese Burger </td>
+								<td> 590 </td>
+								<td> 2 </td>
+								<td> 1180 </td>
+                                                                <td><img src="{{asset('/img/plus-button copy.png')}}" width="20px" height="20px"></td>
+							</tr>
+						</tbody>
+						
+					</table>
+      </div>
       <div class="row">
           <div class="col-sm-7">
                     <div class="cart_totals">
