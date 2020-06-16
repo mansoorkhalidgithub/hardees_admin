@@ -19,12 +19,12 @@
 					<table id="restaurants" class="table table-striped">
 						<thead>
 							<tr>
-								<th scope="col">ID</th>
+								<th scope="col">Sr No</th>
 								<th scope="col">Name</th>
 								<th scope="col">Email</th>
 								<th scope="col">Phone</th>
 								<th scope="col">Status</th>
-								<th scope="col">Category</th>
+								<!-- <th scope="col">Category</th> -->
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
@@ -34,24 +34,21 @@
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $restaurant->name }} </td>
 								<td> {{ $restaurant->email }} </td>
-								<td> {{ $restaurant->contact_name }} </td>
-								<td> Active </td>
-								<td> {{ $restaurant->category->title }} </td>
-								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
+								<td> {{ $restaurant->contact_number }} </td>
+								<td> @if($restaurant->status===1)Active @else Inactive @endif </td>
+								<!-- <td> {{ $restaurant->category->title }} </td> -->
+								<td>
+									<a href="{{route('restaurant.edit', $restaurant->id)}}"><i class="fas fa-edit"></i></a>
+									<a href="{{route('restaurant.show', $restaurant->id)}}"><i class="fas fa-eye"></i></a>
+									<form action="{{ route('restaurant.destroy') }}" method="POST" onsubmit="return confirm('Please confirm you want to delete! {{$restaurant->name}}');" style="display: inline-block;">
+										@csrf
+										<input type="hidden" name="id" value="{{$restaurant->id}}">
+										<button type="submit" class="btn btn-xs btn-danger"><i class="fas fa-trash"></i></button>
+									</form>
+								</td>
 							</tr>
 							@endforeach
 						</tbody>
-						<thead>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								<th scope="col">Email</th>
-								<th scope="col">Phone</th>
-								<th scope="col">Owner Name</th>
-								<th scope="col">Register Date</th>
-								<th scope="col">Action</th>
-							</tr>
-						</thead>
 					</table>
 				</div>
 			</div>

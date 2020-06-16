@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -12,17 +14,17 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+	return view('welcome');
 });
 
 Auth::routes();
 
-Route::get('/home', 'HomeController@index')->name('home');
+// Route::get('/home', 'HomeController@index')->name('dashboard');
 
 Route::group([
 	'middleware' => 'auth'
-], function() {
-	Route::get('dashboard', 'HomeController@dashboard')->name('dashboard');
+], function () {
+	Route::get('dashboard', 'HomeController@index')->name('dashboard');
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('menu', 'MenuController@index')->name('menu');
 	Route::get('orders', 'OrderController@index')->name('orders');
@@ -40,21 +42,25 @@ Route::group([
 
 Route::group([
 	'middleware' => 'auth'
-], function() {
+], function () {
 	Route::get('restaurants', 'RestaurantController@index')->name('restaurants');
 	Route::get('add-restaurant', 'RestaurantController@add')->name('add-restaurant');
-	Route::post('save-restaurant', 'RestaurantController@save')->name('save-restaurant');
+	Route::get('edit-restaurant/{id}', 'RestaurantController@edit')->name('restaurant.edit');
+	Route::post('update-restaurant', 'RestaurantController@update')->name('restaurant.update');
+	Route::post('save-restaurant', 'RestaurantController@store')->name('save-restaurant');
+	Route::get('show-restaurant/{id}', 'RestaurantController@show')->name('restaurant.show');
+	Route::post('destroy-restaurant', 'RestaurantController@destroy')->name('restaurant.destroy');
 });
 Route::group([
 	'middleware' => 'auth'
-], function() {
+], function () {
 	Route::get('restaurant-users', 'RestaurantUserController@index')->name('restaurant-users');
 	Route::get('add-restaurant-user', 'RestaurantUserController@create')->name('add-restaurant-user');
 	Route::post('save-restaurant-user', 'RestaurantUserController@save')->name('save-restaurant-user');
 });
 Route::group([
 	'middleware' => 'auth'
-], function() {
+], function () {
 	Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
 	Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
 });

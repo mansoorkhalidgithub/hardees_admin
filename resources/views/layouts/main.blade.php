@@ -102,163 +102,163 @@
 
                             <ul class="nav nav-treeview">
                                 @can('dashboard')
-									<li class="nav-item">
-										<a href="{{ route('dashboard') }}" class="nav-link {{ (request()->is('dashboard')) ? 'active' : '' }}">
-											<i class="fas fa-list"></i>
-											<p class="ml-2"> Dashboard </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('restaurants')
-									<li class="nav-item">
-										<a href="{{ route('restaurants') }}" class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}">
-											<i class="fa fa-utensils"></i>
-											<p class="ml-2"> Restaurants </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('users')
-									<li class="nav-item">
-										<a href="{{ route('restaurant-users') }}" class="nav-link {{ (request()->is('restaurant-users')) ? 'active' : '' }}">
-											<i class="fas fa-users"></i>
-											<p class="ml-2"> Restaurant Users </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('menu-categories')
-									<li class="nav-item">
-										<a href="{{ route('menu-categories') }}" class="nav-link {{ (request()->is('menu-categories')) ? 'active' : '' }}">
-											<i class="fab fa-product-hunt"></i>
-											<p class="ml-2"> Menu Categories </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('menu')
-									<li class="nav-item">
-										<a href="{{ route('menu') }}" class="nav-link {{ (request()->is('menu')) ? 'active' : '' }}">
-											<i class="fab fa-product-hunt"></i>
-											<p class="ml-2"> Menu </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('orders')
-									<li class="nav-item">
-										<a href="{{ route('orders') }}" class="nav-link {{ (request()->is('manage-orders')) ? 'active' : '' }}">
-											<i class="fa fa-stream"></i>
-											<p class="ml-2">Orders </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('customers')
-									<li class="nav-item">
-										<a href="{{ route('customers') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
-											<i class="fa fa-user"></i>
-											<p class="ml-2"> Users </p>
-										</a>
-									</li>
+                                <li class="nav-item">
+                                    <a href="{{ route('dashboard') }}" class="nav-link {{ (request()->is('dashboard')) ? 'active' : '' }}">
+                                        <i class="fas fa-list"></i>
+                                        <p class="ml-2"> Dashboard </p>
+                                    </a>
+                                </li>
                                 @endcan
-								
-								@can('riders')
-									<li class="nav-item">
-										<a href="{{ route('riders') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
-											<i class="fa fa-biking"></i>
-											<p class="ml-2"> Riders </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('product-categories')
-									<li class="nav-item">
-										<a href="{{ route('product-categories') }}" class="nav-link {{ (request()->is('product-categories')) ? 'active' : '' }}">
-											<i class="fa fa-inbox"></i>
-											<p class="ml-2"> Inbox </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('app-sliders')
-									<li class="nav-item">
-										<a href="{{ route('app-sliders') }}" class="nav-link {{ (request()->is('app-sliders')) ? 'active' : '' }}">
-											<i class="fa fa-image"></i>
-											<p class="ml-2"> App Sliders </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('tax-setting')
-									<li class="nav-item">
-										<a href="{{ route('tax-setting') }}" class="nav-link {{ (request()->is('tax-setting')) ? 'active' : '' }}">
-											<i class="fa fa-hand-holding-usd"></i>
-											<p class="ml-2"> Tax Setting </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('manage-currency')
-									<li class="nav-item">
-										<a href="{{ route('manage-currency') }}" class="nav-link {{ (request()->is('manage-currency')) ? 'active' : '' }}">
-											<i class="fas fa-dollar-sign"></i>
-											<p class="ml-2"> Manage Currency </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('rider-request')
-									<li class="nav-item">
-										<a href="{{ route('rider-request') }}" class="nav-link {{ (request()->is('rider-request')) ? 'active' : '' }}">
-											<i class="fas fa-window-maximize"></i>
-											<p class="ml-2"> Riders Request </p>
-										</a>
-									</li>
+
+                                @can('restaurants')
+                                <li class="nav-item">
+                                    <a href="{{ route('restaurants') }}" class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}">
+                                        <i class="fa fa-utensils"></i>
+                                        <p class="ml-2"> Restaurants </p>
+                                    </a>
+                                </li>
                                 @endcan
-								
-								@can('push-notifications')
-									<li class="nav-item">
-										<a href="{{ route('push-notifications') }}" class="nav-link {{ (request()->is('push-notifications')) ? 'active' : '' }}">
-											<i class="fas fa-bell"></i>
-											<p class="ml-2"> Push Notification </p>
-										</a>
-									</li>
-								@endcan
-								
-								@can('earnings')
-									<li class="nav-item">
-										<a href="{{ route('earnings') }}" class="nav-link {{ (request()->is('earnings')) ? 'active' : '' }}">
-											<i class="fas fa-dollar-sign"></i>
-											<p class="ml-2"> Earnings </p>
-										</a>
-									</li>
-								@endcan
-								@can('transactions')
-									<li class="nav-item">
-										<a href="{{ route('transactions') }}" class="nav-link {{ (request()->is('transactions')) ? 'active' : '' }}">
-											<i class="fas fa-file-invoice"></i>
-											<p class="ml-2"> Transactions </p>
-										</a>
-									</li>
-								@endcan
-								@can('change-password')
-									<li class="nav-item">
-										<a href="{{ route('change-password') }}" class="nav-link {{ (request()->is('change-password')) ? 'active' : '' }}">
-											<i class="fa fa-unlock-alt"></i>
-											<p class="ml-2"> Change Password </p>
-										</a>
-									</li>
-								@endcan
-								
-								<li class="nav-item">
-									<a href="#" class="nav-link">
-										<i class="right-align fa fa-sign-out-alt"></i>
-										<p class="ml-2"> Logout </p>
-									</a>
-								</li>
-								
+
+                                @can('users')
+                                <li class="nav-item">
+                                    <a href="{{ route('restaurant-users') }}" class="nav-link {{ (request()->is('restaurant-users')) ? 'active' : '' }}">
+                                        <i class="fas fa-users"></i>
+                                        <p class="ml-2"> Restaurant Users </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('menu-categories')
+                                <li class="nav-item">
+                                    <a href="{{ route('menu-categories') }}" class="nav-link {{ (request()->is('menu-categories')) ? 'active' : '' }}">
+                                        <i class="fab fa-product-hunt"></i>
+                                        <p class="ml-2"> Menu Categories </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('menu')
+                                <li class="nav-item">
+                                    <a href="{{ route('menu') }}" class="nav-link {{ (request()->is('menu')) ? 'active' : '' }}">
+                                        <i class="fab fa-product-hunt"></i>
+                                        <p class="ml-2"> Menu </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('orders')
+                                <li class="nav-item">
+                                    <a href="{{ route('orders') }}" class="nav-link {{ (request()->is('manage-orders')) ? 'active' : '' }}">
+                                        <i class="fa fa-stream"></i>
+                                        <p class="ml-2">Orders </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('customers')
+                                <li class="nav-item">
+                                    <a href="{{ route('customers') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
+                                        <i class="fa fa-user"></i>
+                                        <p class="ml-2"> Users </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('riders')
+                                <li class="nav-item">
+                                    <a href="{{ route('riders') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
+                                        <i class="fa fa-biking"></i>
+                                        <p class="ml-2"> Riders </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('product-categories')
+                                <li class="nav-item">
+                                    <a href="{{ route('product-categories') }}" class="nav-link {{ (request()->is('product-categories')) ? 'active' : '' }}">
+                                        <i class="fa fa-inbox"></i>
+                                        <p class="ml-2"> Inbox </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('app-sliders')
+                                <li class="nav-item">
+                                    <a href="{{ route('app-sliders') }}" class="nav-link {{ (request()->is('app-sliders')) ? 'active' : '' }}">
+                                        <i class="fa fa-image"></i>
+                                        <p class="ml-2"> App Sliders </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('tax-setting')
+                                <li class="nav-item">
+                                    <a href="{{ route('tax-setting') }}" class="nav-link {{ (request()->is('tax-setting')) ? 'active' : '' }}">
+                                        <i class="fa fa-hand-holding-usd"></i>
+                                        <p class="ml-2"> Tax Setting </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('manage-currency')
+                                <li class="nav-item">
+                                    <a href="{{ route('manage-currency') }}" class="nav-link {{ (request()->is('manage-currency')) ? 'active' : '' }}">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <p class="ml-2"> Manage Currency </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('rider-request')
+                                <li class="nav-item">
+                                    <a href="{{ route('rider-request') }}" class="nav-link {{ (request()->is('rider-request')) ? 'active' : '' }}">
+                                        <i class="fas fa-window-maximize"></i>
+                                        <p class="ml-2"> Riders Request </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('push-notifications')
+                                <li class="nav-item">
+                                    <a href="{{ route('push-notifications') }}" class="nav-link {{ (request()->is('push-notifications')) ? 'active' : '' }}">
+                                        <i class="fas fa-bell"></i>
+                                        <p class="ml-2"> Push Notification </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                @can('earnings')
+                                <li class="nav-item">
+                                    <a href="{{ route('earnings') }}" class="nav-link {{ (request()->is('earnings')) ? 'active' : '' }}">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <p class="ml-2"> Earnings </p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('transactions')
+                                <li class="nav-item">
+                                    <a href="{{ route('transactions') }}" class="nav-link {{ (request()->is('transactions')) ? 'active' : '' }}">
+                                        <i class="fas fa-file-invoice"></i>
+                                        <p class="ml-2"> Transactions </p>
+                                    </a>
+                                </li>
+                                @endcan
+                                @can('change-password')
+                                <li class="nav-item">
+                                    <a href="{{ route('change-password') }}" class="nav-link {{ (request()->is('change-password')) ? 'active' : '' }}">
+                                        <i class="fa fa-unlock-alt"></i>
+                                        <p class="ml-2"> Change Password </p>
+                                    </a>
+                                </li>
+                                @endcan
+
+                                <li class="nav-item">
+                                    <a href="#" class="nav-link">
+                                        <i class="right-align fa fa-sign-out-alt"></i>
+                                        <p class="ml-2"> Logout </p>
+                                    </a>
+                                </li>
+
                             </ul>
                         </li>
 
@@ -314,7 +314,6 @@
     </div>
     <!-- ./wrapper -->
     <!-- Laravel Javascript Validation -->
-    <script type="text/javascript" src="{{ asset('vendor/jsvalidation/js/jsvalidation.js')}}"></script>
 
     @if(request()->is('add-restaurant'))
     {!! JsValidator::formRequest('App\Http\Requests\RestaurantRequest') !!}
@@ -358,6 +357,7 @@
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('admin') }}/dist/js/custom.js"></script>
     <script src="{{ asset('admin') }}/dist/js/demo.js"></script>
+    <script src="{{ asset('admin') }}/dist/js/pages/dashboard2.js"></script>
 
 </body>
 

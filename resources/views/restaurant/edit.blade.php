@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Create Restaurant')
+@section('title', 'Update Restaurant')
 
 @section('content')
 <div class="row">
@@ -8,11 +8,12 @@
 
         <div class="card">
             <div class="card-body cat-card-body">
-                <form role="form" method="post" action="{{ route('save-restaurant') }}" enctype="multipart/form-data">
+                <form role="form" method="post" action="{{ route('restaurant.update') }}" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" name="id" value="{{$restaurant->id}}">
                     <div class="row form-group category-table">
                         <div class="col col-12 col-sm-12">
-                            <input type="text" name="name" placeholder="Enter Restuarant Name" class="form-control" required="">
+                            <input type="text" name="name" placeholder="Enter Restuarant Name" class="form-control" required="" value="{{$restaurant->name}}">
                         </div>
                         @if($errors->has('name'))
                         <small class="text-danger ml-2">{{ $errors->first('name') }}</small>
@@ -23,7 +24,7 @@
 
                     <div class="row form-group category-table">
                         <div class="col col-12 col-sm-12">
-                            <input type="text" name="tags" placeholder="Enter Restaurant Tags..." class="form-control" required="">
+                            <input type="text" name="tags" placeholder="Enter Restaurant Tags..." class="form-control" required="" value="{{ unserialize($restaurant->tags)}}">
                         </div>
                     </div>
 
@@ -31,7 +32,7 @@
 
                     <div class="row form-group category-table">
                         <div class="col col-12 col-sm-12">
-                            <input type="text" id="address" name="address" placeholder="Write Restaurant Address" class="form-control" required="">
+                            <input type="text" id="address" name="address" placeholder="Write Restaurant Address" class="form-control" required="" value="{{$restaurant->address}}">
                         </div>
                         @if($errors->has('address'))
                         <small class="text-danger ml-2">{{ $errors->first('address') }}</small>
@@ -42,21 +43,21 @@
 
                         <div class="col col-12 col-md-6">
                             <!--<label>No of People Serving</label>-->
-                            <input type="text" readonly id="latitude" name="latitude" placeholder="Enter Restaurant Latitude" class="form-control" required="">
+                            <input type="text" readonly id="latitude" name="latitude" placeholder="Enter Restaurant Latitude" class="form-control" required="" value="{{$restaurant->latitude}}">
                         </div>
                         <div class="col col-12 col-md-6">
                             <!--<label>Difficulty Level</label>-->
-                            <input type="text" readonly id="longitude" name="longitude" placeholder="Enter Restaurant Longitude" class="form-control" required="">
+                            <input type="text" readonly id="longitude" name="longitude" placeholder="Enter Restaurant Longitude" class="form-control" required="" value="{{$restaurant->longitude}}">
                         </div>
                     </div>
                     <div class="row form-group category-table">
                         <div class="col col-12 col-md-6">
                             <!--<label>Min. Order Price</label>-->
-                            <input type="text" class="form-control" name="min_order_price" placeholder="Min. Order Price">
+                            <input type="text" class="form-control" name="min_order_price" placeholder="Min. Order Price" value="@if($restaurant->min_order_price) {{$restaurant->min_order_price}}  @endif">
                         </div>
                         <div class="col col-12 col-md-6">
                             <!--<label>Expense Type</label>-->
-                            <input type="text" class="form-control" name="expense_type" placeholder="Expense Type">
+                            <input type="text" class="form-control" name="expense_type" placeholder="Expense Type" value="@if($restaurant->expense_type) {{$restaurant->expense_type}}  @endif">
                         </div>
 
                     </div>
@@ -65,7 +66,7 @@
 
                         <div class="col col-12 col-md-6">
                             <!--<label>No of People Serving</label>-->
-                            <input type="text" name="currency_symbol" placeholder="Currency Symbol e.g $" class="form-control">
+                            <input type="text" name="currency_symbol" placeholder="Currency Symbol e.g $" class="form-control" value="@if($restaurant->currency_symbol) {{$restaurant->currency_symbol}}  @endif">
                         </div>
                         <div class="col col-12 col-md-6">
                             <!--<label>Difficulty Level</label>-->
@@ -76,20 +77,20 @@
 
                         <div class="col col-12 col-md-6">
                             <!--<label>No of People Serving</label>-->
-                            <input type="text" name="delivery_charges" placeholder="Delivery Charges e.g 100" class="form-control" required="">
+                            <input type="text" name="delivery_charges" placeholder="Delivery Charges e.g 100" class="form-control" required="" value="{{$restaurant->delivery_charges}}">
                         </div>
                         <div class="col col-12 col-md-6">
                             <!--<label>Difficulty Level</label>-->
-                            <input type="text" name="delivery_charges_km" placeholder="Charges per Km e.g 1 " class="form-control">
+                            <input type="text" name="delivery_charges_km" placeholder="Charges per Km e.g 1 " class="form-control" value="@if($restaurant->delivery_charges_km) {{$restaurant->delivery_charges_km}}  @endif">
                         </div>
                     </div>
 
                     <div class="row form-group category-table">
                         <div class="col col-12 col-md-6">
                             <select name="payment_method_id" id="payment_method_id" class="form-control selectpicker" data-live-search="true" tabindex="-98">
-                                <option selected="" disabled="" hidden="">Select Payment Method</option>
-                                @foreach(Helper::getPaymentMethods() as $method)
-                                <option value="{{ $method->id }}"> {{ $method->name }}</option>
+                                <option selected="" hidden="">Select Payment Method</option>
+                                @foreach(Helper::getPaymentMethods() as $key=> $method)
+                                <option value="{{ $method->id }}" {{ ( $method->id == $restaurant->payment_method_id) ? 'selected' : '' }}> {{ $method->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -98,7 +99,7 @@
                             <select name="category_id" id="category_id" class="form-control selectpicker" data-live-search="true" tabindex="-98">
                                 <option selected="" disabled="" hidden="">Select Restaurant Category</option>
                                 @foreach(Helper::getCategories() as $category)
-                                <option value="{{ $category->id }}">{{$category->title}}</option>
+                                <option value="{{ $category->id }}" {{ ($category->id===$restaurant->category_id ) ? 'selected' : '' }}>{{$category->title}}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -108,15 +109,16 @@
 
                         <div class="col col-12 col-md-6">
                             <!--<label>No of People Serving</label>-->
-                            <input type="text" name="delivery_time" placeholder="45 min" class="form-control" required="">
+                            <input type="text" name="delivery_time" placeholder="45 min" class="form-control" required="" value="{{$restaurant->delivery_time}}">
                         </div>
 
                         <div class="col col-12 col-md-6">
                             <!--<label>No of People Serving</label>-->
-                            <input type="text" name="contact_number" placeholder="Contact Number" class="form-control" required="">
+                            <input type="text" name="contact_number" placeholder="Contact Number" class="form-control" required="" value="{{$restaurant->contact_number}}">
                         </div>
 
                     </div>
+
 
                     <div class="row">
                         <div class="col col-12 col-sm-6">
@@ -191,19 +193,12 @@
 
                     <div class="row form-group category-table">
 
-                        <div class="col col-12 col-md-6">
-                            <input type="text" name="email" placeholder="Restaurant Email" class="form-control" required="">
+                        <div class="col col-12 col-md-12">
+                            <input type="text" name="email" placeholder="Restaurant Email" class="form-control" required="" value="{{$restaurant->email}}">
                             @if($errors->has('email'))
                             <small class="text-danger ml-2">{{ $errors->first('email') }}</small>
                             @endif
                         </div>
-                        <div class="col col-12 col-md-6">
-                            <input type="password" name="password" placeholder="Restaurant Password" class="form-control" required="">
-                            @if($errors->has('password'))
-                            <small class="text-danger ml-2">{{ $errors->first('password') }}</small>
-                            @endif
-                        </div>
-
                     </div>
 
                     <div class="card-footer text-right">

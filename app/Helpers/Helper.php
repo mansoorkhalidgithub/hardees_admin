@@ -11,13 +11,13 @@ use App\Restaurant;
 
 class Helper
 {
-	public static function orderReference($value)
+    public static function orderReference($value)
     {
-		$orderReference = str_pad($value, 8, "0", STR_PAD_LEFT );
-        
-		return strtoupper($orderReference);
+        $orderReference = str_pad($value, 8, "0", STR_PAD_LEFT);
+
+        return strtoupper($orderReference);
     }
-	
+
     public static function generateRandomString($length = 10)
     {
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);

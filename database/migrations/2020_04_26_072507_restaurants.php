@@ -31,7 +31,8 @@ class Restaurants extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->string('name', 100);
-            $table->string('email', 100);
+            $table->string('email', 191)->unique();
+            $table->string('password')->nullable();
             $table->text('tags')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->text('address');
