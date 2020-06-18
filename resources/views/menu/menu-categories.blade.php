@@ -9,8 +9,13 @@
 		<div class="card">
 			<div class="card-header">
 				<h3 class="card-title"> Manage @yield('title') </h3>
+				@if(session()->has('message'))
+				<div class="alert alert-success">
+					{{ session()->get('message') }}
+  </div>
+  @endif
 				<div class="card-tools">
-					<a href="{{ route('add-menu-category') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') </a>
+					<a href="{{ route('create-category') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') </a>
 				</div>
 			</div>
 			<!-- /.card-header -->
@@ -20,7 +25,7 @@
 						<thead>
 							<tr>
 								<th scope="col">ID</th>
-								<th scope="col">Name</th>
+								<th scope="col">Name1</th>
 								
 								<th scope="col">Action</th>
 							</tr>
@@ -31,21 +36,10 @@
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $product->name }} </td>
 								
-								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
+								<td> <a href="edit-category/{{$product->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a> </td>
 							</tr>
 							@endforeach
 						</tbody>
-						<tfoot>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								<th scope="col">Category</th>
-								<th scope="col">Restaurant</th>
-								<th scope="col">Price</th>
-								<th scope="col">Register Date</th>
-								<th scope="col">Action</th>
-							</tr>
-						</tfoot>
 					</table>
 				</div>
 			</div>

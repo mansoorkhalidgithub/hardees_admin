@@ -29,6 +29,7 @@ class Menu extends Migration
             $table->double('discount', 8, 2)->nullable();
 			$table->double('weight', 8, 2)->nullable();
             $table->integer('is_favourite')->nullable();
+           // $table->tinyInteger('status')->default(1);
             $table->string('image')->nullable();
             $table->text('ingredients')->nullable();
             $table->timestamps();
