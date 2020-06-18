@@ -61,8 +61,21 @@ Route::group([
 Route::group([
 	'middleware' => 'auth'
 ], function () {
-	Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
-	Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
+	 //menue catgory
+	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
+	Route::get('create-category', 'MenuController@create')->name('create-category');
+	Route::post('add-category', 'MenuController@addCategory')->name('add-category');
+	Route::get('edit-category/{id}', 'MenuController@editCategory')->name('edit-category');
+	Route::post('update-category', 'MenuController@updateCategory')->name('update-category');
+	//menue
+	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
+	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');	
+	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
+	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
+
+
+	//Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
+	//Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
 });
 
 Auth::routes();

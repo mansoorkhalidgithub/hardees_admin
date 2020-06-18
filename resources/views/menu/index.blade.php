@@ -9,9 +9,15 @@
 		<div class="card">
 			<div class="card-header">
 				<h3 class="card-title"> Manage @yield('title') Items </h3>
+				@if(session()->has('message'))
+				<div class="alert alert-success">
+					{{ session()->get('message') }}
+  </div>
+  @endif
 				<div class="card-tools">
-					<a href="{{ route('add-menu-item') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') Item </a>
+					<a href="{{ route('create-menu-item') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') Item </a>
 				</div>
+
 			</div>
 			<!-- /.card-header -->
 			<div class="card-body">
@@ -37,7 +43,7 @@
 								<td> {{ $item->restaurant_id }} </td>
 								<td> {{ $item->price }} </td>
 								<td> {{ $item->discount }} </td>
-								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
+								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a><i class="fas fa-eye"></i> </td>
 							</tr>
 							@endforeach
 						</tbody>
