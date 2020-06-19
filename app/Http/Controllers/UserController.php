@@ -79,10 +79,11 @@ class UserController extends Controller
 		}
 	}
 
-	public function edit($id)
+	public function edit($id, $title)
 	{
+		$title = 'Edit ' . $title;
 		$model = $this->findModel($id);
-		return view('user.edit', compact('model'));
+		return view('user.edit', compact('model', 'title'));
 	}
 
 	public function update(UserRequest $request)

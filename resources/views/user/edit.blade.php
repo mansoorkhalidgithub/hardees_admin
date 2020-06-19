@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Update User')
+@section('title', $title)
 
 @section('content')
 <div class="row">

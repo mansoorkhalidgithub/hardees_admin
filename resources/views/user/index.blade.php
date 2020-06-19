@@ -52,7 +52,7 @@
 								<td> {{ $user->phone_number }} </td>
 								<td> @if($user->status===1)Active @else Inactive @endif </td>
 								<td>
-									<a href="{{route('user.edit', $user->id)}}"><i class="fas fa-edit"></i></a>
+									<a href="{{route('user.edit', [$user->id, $title])}}"><i class="fas fa-edit"></i></a>
 									<a href="{{route('user.show', [$user->id, $title])}}"><i class="fas fa-eye"></i></a>
 									<form action="{{ route('user.destroy') }}" method="POST" onsubmit="return confirm('Please confirm you want to delete! {{$user->name}}');" style="display: inline-block;">
 										@csrf

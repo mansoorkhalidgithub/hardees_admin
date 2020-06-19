@@ -58,7 +58,7 @@ Route::group([
 ], function () {
 	Route::get('users', 'UserController@index')->name('users');
 	Route::get('add-user/{title}', 'UserController@add')->name('user.add');
-	Route::get('edit-user/{id}', 'UserController@edit')->name('user.edit');
+	Route::get('edit-user/{id}/{title}', 'UserController@edit')->name('user.edit');
 	Route::post('update-user', 'UserController@update')->name('user.update');
 	Route::post('save-user', 'UserController@store')->name('user.store');
 	Route::get('show-user/{id}/{title}', 'UserController@show')->name('user.show');
