@@ -11,7 +11,7 @@
     <title>{{ env('APP_NAME') }}</title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
-
+    <link rel="stylesheet" href="{{ asset('admin') }}/plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
     <link rel="stylesheet" href="{{ asset('admin') }}/plugins/fontawesome-free/css/all.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
@@ -141,7 +141,7 @@
                                 <li class="nav-item">
                                     <a href="{{ route('menu') }}" class="nav-link {{ (request()->is('menu')) ? 'active' : '' }}">
                                         <i class="fab fa-product-hunt"></i>
-                                        <p class="ml-2"> Menu </p>
+                                        <p class="ml-2"> Menu Items </p>
                                     </a>
                                 </li>
                                 @endcan
@@ -157,7 +157,7 @@
 
                                 @can('customers')
                                 <li class="nav-item">
-                                    <a href="{{ route('customers') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
+                                    <a href="{{ route('users') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
                                         <i class="fa fa-user"></i>
                                         <p class="ml-2"> Users </p>
                                     </a>
@@ -184,7 +184,7 @@
 
                                 @can('app-sliders')
                                 <li class="nav-item">
-                                    <a href="{{ route('app-sliders') }}" class="nav-link {{ (request()->is('app-sliders')) ? 'active' : '' }}">
+                                    <a href="{{ route('sliders') }}" class="nav-link {{ (request()->is('app-sliders')) ? 'active' : '' }}">
                                         <i class="fa fa-image"></i>
                                         <p class="ml-2"> App Sliders </p>
                                     </a>
@@ -352,12 +352,15 @@
     <!-- overlayScrollbars -->
     <script src="{{ asset('admin') }}/plugins/overlayScrollbars/js/jquery.overlayScrollbars.min.js"></script>
     <!-- AdminLTE App -->
+
+
     <script src="{{ asset('admin') }}/dist/js/adminlte.js"></script>
     <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <!-- AdminLTE for demo purposes -->
     <script src="{{ asset('admin') }}/dist/js/custom.js"></script>
     <script src="{{ asset('admin') }}/dist/js/demo.js"></script>
     <script src="{{ asset('admin') }}/dist/js/pages/dashboard2.js"></script>
+    <script src="{{ asset('admin') }}/plugins/select2/js/select2.full.min.js"></script>
 
 </body>
 

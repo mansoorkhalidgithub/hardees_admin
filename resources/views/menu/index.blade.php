@@ -12,8 +12,8 @@
 				@if(session()->has('message'))
 				<div class="alert alert-success">
 					{{ session()->get('message') }}
-  </div>
-  @endif
+				</div>
+				@endif
 				<div class="card-tools">
 					<a href="{{ route('create-menu-item') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') Item </a>
 				</div>
@@ -29,6 +29,7 @@
 								<th scope="col">Name</th>
 								<th scope="col"> Menu Category </th>
 								<th scope="col">Restaurant</th>
+								<th scope="col">Created By</th>
 								<th scope="col">Price</th>
 								<th scope="col">Discount</th>
 								<th scope="col">Action</th>
@@ -39,25 +40,28 @@
 							<tr>
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $item->name }} </td>
-								<td> {{ $item->menu_category_id }} </td>
-								<td> {{ $item->restaurant_id }} </td>
+								<td> {{ $item->category->name }} </td>
+								<td>
+									@if(!empty($item->restaurant_id))
+									{{ $item->getRestaurant->name }}
+									@else
+									Not set
+									@endif
+								</td>
+								<td>
+									@if(!empty($item->created_by))
+									{{ $item->createdBy->username }}
+									@else
+									Not set
+									@endif
+								</td>
 								<td> {{ $item->price }} </td>
 								<td> {{ $item->discount }} </td>
 								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a><i class="fas fa-eye"></i> </td>
 							</tr>
 							@endforeach
 						</tbody>
-						<tfoot>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								<th scope="col">Category</th>
-								<th scope="col">Restaurant</th>
-								<th scope="col">Price</th>
-								<th scope="col">Register Date</th>
-								<th scope="col">Action</th>
-							</tr>
-						</tfoot>
+
 					</table>
 				</div>
 			</div>

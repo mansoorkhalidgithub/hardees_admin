@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\MasterModel;
 
-class Restaurant extends Model
+class Restaurant extends MasterModel
 {
 	protected $fillable = [
 		'name',
@@ -33,10 +33,5 @@ class Restaurant extends Model
 	public function category()
 	{
 		return $this->belongsTo(Category::class, 'category_id');
-	}
-
-	public function createdBy()
-	{
-		return $this->hasOne(Auth::class, 'id', 'created_by');
 	}
 }

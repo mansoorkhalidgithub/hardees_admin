@@ -2,17 +2,28 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use App\MasterModel;
 
-class MenuItem extends Model
+class MenuItem extends MasterModel
 {
-	public function getIngredientsAttribute($value)
+    public function getIngredientsAttribute($value)
     {
         return unserialize($value);
     }
-	
-	public function getWeightAttribute($value)
+
+    public function getWeightAttribute($value)
     {
         return $value . "g";
+    }
+
+
+    public function category()
+    {
+        return $this->hasOne(MenuCategory::class, 'id', 'menu_category_id');
+    }
+
+    public function createdBY()
+    {
+        return $this->hasOne(Auth::class, 'id', 'created_by');
     }
 }

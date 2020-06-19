@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -51,6 +52,34 @@ Route::group([
 	Route::get('show-restaurant/{id}', 'RestaurantController@show')->name('restaurant.show');
 	Route::post('destroy-restaurant', 'RestaurantController@destroy')->name('restaurant.destroy');
 });
+
+Route::group([
+	'middleware' => 'auth'
+], function () {
+	Route::get('users', 'UserController@index')->name('users');
+	Route::get('add-user/{title}', 'UserController@add')->name('user.add');
+	Route::get('edit-user/{id}', 'UserController@edit')->name('user.edit');
+	Route::post('update-user', 'UserController@update')->name('user.update');
+	Route::post('save-user', 'UserController@store')->name('user.store');
+	Route::get('show-user/{id}/{title}', 'UserController@show')->name('user.show');
+	Route::post('destroy-user', 'UserController@destroy')->name('user.destroy');
+	Route::post('info', 'UserController@info')->name('info');
+});
+
+
+Route::group([
+	'middleware' => 'auth'
+], function () {
+	Route::get('sliders', 'SliderController@index')->name('sliders');
+	Route::get('add-slider', 'SliderController@create')->name('slider.create');
+	Route::get('edit-slider/{id}', 'SliderController@edit')->name('slider.edit');
+	Route::post('update-slider', 'SliderController@update')->name('slider.update');
+	Route::post('save-slider', 'SliderController@store')->name('slider.store');
+	Route::get('show-slider/{id}', 'SliderController@show')->name('slider.show');
+	Route::post('destroy-slider', 'SliderController@destroy')->name('slider.destroy');
+});
+
+
 Route::group([
 	'middleware' => 'auth'
 ], function () {
@@ -61,7 +90,7 @@ Route::group([
 Route::group([
 	'middleware' => 'auth'
 ], function () {
-	 //menue catgory
+	//menue catgory
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('create-category', 'MenuController@create')->name('create-category');
 	Route::post('add-category', 'MenuController@addCategory')->name('add-category');
@@ -69,7 +98,7 @@ Route::group([
 	Route::post('update-category', 'MenuController@updateCategory')->name('update-category');
 	//menue
 	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
-	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');	
+	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');
 	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
 	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
 

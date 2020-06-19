@@ -99,9 +99,11 @@ class RestaurantController extends Controller
 		$data['password'] = Hash::make($request->password);
 
 		if ($request->has('logo')) {
-			$restaurantImage = public_path($restaurant->logo); // get previous image from folder
-			if (file_exists($restaurantImage)) { // unlink or remove previous image from folder
-				unlink($restaurantImage);
+			if (!empty($restaurant->logo)) {
+				$restaurantImage = public_path($restaurant->logo); // get previous image from folder
+				if (file_exists($restaurantImage)) { // unlink or remove previous image from folder
+					unlink($restaurantImage);
+				}
 			}
 			$image = $request->file('logo');
 			$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();

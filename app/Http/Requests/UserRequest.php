@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UserRequest extends FormRequest
@@ -13,7 +14,7 @@ class UserRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -23,8 +24,17 @@ class UserRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            //
+        $rules =  [
+            // 'phone_number' => 'required|unique:users|max:255',
         ];
+
+        if ($this->route()->getActionMethod() == 'store') {
+            $rules += ['password' => 'required|min:6'];
+            $rules += ['email' => 'required|unique:users|max:255'];
+        } elseif ($this->route()->getActionMethod() == 'update') {
+            $rules += ['email' => Rule::unique('users')->ignore($this->id)];
+        }
+
+        return $rules;
     }
 }

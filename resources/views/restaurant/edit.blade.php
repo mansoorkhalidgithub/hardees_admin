@@ -133,7 +133,7 @@
                                     <div class="fileupload fileupload-new" data-provides="fileupload">
 
                                         <div class="fileupload-new thumbnail" style="width: 100%">
-                                            <img id="logoDisplay" src="{{ asset('/') }}images/ic_gallery.jpg" alt="" style="width: 25%">
+                                            <img id="logoDisplay" src="{{ ($restaurant->logo) ? asset($restaurant->logo) : asset('/images/ic_gallery.jpg') }}" alt="" style="width: 25%">
                                         </div>
 
                                         <div class="fileupload-preview fileupload-exists" style="display: flex; margin: 0 auto;justify-content: center;margin-bottom: 20px;width: 25%; max-height: 120px"></div>
@@ -165,7 +165,7 @@
                                     <div class="fileupload fileupload-new" data-provides="fileupload">
 
                                         <div class="fileupload-new thumbnail" style="width: 100%">
-                                            <img id="coverDisplay" src="{{ asset('/') }}images/ic_gallery.jpg" alt="" style="width: 25%">
+                                            <img id="coverDisplay" src="{{ ($restaurant->thumbnail) ? asset($restaurant->thumbnail) : asset('/images/ic_gallery.jpg') }}" alt="" style="width: 25%">
                                         </div>
 
                                         <div class="fileupload-preview fileupload-exists " style="display: flex; margin: 0 auto;justify-content: center;margin-bottom: 20px;"></div>

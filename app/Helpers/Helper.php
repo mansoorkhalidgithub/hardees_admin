@@ -2,12 +2,13 @@
 
 namespace app\Helpers;
 
-use App\Category;
-use App\CurrencySymbols;
-use App\Rider;
 use App\User;
-use App\PaymentMethod;
+use App\Rider;
+use App\Category;
 use App\Restaurant;
+use App\PaymentMethod;
+use App\CurrencySymbols;
+use Spatie\Permission\Models\Role;
 
 class Helper
 {
@@ -56,5 +57,15 @@ class Helper
     public static function getRestaurants()
     {
         return Restaurant::all();
+    }
+
+    public static function roles()
+    {
+        return Role::select('id', 'name')->get();
+    }
+
+    public static function branch()
+    {
+        return Restaurant::select('id', 'name')->get();
     }
 }

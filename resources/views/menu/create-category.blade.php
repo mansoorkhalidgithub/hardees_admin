@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Create Product')
+@section('title', 'Menu Item')
 
 @section('content')
 <div class="row">
@@ -14,26 +14,26 @@
                         <div class="col col-12 col-sm-12">
                             <input type="text" value="{{ old('name') }}" name="name" placeholder="name" class="form-control" required="">
                             @if ($errors->has('name'))
-                                    <span class="help-block">
-                                        <strong>{{ $errors->first('name') }}</strong>
-                                    </span>
-                                @endif
-                            </div>
-                        </div>
-
-                                </div>
-                            </div>
+                            <span class="help-block">
+                                <strong>{{ $errors->first('name') }}</strong>
+                            </span>
+                            @endif
                         </div>
                     </div>
-            </div>
 
-            <div class="card-footer text-right">
-                <button type="submit" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
             </div>
-
-            </form>
         </div>
     </div>
+</div>
+</div>
+
+<div class="card-footer text-right">
+    <button type="submit" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
+</div>
+
+</form>
+</div>
+</div>
 </div>
 
 </div>
