@@ -24,8 +24,14 @@ class SliderRequest extends FormRequest
     public function rules()
     {
         return [
-            'slider' => 'mimes:jpeg,jpg|max:1000',
-            'status' => 'required'
+            'slider' => 'mimes:jpeg,jpg,png|max:1000',
+            'status' => 'required|numeric'
+        ];
+    }
+    public function messages()
+    {
+        return [
+            'status.numeric'  => 'Please Choose Status',
         ];
     }
 }

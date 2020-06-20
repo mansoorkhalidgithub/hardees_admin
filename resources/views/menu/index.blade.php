@@ -57,7 +57,8 @@
 								</td>
 								<td> {{ $item->price }} </td>
 								<td> {{ $item->discount }} </td>
-								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a><i class="fas fa-eye"></i> </td>
+								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>
+									<a href="show-menu-item/{{$item->id}}" class="btn  btn-sm"><i class="fas fa-eye"></a></i></td>
 							</tr>
 							@endforeach
 						</tbody>

@@ -100,6 +100,7 @@ Route::group([
 	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
 	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');
 	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
+	Route::get('show-menu-item/{id}', 'MenuController@show')->name('show');
 	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
 
 
