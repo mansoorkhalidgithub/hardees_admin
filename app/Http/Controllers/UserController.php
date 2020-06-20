@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Redirect;
 
 class UserController extends Controller
 {
@@ -21,8 +22,14 @@ class UserController extends Controller
 
 	public function index()
 	{
-		$model = User::role('user')->get();
-		$title = 'Customer';
+		if (isset($_REQUEST['page']) && $_REQUEST['page'] == 'rider')
+			$role = $_REQUEST['page'];
+		elseif (isset($_REQUEST['page']) && $_REQUEST['page'] == 'user')
+			$role = $_REQUEST['page'];
+		else
+			$role = 'admin';
+		$model = User::role($role)->get();
+		$title = ucfirst($_REQUEST['page']);
 		return view('user.index', compact('model', 'title'));
 	}
 
@@ -34,49 +41,49 @@ class UserController extends Controller
 
 	public function store(UserRequest $request)
 	{
-		DB::beginTransaction();
-		try {
-			$parts = explode("@", $request['email']);
-			$username = $parts[0];
-			if ($request->has('profile')) {
-				$image = $request->file('profile');
-				$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+		$data = [];
+		$parts = explode("@", $request['email']);
+		$t = explode(" ", $request['title']);
+		$username = $parts[0];
+		if ($request->has('profile')) {
+			$image = $request->file('profile');
+			$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
 
-				$destinationPath = public_path('/uploads/profile');
-				if (!file_exists($destinationPath)) {
-					mkdir($destinationPath, 0777, true);
-				}
-				$img = Image::make($image->getRealPath());
-				$img->save($destinationPath . '/' . $input['imagename']);
-
-				$profilePath = 'uploads/profile/' . $input['imagename'];
-
-				$data['profile_picture'] = $profilePath;
+			$destinationPath = public_path('/uploads/profile');
+			if (!file_exists($destinationPath)) {
+				mkdir($destinationPath, 0777, true);
 			}
-			$data = [
-				'first_name' => $request->first_name,
-				'last_name' => $request->last_name,
-				'username' => $username,
-				'email' => $request->email,
-				'created_by' => auth()->user()->id,
-				'restaurant_id' => $request->restaurant_id,
-				'latitude' => $request->latitude,
-				'longitude' => $request->longitude,
-				'phone_number' => $request->phone_number,
-				'password' => Hash::make($request->password),
-			];
+			$img = Image::make($image->getRealPath());
+			$img->save($destinationPath . '/' . $input['imagename']);
 
-			$user = User::create($data);
+			$profilePath = 'uploads/profile/' . $input['imagename'];
 
-			$user->assignRole($request->role);
-			DB::commit();
-			Session::flash('success', 'New User created successfully');
-
-			return redirect('users');
-		} catch (\Exception $ex) {
-			DB::rollback();
-			return response()->json(['error' => $ex->getMessage()], 500);
+			// $data['profile_picture'] = $profilePath;
 		}
+		$data = [
+			'profile_picture' => $profilePath,
+			'first_name' => $request->first_name,
+			'last_name' => $request->last_name,
+			'username' => $username,
+			'email' => $request->email,
+			'created_by' => auth()->user()->id,
+			'restaurant_id' => $request->restaurant_id,
+			'latitude' => $request->latitude,
+			'longitude' => $request->longitude,
+			'phone_number' => $request->phone_number,
+			'password' => Hash::make($request->password),
+		];
+
+		// print_r($data);
+		// die;
+		$user = User::create($data);
+
+		$user->assignRole($request->role);
+		Session::flash('success', 'New User created successfully');
+		$title = lcfirst($t[1]);
+		return Redirect::route('users', 'page=' . $title);
+		// return redirect('users', 'page=' . $title);
+
 	}
 
 	public function edit($id, $title)

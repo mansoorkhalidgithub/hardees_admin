@@ -12,12 +12,14 @@
                     @csrf
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
-                            <input type="text" name="first_name" placeholder="Enter First Name" class="form-control" required="">
+                            <input type="text" value="{{ old('first_name') }}" name="first_name" placeholder="Enter First Name" class="form-control" required="">
                         </div>
                         <div class="col col-6 col-sm-6">
-                            <input type="text" name="last_name" placeholder="Enter Last Name" class="form-control" required="">
+                            <input type="text" value="{{ old('last_name') }}" name="last_name" placeholder="Enter Last Name" class="form-control" required="">
                         </div>
                     </div>
+                    <input type="hidden" value="{{$title}}" name="title">
+                    @if($title == "Create Rider")
                     <div class="row form-group category-table">
                         <div class="col col-12 col-sm-12">
                             <select name="restaurant_id" id="branch" class="form-control selectpicker" data-live-search="true" tabindex="-98">
@@ -26,24 +28,27 @@
                                 <option value="{{$branch->id}}">{{$branch->name}}</option>
                                 @endforeach
                             </select>
+                            @if($errors->has('restaurant_id'))
+                            <small class="text-danger ml-2">{{ $errors->first('restaurant_id') }}</small>
+                            @endif
                         </div>
 
                         <input type="hidden" id="latitude" name="latitude">
                         <input type="hidden" id="longitude" name="longitude">
                     </div>
-
+                    @endif
                     <!--For entering post tags-->
 
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
-                            <input type="text" name="email" placeholder="Enter User Email" class="form-control" required="">
+                            <input type="text" value="{{ old('email') }}" name="email" placeholder="Enter User Email" class="form-control" required="">
                             @if($errors->has('email'))
                             <small class="text-danger ml-2">{{ $errors->first('email') }}</small>
                             @endif
                         </div>
 
                         <div class="col col-6 col-sm-6">
-                            <input type="password" id="password" name="password" placeholder="Enter Password" class="form-control" required="">
+                            <input type="password" value="{{ old('password') }}" id="password" name="password" placeholder="Enter Password" class="form-control" required="">
                             @if($errors->has('password'))
                             <small class="text-danger ml-2">{{ $errors->first('password') }}</small>
                             @endif
@@ -52,7 +57,10 @@
 
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
-                            <input type="text" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
+                            <input type="text" value="{{ old('phone_number') }}" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
+                            @if($errors->has('phone_number'))
+                            <small class="text-danger ml-2">{{ $errors->first('phone_number') }}</small>
+                            @endif
                         </div>
                         <div class="col col-6 col-sm-6">
                             <select name="role" id="role" class="form-control selectpicker" data-live-search="true" tabindex="-98">
@@ -61,6 +69,9 @@
                                 <option value="{{$role->name}}">{{$role->name}}</option>
                                 @endforeach
                             </select>
+                            @if($errors->has('role'))
+                            <small class="text-danger ml-2">{{ $errors->first('role') }}</small>
+                            @endif
                         </div>
                     </div>
                     <div class="row">
@@ -87,6 +98,9 @@
                                                 <!--<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>-->
                                                 <input type="file" id="profile" accept="image/*" name="profile" class="default">
                                             </span>
+                                            @if($errors->has('profile'))
+                                            <small class="text-danger ml-2">{{ $errors->first('profile') }}</small>
+                                            @endif
                                         </div>
 
                                     </div>

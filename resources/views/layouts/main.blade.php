@@ -157,7 +157,7 @@
 
                                 @can('customers')
                                 <li class="nav-item">
-                                    <a href="{{ route('users') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
+                                    <a href="{{ route('users','page=user') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
                                         <i class="fa fa-user"></i>
                                         <p class="ml-2"> Users </p>
                                     </a>
@@ -166,7 +166,7 @@
 
                                 @can('riders')
                                 <li class="nav-item">
-                                    <a href="{{ route('riders') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
+                                    <a href="{{ route('users','page=rider') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
                                         <i class="fa fa-biking"></i>
                                         <p class="ml-2"> Riders </p>
                                     </a>

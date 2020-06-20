@@ -22,7 +22,9 @@
 								<th scope="col">Sr No</th>
 								<th scope="col">Name</th>
 								<th scope="col">Email</th>
+								@if(isset($_REQUEST['page']) && $_REQUEST['page'] =='rider')
 								<th scope="col">Restaurant</th>
+								@endif
 								<th scope="col">Created By</th>
 								<th scope="col">Phone</th>
 								<th scope="col">Status</th>
@@ -35,6 +37,7 @@
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $user->first_name }} {{$user->last_name}} </td>
 								<td> {{ $user->email }} </td>
+								@if(isset($_REQUEST['page']) && $_REQUEST['page'] =='rider')
 								<td>
 									@if(!empty($user->restaurant_id))
 									{{ $user->getRestaurant->name }}
@@ -42,6 +45,7 @@
 									Not set
 									@endif
 								</td>
+								@endif
 								<td>
 									@if(!empty($user->created_by))
 									{{ $user->createdBy->username }}
