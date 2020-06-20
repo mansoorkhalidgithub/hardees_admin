@@ -68,34 +68,38 @@ class AuthApiController extends Controller
 	public function login(Request $request)
 	{
 		$loggedInUser = User::where('phone_number' ,$request['phone_number'])->first();
-		if(Hash::check($request['password'], $loggedInUser->password))
-        {
-            //$loggedInUser = Auth::user();
-            $tokenResult = $loggedInUser->createToken('customer');
-            $token = $tokenResult->token;
-            $token->expires_at = Carbon::now()->addDays(1);
+		if(!empty($loggedInUser)) :
+			if(Hash::check($request['password'], $loggedInUser->password))
+			{
+				//$loggedInUser = Auth::user();
+				$tokenResult = $loggedInUser->createToken('customer');
+				$token = $tokenResult->token;
+				$token->expires_at = Carbon::now()->addDays(1);
 
-			$customer = [
-				'name' => $loggedInUser->name,
-				'email' => $loggedInUser->email,
-				'phone_number' => $loggedInUser->phone_number,
-			];
+				$customer = [
+					'name' => $loggedInUser->name,
+					'email' => $loggedInUser->email,
+					'phone_number' => $loggedInUser->phone_number,
+				];
 
-            $response = [
-                'status' => 1,
-                'method' => $request->route()->getActionMethod(),
-                'message' => 'Customer logged in successfully !',
-                'access_token' => $tokenResult->accessToken,
-                'token_type' => 'Bearer',
-				'customer_id' => $loggedInUser->customer_id,
-				'customer_profile' => $customer,
-                'expires_at' => Carbon::parse(
-                    $tokenResult->token->expires_at
-                )->toDateTimeString()
-            ];
+				$response = [
+					'status' => 1,
+					'method' => $request->route()->getActionMethod(),
+					'message' => 'Customer logged in successfully !',
+					'access_token' => $tokenResult->accessToken,
+					'token_type' => 'Bearer',
+					'customer_id' => $loggedInUser->customer_id,
+					'customer_profile' => $customer,
+					'expires_at' => Carbon::parse(
+						$tokenResult->token->expires_at
+					)->toDateTimeString()
+				];
 
-            return response()->json($response);
-        }
+				return response()->json($response);
+			}
+		
+		endif;
+			
 
         $response = [
             'status' => 0,
@@ -106,7 +110,7 @@ class AuthApiController extends Controller
         return response()->json($response);
 	}
 	
-	public function login(Request $request)
+	public function loginRestaurant(Request $request)
 	{
 		$loggedInUser = RestaurantUser::where('email' ,$request['email'])->first();
 		if(Hash::check($request['password'], $loggedInUser->password))
