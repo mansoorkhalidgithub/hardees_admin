@@ -156,6 +156,10 @@ class MenuController extends Controller
 	    ]);
     
     }
+    public function show($id){
+    	$model=MenuItem::find($id);
+    return view('menu/show',compact('model'));
+    }
 	public function updateCategory(Request $request){
 		$this->validateInput($request);
 		$catgorey=MenuCategory::find($request->categoryId);

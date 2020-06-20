@@ -13,4 +13,4 @@ class Slider extends MasterModel
         'created_by',
         'slider_img'
     ];
-}
+} 
