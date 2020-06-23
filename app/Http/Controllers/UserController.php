@@ -22,14 +22,19 @@ class UserController extends Controller
 
 	public function index()
 	{
-		if (isset($_REQUEST['page']) && $_REQUEST['page'] == 'rider')
+		$title = '';
+		if (isset($_REQUEST['page']) && $_REQUEST['page'] == 'rider') {
 			$role = $_REQUEST['page'];
-		elseif (isset($_REQUEST['page']) && $_REQUEST['page'] == 'user')
+			$title = ucfirst($_REQUEST['page']);
+		} elseif (isset($_REQUEST['page']) && $_REQUEST['page'] == 'user') {
 			$role = $_REQUEST['page'];
-		else
-			$role = 'admin';
+			$title = ucfirst($_REQUEST['page']);
+		} else {
+			$role = 'sub-admin';
+			$title = 'Sub Admin';
+		}
 		$model = User::role($role)->get();
-		$title = ucfirst($_REQUEST['page']);
+
 		return view('user.index', compact('model', 'title'));
 	}
 

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -66,7 +67,7 @@ Route::group([
 	Route::post('info', 'UserController@info')->name('info');
 });
 
-
+Route::resource('booking', 'BookingController');
 Route::group([
 	'middleware' => 'auth'
 ], function () {
