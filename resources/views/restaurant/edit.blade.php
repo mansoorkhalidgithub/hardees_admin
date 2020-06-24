@@ -201,8 +201,8 @@
                         </div>
                     </div>
 
-                    <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
+                    <div class="card-footer text-center">
+                        <button type="submit" style="background-color: #F6BF2D; color: black;text-align:center; width: 70%; font-weight: bold;" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
                     </div>
 
                 </form>

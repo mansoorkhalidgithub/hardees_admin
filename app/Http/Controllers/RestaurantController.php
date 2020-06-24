@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Restaurant;
 use App\Helpers\Helper;
 use App\Http\Requests\RestaurantRequest;
+use App\RestaurantCategories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -68,9 +69,17 @@ class RestaurantController extends Controller
 			$data['thumbnail'] = $coverPath;
 		}
 
-		//dd($data);
-
 		$restaurant = Restaurant::create($data);
+		if ($restaurant) {
+			foreach ($request->categories as $key => $category) {
+				$res_data = [
+					'restaurant_id' => $restaurant->id,
+					'title' => $category
+				];
+
+				RestaurantCategories::create($res_data);
+			}
+		}
 
 		Session::flash('success', 'New restaurant created successfully');
 
@@ -158,5 +167,14 @@ class RestaurantController extends Controller
 	protected function findModel($id)
 	{
 		return Restaurant::find($id);
+	}
+
+	public function status($id)
+	{
+		$restaurant = $this->findModel($id);
+		$st = $restaurant->status === 1 ? 0 : 1;
+		$restaurant->status = $st;
+		$restaurant->save();
+		return redirect()->back();
 	}
 }

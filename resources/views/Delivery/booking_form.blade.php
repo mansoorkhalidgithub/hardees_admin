@@ -133,6 +133,7 @@
          <div class="col-sm-10">
            <input id="searchbox" class="form-control" style="width: 100% !important;" type="search" name="keyword" placeholder="Search Old Customer by Name, Number" value="">
          </div>
+         <div id="lists"></div>
          <div class="col-sm-2">
            <input type="reset" name="Reset" value="Reset" class="btn btn-success btn-md btncustom" style="margin-left: 5px; width: 100%; border-radius:0px; border-color:black; background:black; color:#f6bf2d">
          </div>
@@ -169,7 +170,9 @@
        </p>
        <div class="row" style="padding: 0px;margin-bottom: 1rem;margin-left:0px;">
          <div class="col-sm-10" style="padding: 0px;">
-           <input name="drop_off_location" class="form-control textInput" type="text" value="" placeholder="Drop Off Location" style="width: 100%;">
+           <input id="drop_off_location" name="drop_off_location" class="form-control textInput" type="text" value="" placeholder="Drop Off Location" style="width: 100%;">
+           <input type="text" id="end_latitude" name="end_latitude">
+           <input type="text" id="end_logitude" name="end_logitude">
          </div>
          <div class="col-sm-2">To</div>
        </div>
@@ -209,7 +212,6 @@
      <div class="tab">
        <h3>Menu</h3>
        <p><select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%" id="ct_id" name="Trip[iVehicleTypeId]">
-
            <option>Select Category</option>
            <option>Chargrilled Burger</option>
            <option>Angus Burger</option>
@@ -360,8 +362,52 @@
        <span class="step"></span>
      </div>
    </form>
-
+   <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
+   <script src="{{ asset('admin') }}/dist/js/mapInput.js"></script>
+   <script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
    <script>
+     $(document).ready(function() {
+       $("#searchbox").on("keyup", function() {
+         value = $(this).val();
+         $.ajax({
+           type: "post",
+           url: "{{ URL::route('customer.info') }}",
+           data: {
+             "_token": "{{ csrf_token() }}",
+             search: value,
+           },
+           success: function(data) {
+             var data = $.parseJSON(data);
+             console.log(data);
+           },
+         });
+       });
+       $(document).on('click', 'li', function() {
+         $('#searchbox').val($(this).text());
+         $('#lists').fadeOut();
+       });
+       $.noConflict();
+       initialize();
+     });
+
+     function initialize() {
+
+       var options = {
+         componentRestrictions: {
+           country: "pk"
+         }
+       };
+
+       var input = document.getElementById('drop_off_location');
+       var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+       autocomplete.addListener('place_changed', function() {
+         var place = autocomplete.getPlace();
+
+         $('#end_latitude').val(place.geometry['location'].lat());
+         $('#end_logitude').val(place.geometry['location'].lng());
+       });
+     }
      var currentTab = 0; // Current tab is set to be the first tab (0)
      showTab(currentTab); // Display the current tab
 

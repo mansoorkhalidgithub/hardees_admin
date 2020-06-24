@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -13,7 +14,7 @@ class BookingController extends Controller
      */
     public function index()
     {
-        return view('Delivery/booking_form');
+        return view('Delivery.booking_form');
     }
 
     /**
@@ -80,5 +81,35 @@ class BookingController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function getCustomer(Request $request)
+    {
+        $output = '';
+        $data = [];
+        if (isset($_REQUEST["search"])) {
+            $customers = User::role('user')->where('first_name', 'like', '%' . $request->search . '%')
+                ->orWhere('last_name', 'like', '%' . $request->search . '%')
+                ->orWhere('username', 'like', '%' . $request->search . '%')
+                ->orWhere('phone_number', 'like', '%' . $request->search . '%')
+                ->get();
+            if (count($customers) > 0) {
+                foreach ($customers as $key => $customer) {
+                    $data = [
+                        'phone_number' => $customer["phone_number"],
+                        'first_name' => $customer["first_name"],
+                        'last_name' => $customer["last_name"],
+                        'username' => $customer["username"],
+                        'email' => $customer["email"]
+                    ];
+
+                    // $data[$customer["phone_number"]] = $customer["first_name"] . "|" . $customer["last_name"] . "|" . $customer["username"] . "|" . $customer["phone_number"];
+                }
+            } else {
+                //$output .= '<li>Country Not Found</li>';  
+            }
+        }
+
+        echo json_encode($data);
     }
 }

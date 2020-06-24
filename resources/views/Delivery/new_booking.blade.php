@@ -41,9 +41,9 @@
      #results {
          width: 100%;
          display: none;
-         bordder-bottom: 1px solid black;
-         bordder-left: 1px solid black;
-         bordder-right: 1px solid black;
+         border-bottom: 1px solid black;
+         border-left: 1px solid black;
+         border-right: 1px solid black;
      }
 
      #results #item {
@@ -132,18 +132,6 @@
                  </div>
              </div>
          </div>
-
-
-
-
-
-
-
-
-
-
-
-
      </div>
  </div>
 

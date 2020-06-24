@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Products')
+@section('title', 'Categories')
 
 @section('content')
 
@@ -12,8 +12,8 @@
 				@if(session()->has('message'))
 				<div class="alert alert-success">
 					{{ session()->get('message') }}
-  </div>
-  @endif
+				</div>
+				@endif
 				<div class="card-tools">
 					<a href="{{ route('create-category') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') </a>
 				</div>
@@ -26,7 +26,7 @@
 							<tr>
 								<th scope="col">ID</th>
 								<th scope="col">Name1</th>
-								
+
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
@@ -35,7 +35,7 @@
 							<tr>
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $product->name }} </td>
-								
+
 								<td> <a href="edit-category/{{$product->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a> </td>
 							</tr>
 							@endforeach

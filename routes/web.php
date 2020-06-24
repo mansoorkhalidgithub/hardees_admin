@@ -52,6 +52,7 @@ Route::group([
 	Route::post('save-restaurant', 'RestaurantController@store')->name('save-restaurant');
 	Route::get('show-restaurant/{id}', 'RestaurantController@show')->name('restaurant.show');
 	Route::post('destroy-restaurant', 'RestaurantController@destroy')->name('restaurant.destroy');
+	Route::get('status/{id}', 'RestaurantController@status')->name('restaurant.status');
 });
 
 Route::group([
@@ -66,8 +67,12 @@ Route::group([
 	Route::post('destroy-user', 'UserController@destroy')->name('user.destroy');
 	Route::post('info', 'UserController@info')->name('info');
 });
-
-Route::resource('booking', 'BookingController');
+Route::group([
+	'middleware' => 'auth'
+], function () {
+	Route::resource('booking', 'BookingController');
+	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
+});
 Route::group([
 	'middleware' => 'auth'
 ], function () {

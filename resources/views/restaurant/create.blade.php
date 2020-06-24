@@ -3,9 +3,17 @@
 @section('title', 'Create Restaurant')
 
 @section('content')
-<div class="row">
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h3 style="color: black; font-family: serif; font-weight: bold">@yield('title')</h3>
+        @role('admin')
+        <a href="{{ url()->previous() }}" class="d-none d-sm-inline-block btn btn-sm shadow-sm font-weight-bold" style="background-color: #ffc107; color: black">
+            <i class="fas fa-arrow-left"></i>
+            Restaurant List
+        </a>
+        @endrole
+    </div>
     <div class="col-sm-12">
-
         <div class="card">
             <div class="card-body cat-card-body">
                 <form role="form" method="post" action="{{ route('save-restaurant') }}" enctype="multipart/form-data">
@@ -118,6 +126,63 @@
 
                     </div>
 
+                    <div class="row form-group category-table">
+                        <div class="col col-12 col-sm-12">
+                            <label style="text-align: left">Write Restaurant Categories </label>
+                        </div>
+                    </div>
+
+                    <div id="restaurant_categories">
+                    </div>
+
+                    <div class="row form-group category-table">
+                        <div class="col-sm-11">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="item" name="categories[]" placeholder="Restaurant Categories e.g 'Hot Deals' ">
+                            </div>
+                        </div>
+                        <div class="col-sm-1">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success" onclick="restaurantCategories();" type="button"> <i class="fas fa-plus"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row form-group category-table">
+                        <div class="col col-12 col-sm-4">
+                            <label style="text-align: left">Write Restaurant Timings </label>
+                        </div>
+                    </div>
+
+                    <div id="timing_fields">
+                    </div>
+
+                    <div class="row form-group category-table">
+                        <div class="col-sm-5">
+                            <div class="form-group">
+                                <input type="text" class="form-control" id="time" name="restaurant_to_timing[]" placeholder="e.g Friday ">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <input type="time" class="form-control" name="time_from[]" id="time_from" value="" placeholder="e.g Friday ">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-3">
+                            <div class="form-group">
+                                <input type="time" class="form-control" name="time_to[]" id="time_to" value="" placeholder="e.g Friday ">
+                            </div>
+                        </div>
+
+                        <div class="col-sm-1">
+                            <div class="input-group-btn">
+                                <button class="btn btn-success" type="button" onclick="timing_fields();"> <i class="fas fa-plus"></i> </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="row">
                         <div class="col col-12 col-sm-6">
                             <div class="row form-group category-table">
@@ -206,8 +271,8 @@
 
                     </div>
 
-                    <div class="card-footer text-right">
-                        <button type="submit" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
+                    <div class="card-footer text-center">
+                        <button type="submit" style="background-color: #F6BF2D; color: black;text-align:center; width: 70%; font-weight: bold;" class="btn btn-success btn-lg"> <i class="fa fa-save"></i> Save</button>
                     </div>
 
                 </form>

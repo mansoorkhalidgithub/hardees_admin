@@ -88,26 +88,26 @@
                         <span>Ride Statement</span>
                     </a>
                 </li>
-
-                @can('menu')
-                <li class="nav-item">
-                    <a href="{{ route('menu') }}" class="nav-link {{ (request()->is('menu')) ? 'active' : '' }}">
-                        <i class="fas fa-fw fa-list"></i>
-                        <span>Menu</span>
-                    </a>
-                </li>
-                @endcan
                 @can('menu-categories')
                 <li class="nav-item">
                     <a href="{{ route('menu-categories') }}" class="nav-link {{ (request()->is('menu-categories')) ? 'active' : '' }}">
                         <i class="fas fa-fw fa-clipboard-list"></i>
-                        <span>Menu Category</span>
+                        <span>Menu Categories</span>
                     </a>
                 </li>
                 @endcan
+                @can('menu')
+                <li class="nav-item">
+                    <a href="{{ route('menu') }}" class="nav-link {{ (request()->is('menu')) ? 'active' : '' }}">
+                        <i class="fas fa-fw fa-list"></i>
+                        <span>Menu Items</span>
+                    </a>
+                </li>
+                @endcan
+
                 @can('dashboard')
                 <li class="nav-item">
-                    <a href="{{ route('users','page=user') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
+                    <a href="{{ route('users') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Sub Admins</span>
                     </a>
@@ -152,9 +152,14 @@
                 <hr class="sidebar-divider d-none d-md-block">
 
                 <div class="sidebar-heading">Members</div>
-
-                <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-motorcycle"></i> <span>Riders</span></a></li>
-
+                @can('riders')
+                <li class="nav-item">
+                    <a href="{{ route('users','page=rider') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
+                        <i class="fas fa-fw fa-motorcycle"></i>
+                        <span>Riders</span>
+                    </a>
+                </li>
+                @endcan
                 <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-dollar-sign"></i> <span>Payment Setting</span></a></li>
 
                 <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-bookmark"></i> <span>Tax Setting</span></a></li>
@@ -455,6 +460,7 @@
     <script src="{{ asset('admin/js/chart-pie-demo.js') }}" defer></script>
     <script src="{{ asset('admin/extra') }}/plugins/datatables/jquery.dataTables.js"></script>
     <script src="{{ asset('admin/extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+    <script src="{{ asset('admin') }}/dist/js/custom.js"></script>
     <!-- jQuery UI 1.11.4 -->
 
 </body>
