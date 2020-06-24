@@ -32,6 +32,7 @@
 								<th scope="col">Created By</th>
 								<th scope="col">Price</th>
 								<th scope="col">Discount</th>
+								<th scope="col">Status</th>
 								<th scope="col">Action</th>
 							</tr>
 						</thead>
@@ -57,6 +58,14 @@
 								</td>
 								<td> {{ $item->price }} </td>
 								<td> {{ $item->discount }} </td>
+								<td>
+									@if($item->status == 1)
+									<button style="cursor: auto;" type="button" class="btn btn-success">Active</button>
+									@else
+									 <button style="cursor: auto;" type="button" class="btn btn-secondary">Deactive</button>
+									 @endif
+
+									</td>
 								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>
 									<a href="show-menu-item/{{$item->id}}" class="btn  btn-sm"><i class="fas fa-eye"></a></i></td>
 							</tr>

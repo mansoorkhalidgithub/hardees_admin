@@ -69,6 +69,17 @@
 
                                     <div class="fileupload-preview fileupload-exists " style="display: flex; margin: 0 auto;justify-content: center;margin-bottom: 20px;"></div>
 
+
+
+                                    <div class="cat-select-img-btn">
+                                        <span class="btn btn-theme02 btn-file  sel-img-text">
+                                            <span class="fileupload-new"><i class="fa fa-paperclip"></i> In</span>
+                                            <!--<span class="fileupload-exists"><i class="fa fa-undo"></i> Change</span>-->
+                                            <input type="text" value="Amsterdam,Washington,Sydney,Beijing,Cairo" data-role="tagsinput" />
+
+                                        </span>
+
+                                    </div>
                                     <div class="cat-select-img-btn">
                                         <span class="btn btn-theme02 btn-file  sel-img-text">
                                             <span class="fileupload-new"><i class="fa fa-paperclip"></i> Browse</span>
