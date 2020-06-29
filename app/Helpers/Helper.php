@@ -4,12 +4,10 @@ namespace app\Helpers;
 
 use App\User;
 use App\Rider;
-use App\State;
 use App\Category;
 use App\Restaurant;
 use App\PaymentMethod;
 use App\CurrencySymbols;
-use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
 class Helper
@@ -26,17 +24,14 @@ class Helper
         return substr(str_shuffle(str_repeat($x = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ', ceil($length / strlen($x)))), 1, $length);
     }
 
-    public static function getStates()
+    public static function getUserCount()
     {
-        return State::where('country_id', 166)
-            ->where('status', State::STATUS_ACTIVE)->get();
+        return User::get()->count();
     }
 
-    public static function getCities()
+    public static function getRiderCount()
     {
-        return DB::table('cities')
-            ->whereIn('state_id', [2722, 2723, 2724, 2725, 2726, 2727, 2728, 2729])
-            ->get();
+        return Rider::get()->count();
     }
 
     public static function getCategoriesCount()

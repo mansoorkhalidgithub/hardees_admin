@@ -58,35 +58,6 @@ Route::group([
 Route::group([
 	'middleware' => 'auth'
 ], function () {
-	Route::get('auth-user', 'AuthController@index')->name('auth.index');
-	Route::get('add-auth', 'AuthController@create')->name('auth.create');
-	Route::get('edit-auth/{id}', 'AuthController@edit')->name('auth.edit');
-	Route::post('update-auth', 'AuthController@update')->name('auth.update');
-	Route::post('save-auth', 'AuthController@store')->name('auth.store');
-	Route::get('show-auth/{id}', 'AuthController@show')->name('auth.show');
-	Route::post('destroy-auth', 'AuthController@destroy')->name('auth.destroy');
-	// Route::get('status/{id}', 'RestaurantController@status')->name('restaurant.status');
-});
-
-
-Route::group([
-	'middleware' => 'auth'
-], function () {
-	Route::get('state', 'StateController@index')->name('state.index');
-	Route::get('state/status/{id}', 'StateController@status')->name('state.status');
-});
-
-
-Route::group([
-	'middleware' => 'auth'
-], function () {
-	Route::get('city', 'CityController@index')->name('city.index');
-	Route::get('city/status/{id}', 'CityController@status')->name('city.status');
-});
-
-Route::group([
-	'middleware' => 'auth'
-], function () {
 	Route::get('users', 'UserController@index')->name('users');
 	Route::get('add-user/{title}', 'UserController@add')->name('user.add');
 	Route::get('edit-user/{id}/{title}', 'UserController@edit')->name('user.edit');
@@ -96,23 +67,6 @@ Route::group([
 	Route::post('destroy-user', 'UserController@destroy')->name('user.destroy');
 	Route::post('info', 'UserController@info')->name('info');
 });
-
-Route::group([
-	'middleware' => 'auth'
-], function () {
-	Route::get('riders', 'RiderController@index')->name('rider.index');
-	Route::get('add-rider', 'RiderController@create')->name('rider.create');
-	Route::get('edit-rider/{id}', 'RiderController@edit')->name('rider.edit');
-	Route::post('update-rider', 'RiderController@update')->name('rider.update');
-	Route::post('save-rider', 'RiderController@store')->name('rider.store');
-	Route::get('show-rider/{id}', 'RiderController@show')->name('rider.show');
-	Route::post('destroy-rider', 'RiderController@destroy')->name('rider.destroy');
-	Route::post('info', 'RiderController@info')->name('rider.info');
-	Route::get('rider/status/{id}', 'RiderController@status')->name('rider.status');
-	Route::get('rider/eStatus/{id}', 'RiderController@eStatus')->name('rider.eStatus');
-	Route::post('getCities', 'RiderController@getCities')->name('getCities');
-});
-
 Route::group([
 	'middleware' => 'auth'
 ], function () {

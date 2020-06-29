@@ -13,9 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(Category::class, 10)->create();
+		factory(Category::class, 10)->create();
         $this->call([
-            Permissions::class,
+			Permissions::class,
             Roles::class,
             AdminPermissions::class,
             SubAdminPermissions::class,
@@ -24,10 +24,7 @@ class DatabaseSeeder extends Seeder
             RestaurantSeeder::class,
             MenuSeeder::class,
             DealSeeder::class,
-            CountriesTableSeeder::class,
-            StatesTableSeeder::class,
-            CitiesTableSeeder::class
         ]);
-        factory(DealItem::class, 30)->create();
+		factory(DealItem::class, 30)->create();
     }
 }
