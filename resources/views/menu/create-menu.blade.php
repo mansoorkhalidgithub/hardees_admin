@@ -3,7 +3,7 @@
 @section('title', 'Menu Item')
 
 @section('content')
-<div class="container">
+<div style="margin: 0px 10px 10px 10px">
 <style>
     .input_border{border-radius: 0px}
     .label-info{
@@ -94,6 +94,8 @@
 </div> -->
 
 <!-- Text input-->
+<div class="row">
+    <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="product_name">MENU NAME</label>
 
@@ -106,17 +108,10 @@
 
 
 </div>
-
-<!-- Text input-->
-<!-- <div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="ingredients">INGREDIENTS</label>
-
-  <input id="ingredients" name="ingredients" style="border-radius: 0px"  class="form-control " required="" type="text">
+        </div>
 
 
-</div> -->
-
-<!-- Select Basic -->
+<div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="menu_categorie">MENU CATEGORY</label>
 
@@ -133,63 +128,11 @@
                             @endif
 
 </div>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="weight">WEIGHT</label>
-
-  <input type="text" value="{{ old('weight') }}" name="weight" placeholder="weight" class="form-control input_border" required="">
-                            @if ($errors->has('weight'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('weight') }}
-                            </span>
-                            @endif
-
-
+</div>
 </div>
 
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="discount">DISCOUNT</label>
-
-<input type="text" value="{{ old('discount') }}" name="discount" placeholder="Discount" class="form-control input_border" required="">
-                            @if ($errors->has('discount'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('discount') }}
-                            </span>
-                            @endif
-
-
-</div>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="quantity">QUANTITY</label>
-
-  <input type="text" value="{{ old('quantity') }}"  name="quantity" placeholder="quantity" class="form-control input_border" required="">
-                            @if ($errors->has('quantity'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('quantity') }}
-                            </span>
-                            @endif
-
-
-</div>
-
-<!-- Search input-->
-<div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="price">PRICE</label>
-<input type="text" value="{{ old('price') }}" style="border-radius: 0px" name="price" placeholder="price" class="form-control input_border" required="">
-                            @if ($errors->has('price'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('price') }}
-                            </span>
-                            @endif
-
-
-</div>
-
-<!-- Search input-->
+<div class="row">
+    <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="restaurant">RESTAURANT</label>
 
@@ -205,14 +148,95 @@
                             @endif
 
 </div>
+</div>
+
+    <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">Ingredients</label>
 
     <input name="ingredients" type="text" class="form-control input_border" placeholder="Ingredients" value="" data-role="tagsinput" />
   </div>
-<!-- Search input-->
+  </div>
+  </div>
+
+<div class="row">
+    <div class="col-sm-6">
 <div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>
+  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="weight">WEIGHT</label>
+
+  <input type="text" value="{{ old('weight') }}" name="weight" placeholder="weight" class="form-control input_border" required="">
+                            @if ($errors->has('weight'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('weight') }}
+                            </span>
+                            @endif
+
+
+</div>
+    </div>
+<div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="discount">DISCOUNT</label>
+
+<input type="text" value="{{ old('discount') }}" name="discount" placeholder="Discount" class="form-control input_border" required="">
+                            @if ($errors->has('discount'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('discount') }}
+                            </span>
+                            @endif
+
+
+</div>
+</div>
+</div>
+<!-- Text input-->
+<div class="row">
+    <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="quantity">QUANTITY</label>
+
+  <input type="text" value="{{ old('quantity') }}"  name="quantity" placeholder="quantity" class="form-control input_border" required="">
+                            @if ($errors->has('quantity'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('quantity') }}
+                            </span>
+                            @endif
+
+
+</div>
+    </div>
+<!-- Search input-->
+    <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="price">PRICE</label>
+<input type="text" value="{{ old('price') }}" style="border-radius: 0px" name="price" placeholder="price" class="form-control input_border" required="">
+                            @if ($errors->has('price'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('price') }}
+                            </span>
+                            @endif
+
+
+</div>
+</div>
+
+</div>
+<div class="row">
+<div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-6 " style="color: black; font-size: 12px; font-weight: 700" for="preparation_time">PREPARATION TIME</label>
+
+    <input type="text" value="{{ old('preparation_time') }}"  name="preparation_time" placeholder="preparation time" class="form-control input_border" required="">
+                            @if ($errors->has('preparation_time'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('preparation_time') }}
+                            </span>
+                            @endif
+  </div>
+  </div>
+  <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-6 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>
 
     <select id="menuitems-status" class="form-control" name="status" aria-invalid="false">
     <option value="1">Active</option>
@@ -224,33 +248,47 @@
                             </span>
                             @endif
   </div>
+  </div>
+</div>
 
+<!-- Search input-->
 
- <!-- File Button -->
+<!-- Search input-->
+<div class="row">
+
+    <div class="col-sm-6">
 <div class="form-group">
-  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">MENU IMAGE</label>
+  <label class="col-md-6" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">MENU IMAGE</label>
   <br>
-  <input id="itemImg" class="col-md-4" name="itemImg" class="input-file" type="file">
+  <input id="itemImg" class="col-md-6" name="itemImg" class="input-file" type="file">
                                                 @if ($errors->has('itemImg'))
                                                 <span class="help-block text-danger">
                                                 {{ $errors->first('itemImg') }}
                                                 </span>
                                                 @endif
 </div>
-
-<div class="col col-6 col-sm-6">
-                            <label style="color: black; font-size: 12px; font-weight: 700">Is Favourite</label> <br />
-                            <input type="checkbox" value="1" {{ old('is_favourite') == 1 ? 'checked' : '' }} id="menuitems-is_favourite" name="is_favourite" aria-invalid="false">
+</div>
+<div class="col-sm-6">
+<div class="form-group">
+                            <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700">Is Favourite</label> <br />
+                            <input type="checkbox" class="col-md-1" value="1" {{ old('is_favourite') == 1 ? 'checked' : '' }} id="menuitems-is_favourite" name="is_favourite" aria-invalid="false">
                             @if ($errors->has('is_favourite'))
                             <span class="help-block">
                                 {{ $errors->first('is_favourite') }}
                             </span>
                             @endif
                         </div>
-<!-- Button -->
-<div class="form-group text-center" style="margin-top: 3rem">
+                        </div>
+ <!-- File Button -->
 
-      <button id="add_menu" name="add_menu" class="btn" style="background-color: #F6BF2D; color: black; width: 70%; font-weight: bold">ADD MENU</button>
+
+</div>
+<hr>
+
+<!-- Button -->
+<div class="form-group text-right" style="margin-top: 1rem">
+
+      <button id="add_menu" name="add_menu" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold">ADD MENU</button>
 
   </div>
 </fieldset>
