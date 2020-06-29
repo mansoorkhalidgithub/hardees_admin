@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Deal;
+use App\Slider;
 use App\MenuItem;
 use App\MenuCategory;
 use Illuminate\Http\Request;
@@ -74,6 +75,22 @@ class HardeesApiController extends Controller
             'message' => 'Get menu items by category ',
 			'data' => [
 				'itemsByCategory' => $itemsByCategory
+			]
+        ];
+
+        return response()->json($response);
+	}
+	
+	public function getSlider(Request $request)
+	{
+		$sliders = Slider::where('status', 1)->get();
+		
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'App slider',
+			'data' => [
+				'slider' => $sliders
 			]
         ];
 

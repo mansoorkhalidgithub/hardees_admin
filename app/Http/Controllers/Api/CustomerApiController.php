@@ -7,6 +7,7 @@ use Image;
 use Helper;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
@@ -121,7 +122,7 @@ class CustomerApiController extends Controller
 		
 		$customer = Auth::user();
 		
-		$customer->update(['password' => $request->new_password]);
+		$customer->update(['password' => Hash::make($request->new_password)]);
 		
 		$response = [
             'status' => 1,
