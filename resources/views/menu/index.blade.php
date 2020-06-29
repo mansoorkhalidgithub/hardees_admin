@@ -1,95 +1,77 @@
-@extends('layouts.main')
+ @extends('layouts.main') @section('content')
 
-@section('title', 'Menu')
+<div  style="margin: 0px 10px 10px 10px">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h3 style="color: black; font-family: serif; font-weight: bold">Menu List</h3>
 
-@section('content')
+                <a href="{{ route('add_product') }}"
+                   class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i
+			class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>Add New Menu</a>
 
-<div class="row">
-	<div class="col-12">
-		<div class="card">
-			<div class="card-header">
-				<h3 class="card-title"> Manage @yield('title') Items </h3>
-				@if(session()->has('message'))
-				<div class="alert alert-success">
-					{{ session()->get('message') }}
-				</div>
-				@endif
-				<div class="card-tools">
-					<a href="{{ route('create-menu-item') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') Item </a>
-				</div>
-
-			</div>
-			<!-- /.card-header -->
-			<div class="card-body">
-				<div class="">
-					<table id="items" class="table table-striped">
-						<thead>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								<th scope="col"> Menu Category </th>
-								<th scope="col">Restaurant</th>
-								<th scope="col">Created By</th>
-								<th scope="col">Price</th>
-								<th scope="col">Discount</th>
-								<th scope="col">Status</th>
-								<th scope="col">Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach($model as $key => $item)
-							<tr>
-								<th scope="row"> {{ ++$key }} </th>
-								<td> {{ $item->name }} </td>
-								<td> {{ $item->category->name }} </td>
-								<td>
-									@if(!empty($item->restaurant_id))
-									{{ $item->getRestaurant->name }}
-									@else
-									Not set
-									@endif
-								</td>
-								<td>
-									@if(!empty($item->created_by))
-									{{ $item->createdBy->username }}
-									@else
-									Not set
-									@endif
-								</td>
-								<td> {{ $item->price }} </td>
-								<td> {{ $item->discount }} </td>
-								<td>
-									@if($item->status == 1)
-									<button style="cursor: auto;" type="button" class="btn btn-success">Active</button>
-									@else
-									 <button style="cursor: auto;" type="button" class="btn btn-secondary">Deactive</button>
-									 @endif
-
-									</td>
-								<td> <a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a>
-									<a href="show-menu-item/{{$item->id}}" class="btn  btn-sm"><i class="fas fa-eye"></a></i></td>
-							</tr>
-							@endforeach
-						</tbody>
-
-					</table>
-				</div>
-			</div>
-		</div>
 	</div>
+	<div class="uper">
+		@if(session()->get('success'))
+		<div class="alert alert-success">{{ session()->get('success') }}</div>
+		@endif
+
+                <!-- Admin Role on Product List -->
+
+
+                <table class="table table-striped table-hover" id="menu_list">
+			<thead>
+				<tr style="color:black">
+                                        <th>Sr. #</th>
+					<th>Name</th>
+					<th>Menu Category</th>
+					<th>Price</th>
+					<th>Status</th>
+					<th>Action</th>
+					<th>Action</th>
+				</tr>
+			</thead>
+			<tbody>
+
+				<tr>
+                                        <td>1</td>
+					<td>fgs</td>
+					<td>fjhf</td>
+					<td>gdh</td>
+					<td >dsfsd</td>
+                                        <td>
+
+						<form action="#" method="post">
+							@csrf @method('POST')
+							<button class="btn" style="background-color:  #28a745; color: white" type="submit">Activate</button>
+						</form>
+						<form action="#" method="post">
+							@csrf @method('POST')
+							<button class="btn" style="background-color:  #dc3545; color: white" type="submit">Deactivate</button>
+						</form>
+
+					</td>
+                                        <td>
+                                            <a href="{{ route('update_product') }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
+                                            <a href="#" style="background-color: #F6BF2D;" class="d-none d-sm-inline btn btn-sm shadow-sm" title="Delete"><i class="fas fa-trash-alt" style="color: #dc3545"></i></a>
+
+					</td>
+                                </tr>
+
+                                        </tbody>
+		</table>
+
+        </div>
 </div>
+<script src="{{ asset('extra') }}/plugins/jquery/jquery.min.js"></script>
+<script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
+<script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
 
-@stop
 
-<script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
-<script src="{{ asset('admin') }}/plugins/datatables/jquery.dataTables.js"></script>
-<script src="{{ asset('admin') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-
-<meta name="csrf-token" content="{{ csrf_token() }}" />
 
 <script>
 	$(document).ready(function() {
 		$.noConflict();
-		var table = $('#items').DataTable();
+		var table = $('#menu_list').DataTable();
 	});
 </script>
+
+		@endsection

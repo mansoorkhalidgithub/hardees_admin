@@ -4,30 +4,45 @@
 
 @section('content')
 
-<div class='container'>
-	<div class="d-sm-flex align-items-center justify-content-between mb-4">
-		<h3 style="color: black; font-family: serif; font-weight: bold">@yield('title')</h3>
+<div  style="margin: 0px 10px 10px 10px">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+		<h3 style="color: black; font-family: serif; font-weight: bold">Manage City</h3>
+                <a href="{{ route('add_city') }}"
+                   class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i
+			class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>Add New City</a>
 	</div>
-	<div class="uper">
-		<table class="table table-striped table-hover" id="citys">
+    <div class="uper" style=" margin-bottom: 50px">
+
+
+                <!-- Admin Role on Product List -->
+
+                <table class="table table-striped table-hover" id="city_list" style=" font-size: 13px">
 			<thead>
-				<tr>
-					<th scope="col">Sr No</th>
-					<th scope="col">State</th>
-					<th scope="col">City</th>
-					<th scope="col">Status</th>
+				<tr style="color:black">
+                                        <th>#</th>
+					<th>Sr. No</th>
+					<th>Country>/th>
+					<th>State</th>
+					<th>City</th>
+					<th>Status</th>
+					<th>Action</th>
 				</tr>
 			</thead>
 			<tbody>
 				@foreach($model as $key => $city)
 				<tr>
 					<th scope="row"> {{ ++$key }} </th>
+					<td>Pakistan</td>
 					<td> {{$city->state_id}} </td>
 					<td> {{ $city->name }} </td>
 					<td>
 						<a href="{{ route('city.status', $city->id) }}" class="btn" style="background-color:  #dc3545; color: white;width:6rem">
 							@if($city->status===0)Activate @else Deactivate @endif
 						</a>
+					</td>
+					<td>
+                                            <a href="{{ route('update_city') }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
+                                            <a href="#" style="background-color: #F6BF2D;" class="d-none d-sm-inline btn btn-sm shadow-sm" title="Delete"><i class="fas fa-trash-alt" style="color: #dc3545"></i></a>
 					</td>
 				</tr>
 				@endforeach
@@ -50,6 +65,6 @@
 <script>
 	$(document).ready(function() {
 		$.noConflict();
-		var table = $('#citys').DataTable();
+		var table = $('#city_list').DataTable();
 	});
 </script>

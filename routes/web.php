@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,7 +12,7 @@ use Illuminate\Support\Facades\Route;
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
 |
-*/
+ */
 
 Route::get('/', function () {
 	return view('welcome');
@@ -24,7 +23,7 @@ Auth::routes();
 // Route::get('/home', 'HomeController@index')->name('dashboard');
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('dashboard', 'HomeController@index')->name('dashboard');
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
@@ -43,7 +42,7 @@ Route::group([
 });
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('restaurants', 'RestaurantController@index')->name('restaurants');
 	Route::get('add-restaurant', 'RestaurantController@add')->name('add-restaurant');
@@ -56,7 +55,7 @@ Route::group([
 });
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('auth-user', 'AuthController@index')->name('auth.index');
 	Route::get('add-auth', 'AuthController@create')->name('auth.create');
@@ -68,24 +67,22 @@ Route::group([
 	// Route::get('status/{id}', 'RestaurantController@status')->name('restaurant.status');
 });
 
-
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('state', 'StateController@index')->name('state.index');
 	Route::get('state/status/{id}', 'StateController@status')->name('state.status');
 });
 
-
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('city', 'CityController@index')->name('city.index');
 	Route::get('city/status/{id}', 'CityController@status')->name('city.status');
 });
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('users', 'UserController@index')->name('users');
 	Route::get('add-user/{title}', 'UserController@add')->name('user.add');
@@ -98,7 +95,7 @@ Route::group([
 });
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('riders', 'RiderController@index')->name('rider.index');
 	Route::get('add-rider', 'RiderController@create')->name('rider.create');
@@ -114,13 +111,13 @@ Route::group([
 });
 
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::resource('booking', 'BookingController');
 	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
 });
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('sliders', 'SliderController@index')->name('sliders');
 	Route::get('add-slider', 'SliderController@create')->name('slider.create');
@@ -131,16 +128,15 @@ Route::group([
 	Route::post('destroy-slider', 'SliderController@destroy')->name('slider.destroy');
 });
 
-
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	Route::get('restaurant-users', 'RestaurantUserController@index')->name('restaurant-users');
 	Route::get('add-restaurant-user', 'RestaurantUserController@create')->name('add-restaurant-user');
 	Route::post('save-restaurant-user', 'RestaurantUserController@save')->name('save-restaurant-user');
 });
 Route::group([
-	'middleware' => 'auth'
+	'middleware' => 'auth',
 ], function () {
 	//menue catgory
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
@@ -155,7 +151,6 @@ Route::group([
 	Route::get('show-menu-item/{id}', 'MenuController@show')->name('show');
 	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
 
-
 	//Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
 	//Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
 });
@@ -163,3 +158,94 @@ Route::group([
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//Waqar Ahmad Routes
+
+Route::get('/booking', 'HomeController@booking')->name('booking');
+
+Route::get('/booking_show', 'HomeController@booking_show')->name('booking_show');
+
+Route::get('/restaurant_show', 'HomeController@restaurant_show')->name('restaurant_show');
+
+Route::get('/ride_statement', 'HomeController@ride_statement')->name('ride_statement');
+
+Route::get('/product', 'HomeController@product')->name('product');
+
+Route::get('/category', 'HomeController@category')->name('category');
+
+Route::get('/restaurant_new', 'HomeController@restaurant_new')->name('restaurant_new');
+
+Route::get('/view_restaurant', 'HomeController@view_restaurant')->name('view_restaurant');
+
+Route::get('/update_restaurant', 'HomeController@update_restaurant')->name('update_restaurant');
+
+Route::get('/delivery_log', 'HomeController@delivery_log')->name('delivery_log');
+
+Route::get('/update_delivery', 'HomeController@update_delivery')->name('update_delivery');
+
+Route::get('/add_product', 'HomeController@add_product')->name('add_product');
+
+Route::get('/update_product', 'HomeController@update_product')->name('update_product');
+
+Route::get('/add_category', 'HomeController@add_category')->name('add_category');
+
+Route::get('/update_category', 'HomeController@update_category')->name('update_category');
+
+Route::get('/sub_admins', 'HomeController@sub_admins')->name('sub_admins');
+Route::get('/create_sub_admins', 'HomeController@create_sub_admins')->name('create_sub_admins');
+Route::get('/view_sub_admins', 'HomeController@view_sub_admins')->name('view_sub_admins');
+Route::get('/update_sub_admins', 'HomeController@update_sub_admins')->name('update_sub_admins');
+Route::get('/user_list', 'HomeController@user_list')->name('user_list');
+Route::get('/create_user_list', 'HomeController@create_user_list')->name('create_user_list');
+Route::get('/update_user_list', 'HomeController@update_user_list')->name('update_user_list');
+Route::get('/view_user_list', 'HomeController@view_user_list')->name('view_user_list');
+Route::get('/zone_list', 'HomeController@zone_list')->name('zone_list');
+Route::get('/add_zone', 'HomeController@add_zone')->name('add_zone');
+Route::get('/update_zone', 'HomeController@update_zone')->name('update_zone');
+Route::get('/delivery_boy_management', 'HomeController@delivery_boy_management')->name('delivery_boy_management');
+Route::get('/delivery_boy_payment', 'HomeController@delivery_boy_payment')->name('delivery_boy_payment');
+Route::get('/riders_details', 'HomeController@riders_details')->name('riders_details');
+Route::get('/add_rider', 'HomeController@add_rider')->name('add_rider');
+Route::get('/view_riders_details', 'HomeController@view_riders_details')->name('view_riders_details');
+Route::get('/update_riders_details', 'HomeController@update_riders_details')->name('update_riders_details');
+Route::get('/applicants', 'HomeController@applicants')->name('applicants');
+Route::get('/applicants_results', 'HomeController@applicants_results')->name('applicants_results');
+Route::get('/applicants_shortlisted', 'HomeController@applicants_shortlisted')->name('applicants_shortlisted');
+Route::get('/promocode_list', 'HomeController@promocode_list')->name('promocode_list');
+Route::get('/update_promocode', 'HomeController@update_promocode')->name('update_promocode');
+Route::get('/view_promocode', 'HomeController@view_promocode')->name('view_promocode');
+Route::get('/add_promocode', 'HomeController@add_promocode')->name('add_promocode');
+Route::get('/reviews', 'HomeController@reviews')->name('reviews');
+Route::get('/service_type', 'HomeController@service_type')->name('service_type');
+Route::get('/add_service_type', 'HomeController@add_service_type')->name('add_service_type');
+Route::get('/update_service_type', 'HomeController@update_service_type')->name('update_service_type');
+Route::get('/view_service_type', 'HomeController@view_service_type')->name('view_service_type');
+Route::get('/service_area', 'HomeController@service_area')->name('service_area');
+Route::get('/new_area', 'HomeController@new_area')->name('new_area');
+Route::get('/view_area', 'HomeController@view_area')->name('view_area');
+Route::get('/update_area', 'HomeController@update_area')->name('update_area');
+Route::get('/state', 'HomeController@state')->name('state');
+Route::get('/add_state', 'HomeController@add_state')->name('add_state');
+Route::get('/update_state', 'HomeController@update_state')->name('update_state');
+Route::get('/city', 'HomeController@city')->name('city');
+Route::get('/add_city', 'HomeController@add_city')->name('add_city');
+Route::get('/update_city', 'HomeController@update_city')->name('update_city');

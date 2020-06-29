@@ -69,31 +69,20 @@
   box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
 }
 </style>
-<div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h1 class="h3 mb-0 text-gray-800"></h1>
-                <a href="{{route('menu')}}"
+
+
+<div class="card">
+<div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
+    <h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU</h1>
+                <a href="{{ route('product') }}"
                    class="d-none d-sm-inline-block btn btn-sm shadow-sm" style="background-color:#ffc107; color: black"><i
                         class="fas fa-fw fa-1x fa-arrow-left fa-sm text-dark-300"></i> <span style="font-weight: bold">Back to Menu List</span></a>
 
-    </div>
-
-    <form role="form" method="post" action="add-menu-items" enctype="multipart/form-data">
-                    @csrf
+  </div>
+      <div class="card-body">
+    <form>
 <fieldset>
 
-<!-- Form Name -->
-<legend style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU</legend>
-<hr>
-<!-- Text input-->
-<!-- <div class="form-group">
-    <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="product_id">MENU ID</label>
-
-    <input id="product_id" name="product_id" style="border-radius: 0px" class="form-control " required="" type="text">
-
-
-</div> -->
-
-<!-- Text input-->
 <div class="row">
     <div class="col-sm-6">
 <div class="form-group">
@@ -108,192 +97,156 @@
 
 
 </div>
-        </div>
-
-
-<div class="col-sm-6">
+</div>
+    <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="menu_categorie">MENU CATEGORY</label>
 
-    <select placeholder="" name="menu_category_id" placeholder="name" class="form-control input_border" required>
-                                <option>select category</option>
-                                @foreach($Categories as $category)
-                                <option value="{{$category->id}}" {{ old('menu_category_id') == $category->id? 'selected' : '' }}>{{$category->name}}</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('menu_category_id'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('menu_category_id') }}
-                            </span>
-                            @endif
+    <select id="menu_categorie" name="menu_categorie" style="border-radius: 0px" class="form-control">
+        <option>Select Category</option>
+        <option>Angus Burger</option>
+        <option>Sides</option>
+        <option>Jalapeno Burger</option>
+        <option>Chargrilled Burger</option>
+        <option>Swiss Burger</option>
+    </select>
 
 </div>
 </div>
-</div>
+<!-- Text input-->
 
+</div>
+<!-- Text input-->
 <div class="row">
-    <div class="col-sm-6">
+      <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="restaurant">RESTAURANT</label>
 
-    <select placeholder="" style="border-radius: 0px" name="restaurant_id" placeholder="name" class="form-control input_border" required="">
-                                <option>Select Restauarant Branch</option>
-                                @foreach($restaurants as $restaurant)
-                                <option value="{{$restaurant->id}}" {{ old('restaurant_id') == $restaurant->id? 'selected' : '' }}>{{$restaurant->name}}</option>
-                                @endforeach
-                            </select>
-                            @if ($errors->has('restaurant_id'))
-                            <span class="help-block text-danger">{{ $errors->first('restaurant_id') }}
-                            </span>
-                            @endif
+    <select id="restaurant" name="restaurant" style="border-radius: 0px" class="form-control">
+        <option>Select Branch</option>
+        <option>DHA</option>
+        <option>Packages Mall</option>
+        <option>M.M Alam</option>
+        <option>Lalik Chowk</option>
+        <option>Thokar Niaz Baig</option>
+    </select>
 
 </div>
 </div>
-
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">Ingredients</label>
 
     <input name="ingredients" type="text" class="form-control input_border" placeholder="Ingredients" value="" data-role="tagsinput" />
   </div>
-  </div>
-  </div>
+</div>
 
+
+
+</div>
+
+<!-- Text input-->
 <div class="row">
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="weight">WEIGHT</label>
 
-  <input type="text" value="{{ old('weight') }}" name="weight" placeholder="weight" class="form-control input_border" required="">
-                            @if ($errors->has('weight'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('weight') }}
-                            </span>
-                            @endif
+  <input id="weight" name="weight"  style="border-radius: 0px" class="form-control " required="" type="text">
 
 
 </div>
-    </div>
-<div class="col-sm-6">
+</div>
+
+    <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="discount">DISCOUNT</label>
 
-<input type="text" value="{{ old('discount') }}" name="discount" placeholder="Discount" class="form-control input_border" required="">
-                            @if ($errors->has('discount'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('discount') }}
-                            </span>
-                            @endif
+  <input id="discount" name="discount" style="border-radius: 0px"  class="form-control " required="" type="text">
 
 
 </div>
 </div>
 </div>
+
 <!-- Text input-->
 <div class="row">
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="quantity">QUANTITY</label>
 
-  <input type="text" value="{{ old('quantity') }}"  name="quantity" placeholder="quantity" class="form-control input_border" required="">
-                            @if ($errors->has('quantity'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('quantity') }}
-                            </span>
-                            @endif
+  <input id="quantity" name="quantity" style="border-radius: 0px"  class="form-control " required="" type="text">
 
 
 </div>
-    </div>
-<!-- Search input-->
+</div>
+
+
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="price">PRICE</label>
-<input type="text" value="{{ old('price') }}" style="border-radius: 0px" name="price" placeholder="price" class="form-control input_border" required="">
-                            @if ($errors->has('price'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('price') }}
-                            </span>
-                            @endif
+
+    <input id="price" name="price"  style="border-radius: 0px" class="form-control " required="" type="text">
 
 
 </div>
 </div>
-
 </div>
 <div class="row">
-<div class="col-sm-6">
-<div class="form-group">
-  <label class="col-md-6 " style="color: black; font-size: 12px; font-weight: 700" for="preparation_time">PREPARATION TIME</label>
-
-    <input type="text" value="{{ old('preparation_time') }}"  name="preparation_time" placeholder="preparation time" class="form-control input_border" required="">
-                            @if ($errors->has('preparation_time'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('preparation_time') }}
-                            </span>
-                            @endif
-  </div>
-  </div>
-  <div class="col-sm-6">
-<div class="form-group">
-  <label class="col-md-6 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>
-
-    <select id="menuitems-status" class="form-control" name="status" aria-invalid="false">
-    <option value="1">Active</option>
-    <option value="0">InActive</option>
-    </select>
-                            @if ($errors->has('status'))
-                            <span class="help-block text-danger">
-                                {{ $errors->first('status') }}
-                            </span>
-                            @endif
-  </div>
-  </div>
-</div>
-
-<!-- Search input-->
-
-<!-- Search input-->
-<div class="row">
-
     <div class="col-sm-6">
 <div class="form-group">
-  <label class="col-md-6" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">MENU IMAGE</label>
-  <br>
-  <input id="itemImg" class="col-md-6" name="itemImg" class="input-file" type="file">
-                                                @if ($errors->has('itemImg'))
-                                                <span class="help-block text-danger">
-                                                {{ $errors->first('itemImg') }}
-                                                </span>
-                                                @endif
-</div>
-</div>
-<div class="col-sm-6">
+  <label class="col-md-6 " style="color: black; font-size: 12px; font-weight: 700" for="preparation_time">FOOD PREPARATION TIME</label>
+
+    <input id="preparation_time" name="preparation_time"  style="border-radius: 0px" class="form-control " required="" type="time">
+  </div>
+  </div>
+    <div class="col-sm-6">
 <div class="form-group">
-                            <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700">Is Favourite</label> <br />
-                            <input type="checkbox" class="col-md-1" value="1" {{ old('is_favourite') == 1 ? 'checked' : '' }} id="menuitems-is_favourite" name="is_favourite" aria-invalid="false">
-                            @if ($errors->has('is_favourite'))
-                            <span class="help-block">
-                                {{ $errors->first('is_favourite') }}
-                            </span>
-                            @endif
-                        </div>
-                        </div>
- <!-- File Button -->
+  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>
 
+    <select id="status" name="status" style="border-radius: 0px" class="form-control">
+        <option>Active</option>
+        <option>Disable</option>
+    </select>
+  </div>
+  </div>
+</div>
 
+<div class="row">
+    <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">MENU IMAGE</label>
+  <br>
+  <input id="menu_image" class="col-md-6" name="menu_image" class="input-file" type="file">
+
+</div>
+</div>
+    <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">IS FAVORITE</label>
+  <br>
+  <input id="menu_image" class="col-md-1" name="menu_image" class="input-file" type="checkbox">
+
+</div>
+</div>
 </div>
 <hr>
-
 <!-- Button -->
 <div class="form-group text-right" style="margin-top: 1rem">
 
-      <button id="add_menu" name="add_menu" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold">ADD MENU</button>
+      <button id="add_menu" name="add_menu" class="btn" style="background-color: #F6BF2D; color: black;  font-weight: bold">ADD MENU</button>
 
   </div>
 </fieldset>
 </form>
 </div>
+</div>
+</div>
+
+
+
+
+
+
 @stop
 <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
 <script src="{{ asset('admin') }}/dist/js/mapInput.js"></script>
