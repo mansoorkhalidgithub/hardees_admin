@@ -107,7 +107,7 @@
 
                 @can('dashboard')
                 <li class="nav-item">
-                    <a href="{{ route('users') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
+                    <a href="{{ route('auth.index') }}" class="nav-link {{ (request()->is('customers')) ? 'active' : '' }}">
                         <i class="fas fa-fw fa-users"></i>
                         <span>Sub Admins</span>
                     </a>
@@ -154,7 +154,7 @@
                 <div class="sidebar-heading">Members</div>
                 @can('riders')
                 <li class="nav-item">
-                    <a href="{{ route('users','page=rider') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
+                    <a href="{{ route('rider.index') }}" class="nav-link {{ (request()->is('riders')) ? 'active' : '' }}">
                         <i class="fas fa-fw fa-motorcycle"></i>
                         <span>Riders</span>
                     </a>
@@ -178,9 +178,19 @@
 
                 <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-star-half"></i> <span>Review &AMP; Rating</span></a></li>
 
-                <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-globe"></i> <span>State</span></a></li>
+                <li class="nav-item">
+                    <a href="{{ route('state.index') }}" class="nav-link {{ (request()->is('state')) ? 'active' : '' }}">
+                        <i class="fas fa-fw fa-globe"></i>
+                        <span>State</span>
+                    </a>
+                </li>
 
-                <li class="nav-item"><a class="nav-link" href="#"> <i class="fas fa-fw fa-globe"></i> <span>City</span></a></li>
+                <li class="nav-item">
+                    <a href="{{ route('city.index') }}" class="nav-link {{ (request()->is('city')) ? 'active' : '' }}">
+                        <i class="fas fa-fw fa-globe"></i>
+                        <span>City</span>
+                    </a>
+                </li>
 
                 <hr class="sidebar-divider d-none d-md-block">
 

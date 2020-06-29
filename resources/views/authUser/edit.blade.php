@@ -1,6 +1,6 @@
 @extends('layouts.main')
 
-@section('title', 'Create Admin')
+@section('title', 'Update Admin')
 
 @section('content')
 <div class="container-fluid">
@@ -17,28 +17,22 @@
 
         <div class="card">
             <div class="card-body cat-card-body">
-                <form role="form" method="post" action="{{ route('auth.store') }}" enctype="multipart/form-data">
+                <form role="form" method="post" action="{{ route('auth.update') }}" enctype="multipart/form-data">
                     @csrf
+                    <input type="hidden" value="{{$model->id}}" name="id">
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
-                            <input type="text" value="{{ old('first_name') }}" name="first_name" placeholder="Enter First Name" class="form-control" required="">
+                            <input type="text" value="{{ $model->first_name }}" name="first_name" placeholder="Enter First Name" class="form-control" required="">
                         </div>
                         <div class="col col-6 col-sm-6">
-                            <input type="text" value="{{ old('last_name') }}" name="last_name" placeholder="Enter Last Name" class="form-control" required="">
+                            <input type="text" value="{{ $model->last_name }}" name="last_name" placeholder="Enter Last Name" class="form-control" required="">
                         </div>
                     </div>
                     <div class="row form-group category-table">
-                        <div class="col col-6 col-sm-6">
-                            <input type="text" value="{{ old('email') }}" name="email" placeholder="Enter User Email" class="form-control" required="">
+                        <div class="col col-12 col-sm-12">
+                            <input type="text" value="{{ $model->email }}" name="email" placeholder="Enter User Email" class="form-control" required="">
                             @if($errors->has('email'))
                             <small class="text-danger ml-2">{{ $errors->first('email') }}</small>
-                            @endif
-                        </div>
-
-                        <div class="col col-6 col-sm-6">
-                            <input type="password" value="{{ old('password') }}" id="password" name="password" placeholder="Enter Password" class="form-control" required="">
-                            @if($errors->has('password'))
-                            <small class="text-danger ml-2">{{ $errors->first('password') }}</small>
                             @endif
                         </div>
                     </div>
@@ -47,7 +41,7 @@
                             <select name="state_id" id="state" class="form-control selectpicker" data-live-search="true" tabindex="-98">
                                 <option selected="" disabled="" hidden="">Select State</option>
                                 @foreach(Helper::getStates() as $key=> $state)
-                                <option value="{{$state->id}}">{{$state->name}}</option>
+                                <option value="{{$state->id}}" {{ $state->id === $model->state_id ? 'selected' : '' }}>{{$state->name}}</option>
                                 @endforeach
                             </select>
                             @if($errors->has('state_id'))
@@ -56,7 +50,9 @@
                         </div>
                         <div class="col col-6 col-sm-6">
                             <select name="city_id" id="city" class="form-control selectpicker" data-live-search="true" tabindex="-98">
-                                <option selected="" disabled="" hidden="">Select City</option>
+                                @foreach(App\City::where('state_id',$model->state_id)->get() as $key=> $city)
+                                <option value="{{$city->id}}" {{ $city->id === $model->city_id ? 'selected' : '' }}>{{$city->name}}</option>
+                                @endforeach
                             </select>
                             @if($errors->has('city_id'))
                             <small class="text-danger ml-2">{{ $errors->first('city_id') }}</small>
@@ -65,7 +61,7 @@
                     </div>
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
-                            <input type="text" value="{{ old('phone_number') }}" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
+                            <input type="text" value="{{ $model->phone_number }}" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
                             @if($errors->has('phone_number'))
                             <small class="text-danger ml-2">{{ $errors->first('phone_number') }}</small>
                             @endif
@@ -75,7 +71,10 @@
                                 <option selected="" disabled="" hidden="">Select Role</option>
                                 @role('admin')
                                 <option value="sub-admin">Sub Admin</option>
-                                <option value="sub-admin">User</option>
+                                <option value="user">User</option>
+                                @endrole
+                                @role('sub-admin')
+                                <option value="user">User</option>
                                 @endrole
                             </select>
                             @if($errors->has('role'))
