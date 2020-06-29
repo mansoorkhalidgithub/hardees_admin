@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateUsersTable extends Migration
+class CreateRidersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('users', function (Blueprint $table) {
+        Schema::create('riders', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->unsignedBigInteger('restaurant_id')->nullable();
+            $table->unsignedBigInteger('created_by')->nullable();
             $table->string('first_name', 50)->nullable();
             $table->string('last_name', 50)->nullable();
             $table->date('dob')->nullable();
@@ -22,6 +24,7 @@ class CreateUsersTable extends Migration
             $table->string('email', 191)->unique()->nullable();
             $table->timestamp('email_verified_at')->nullable();
             $table->tinyInteger('status')->default(1);
+            $table->tinyInteger('eStatus')->default(10);
             $table->string('password')->nullable();
             $table->string('api_token', 80)->unique()->nullable()->default(null);
             $table->rememberToken();
@@ -30,12 +33,6 @@ class CreateUsersTable extends Migration
             $table->string('phone_number')->nullable();
             $table->string('profile_picture')->nullable();
             $table->string('address')->nullable();
-            $table->string('device_type', 100)->nullable();
-            $table->string('device_id', 100)->nullable();
-            $table->string('device_name', 100)->nullable();
-            $table->string('app_version', 50)->nullable();
-            $table->string('language_code', 50)->nullable();
-            $table->text('device_token')->nullable();
             $table->integer('city_id')->nullable();
             $table->integer('state_id')->nullable();
             $table->integer('country_id')->nullable();
@@ -43,6 +40,9 @@ class CreateUsersTable extends Migration
             $table->date('cnic_expire_date')->nullable();
             $table->softDeletes();
             $table->timestamps();
+
+            $table->foreign('created_by')->references('id')->on('auth')->onDelete('cascade');
+            $table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
         });
     }
 
@@ -53,6 +53,6 @@ class CreateUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('users');
+        Schema::dropIfExists('riders');
     }
 }
