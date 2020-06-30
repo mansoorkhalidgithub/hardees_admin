@@ -145,7 +145,7 @@ Route::group([
 	Route::get('edit-category/{id}', 'MenuController@editCategory')->name('edit-category');
 	Route::post('update-category', 'MenuController@updateCategory')->name('update-category');
 	
-	Route::get('menu', 'MenuController@createMenuItem')->name('menu');
+	Route::get('menu-items', 'MenuController@index')->name('menu-items');
 	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
 	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');
 	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
