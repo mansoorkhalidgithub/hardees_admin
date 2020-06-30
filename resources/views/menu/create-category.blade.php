@@ -22,8 +22,6 @@
 <fieldset>
 
 <!-- Form Name -->
-<legend style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU CATEGORY</legend>
-<hr>
 
 <!-- Text input-->
 <div class="form-group">
@@ -37,7 +35,6 @@
                             @endif
 
 </div>
- <hr>
 <!-- Button -->
 <div class="form-group text-right" style="margin-top: 1rem">
 

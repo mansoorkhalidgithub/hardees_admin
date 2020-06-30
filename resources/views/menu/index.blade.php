@@ -68,7 +68,7 @@
 								<td>
 
 
-									 <a href="edit-menu/{{$item->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: auto;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
+									 <a href="edit-menu/{{$item->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
 
 
 

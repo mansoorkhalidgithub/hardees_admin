@@ -12,7 +12,7 @@
   <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0"style="color: black; font-family: serif; font-weight: bold">UPDATE MENU CATEGORY</h1>
 
-                <a href="{{ route('category') }}"
+                <a href="{{ route('menu-categories') }}"
       class="d-none d-sm-inline-block btn btn-sm  shadow-sm"  style="background-color: #ffc107; color: black"><i
                         class="fas fa-fw fa-1x fa-arrow-left fa-sm text-white-300"></i> <span style="font-weight: bold">Menu Category List</span></a>
 
@@ -38,11 +38,16 @@
                             @endif
 
 </div>
-<div class="form-group text-center" style="margin-top: 3rem">
+<div class="form-group text-right" style="margin-top: 1rem">
+
+      <button id="update_menu" name="update_menu" class="btn" style="background-color: #F6BF2D; color: black;  font-weight: bold;">UPDATE CATEGOR</button>
+
+  </div>
+<!-- <div class="form-group text-center" style="margin-top: 3rem">
 
       <button id="add_category" name="add_category" class="btn" style="background-color: #F6BF2D; color: black; width: 70%; font-weight: bold">UPDATE CATEGORY</button>
 
-  </div>
+  </div> -->
 </fieldset>
 </form>
 </div>

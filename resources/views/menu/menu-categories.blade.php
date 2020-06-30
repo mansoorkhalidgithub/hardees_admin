@@ -32,7 +32,8 @@
 								<th scope="row"> {{ ++$key }} </th>
 								<td> {{ $product->name }} </td>
 
-								<td> <a href="edit-category/{{$product->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a> </td>
+								<td>
+<a href="edit-category/{{$product->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a></td>
 							</tr>
 							@endforeach
 
