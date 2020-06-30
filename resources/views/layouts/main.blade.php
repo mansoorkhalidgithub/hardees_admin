@@ -72,19 +72,19 @@
 				<i class="fas fa-fw fa-list"></i> <span>Hardees Branches</span></a>
 			</li>
 			
-			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+			<li class="nav-item"><a class="nav-link" href="{{ route('menu-categories') }}"> 
 				<i class="fas fa-fw fa-location-arrow"></i> <span> Menu Categories </span></a>
 			</li>
 			
-			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+			<li class="nav-item"><a class="nav-link" href="{{ route('menu') }}"> 
 				<i class="fas fa-fw fa-location-arrow"></i> <span> Menu Items </span></a>
 			</li>
 			
-			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+			<li class="nav-item"><a class="nav-link" href="{{ route('special-offers') }}"> 
 				<i class="fas fa-fw fa-location-arrow"></i> <span> Special Offers </span></a>
 			</li>
 			
-			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+			<li class="nav-item"><a class="nav-link" href="{{ route('deals') }}"> 
 				<i class="fas fa-fw fa-location-arrow"></i> <span> Deals </span></a>
 			</li>
 			

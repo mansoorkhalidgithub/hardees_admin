@@ -138,46 +138,28 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
-	//menue catgory
+	
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('create-category', 'MenuController@create')->name('create-category');
 	Route::post('add-category', 'MenuController@addCategory')->name('add-category');
 	Route::get('edit-category/{id}', 'MenuController@editCategory')->name('edit-category');
 	Route::post('update-category', 'MenuController@updateCategory')->name('update-category');
-	//menue
+	
+	Route::get('menu', 'MenuController@createMenuItem')->name('menu');
 	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
 	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');
 	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
 	Route::get('show-menu-item/{id}', 'MenuController@show')->name('show');
 	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
-
-	//Route::get('add-menu-category', 'MenuController@addCategory')->name('add-menu-category');
-	//Route::get('add-menu-item', 'AuthController@create')->name('add-menu-item');
+	
+	Route::get('deals', 'DealController@index')->name('deals');
+	Route::get('special-offers', 'DealController@specialOffers')->name('special-offers');
 });
 
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');
 
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 //Waqar Ahmad Routes
 
 Route::get('/booking', 'HomeController@booking')->name('booking');

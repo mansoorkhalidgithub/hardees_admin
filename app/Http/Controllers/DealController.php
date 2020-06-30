@@ -16,6 +16,11 @@ class DealController extends Controller
     {
         //
     }
+	
+	public function specialOffers()
+    {
+        //
+    }
 
     /**
      * Show the form for creating a new resource.
