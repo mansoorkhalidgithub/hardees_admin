@@ -81,6 +81,38 @@ class HardeesApiController extends Controller
         return response()->json($response);
 	}
 	
+	public function getDeals(Request $request)
+	{
+		$deals = Deal::all();
+		
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Get deals ',
+			'data' => [
+				'deals' => $deals
+			]
+        ];
+
+        return response()->json($response);
+	}
+	
+	public function getSpecialOffers(Request $request)
+	{
+		$specialOffers = Deal::all();
+		
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Get special offers ',
+			'data' => [
+				'specialOffers' => $specialOffers
+			]
+        ];
+
+        return response()->json($response);
+	}
+	
 	public function getSlider(Request $request)
 	{
 		$sliders = Slider::where('status', 1)->get();
