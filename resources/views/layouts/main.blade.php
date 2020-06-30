@@ -67,11 +67,34 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">Admin Dashboard</div>
-
-            <!-- Nav Item - Pages Collapse Menu -->
-                        <li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> <i
-                    class="fas fa-fw fa-location-arrow"></i> <span>Delivery Booking</span></a></li>
-
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('restaurant_show') }}"> 
+				<i class="fas fa-fw fa-list"></i> <span>Hardees Branches</span></a>
+			</li>
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+				<i class="fas fa-fw fa-location-arrow"></i> <span> Menu Categories </span></a>
+			</li>
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+				<i class="fas fa-fw fa-location-arrow"></i> <span> Menu Items </span></a>
+			</li>
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+				<i class="fas fa-fw fa-location-arrow"></i> <span> Special Offers </span></a>
+			</li>
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+				<i class="fas fa-fw fa-location-arrow"></i> <span> Deals </span></a>
+			</li>
+			
+			<hr class="sidebar-divider d-none d-md-block">
+			
+			<li class="nav-item"><a class="nav-link" href="{{ route('booking') }}"> 
+				<i class="fas fa-fw fa-location-arrow"></i> <span> Order Booking</span></a>
+			</li>
+			
+			<hr class="sidebar-divider d-none d-md-block">
                         <li class="nav-item"><a class="nav-link" href="{{ route('restaurant_show') }}"> <i
                     class="fas fa-fw fa-list"></i> <span>Hardees Branches</span></a></li>
 
@@ -181,6 +204,9 @@
                         <hr class="sidebar-divider d-none d-md-block">
 
                         <div class="sidebar-heading">General</div>
+						
+						 <li class="nav-item"><a class="nav-link" href="#"> 
+						 <i class="fas fa-fw fa-link"></i> <span> App Sliders </span></a></li>
 
                         <li class="nav-item"><a class="nav-link" href="#"> <i
                                     class="fas fa-fw fa-link"></i> <span>Helps</span></a></li>
