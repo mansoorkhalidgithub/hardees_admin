@@ -17,12 +17,10 @@ class MenuController extends Controller {
 
 	public function index() {
 		$model = MenuItem::all();
-
 		return view('menu/index', compact('model'));
 	}
 
 	public function menuCategories() {
-
 		$model = MenuCategory::all();
 		return view('menu/menu-categories', compact('model'));
 	}

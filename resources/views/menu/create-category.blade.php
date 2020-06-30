@@ -11,43 +11,31 @@
   <div class="card">
   <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
         <h1 class="h3 mb-0"style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU CATEGORY</h1>
-                <a href="{{ route('category') }}"
+                <a href="{{ route('menu-categories') }}"
             class="d-none d-sm-inline-block btn btn-sm  shadow-sm"  style="background-color: #ffc107; color: black"><i
                         class="fas fa-fw fa-1x fa-arrow-left fa-sm text-white-300"></i> <span style="font-weight: bold">Menu Category List</span></a>
 
     </div>
       <div class="card-body">
-    <form>
+    <form role="form" method="post" action="add-category" enctype="multipart/form-data">
+                @csrf
 <fieldset>
 
-    <div class="row">
-        <div class="col-sm-6"><div class="form-group">
+<!-- Form Name -->
+<legend style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU CATEGORY</legend>
+<hr>
+
+<!-- Text input-->
+<div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="category_name">CATEGORY NAME</label>
 
-  <input id="category_name" name="category_name" style="border-radius: 0px" class="form-control " required="" type="text">
+  <input id="category_name" name="name" value="{{ old('name') }}"  style="border-radius: 0px" class="form-control " required="" type="text">
+@if ($errors->has('name'))
+                            <span class="help-block text-danger">
+                                <strong>{{ $errors->first('name') }}</strong>
+                            </span>
+                            @endif
 
-
-</div>
-        </div>
-        <div class="col-sm-6"><div class="form-group">
-  <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="ingredients">DESCRIPTION</label>
-
-  <input id="description" name="description" style="border-radius: 0px"  class="form-control " required="" type="text">
-
-</div>
-        </div>
-    </div>
-
-
-    <div class="row">
-        <div class="col-sm-12">
-<div class="form-group">
-  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="category_image">CATEGORY IMAGE</label>
-  <br>
-  <input id="category_image" class="col-md-4" name="category_image" class="input-file" type="file">
-
-</div>
-</div>
 </div>
  <hr>
 <!-- Button -->

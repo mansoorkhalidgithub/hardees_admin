@@ -73,13 +73,14 @@
   <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
     <h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold">UPDATE MENU</h1>
 
-                <a href="{{ route('product') }}"
+                <a href="{{ route('menu') }}"
       class="d-none d-sm-inline-block btn btn-sm shadow-sm"  style="background-color: #ffc107; color: black"><i
                         class="fas fa-fw fa-1x fa-arrow-left fa-sm text-white-300"></i> <span style="font-weight: bold">Back to Menu List</span></a>
 
   </div>
       <div class="card-body">
-    <form>
+    <form role="form" method="post" action="{{ route('update-menu-item') }}" enctype="multipart/form-data">
+          @csrf
 <fieldset>
 
 <div class="row">
@@ -87,7 +88,13 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="product_name">MENU NAME</label>
 
-  <input id="product_name" name="product_name" style="border-radius: 0px" class="form-control " required="" type="text">
+  <input type="hidden" name="menuItemId" value="{{$menuItem->id}}">
+  <input type="text" value="{{old('name', $menuItem->name)}}" name="name" placeholder="name" class="form-control input_border" required>
+                            @if ($errors->has('name'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('name') }}
+                            </span>
+                            @endif
 
 
 </div>
@@ -96,14 +103,17 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="menu_categorie">MENU CATEGORY</label>
 
-    <select id="menu_categorie" name="menu_categorie" style="border-radius: 0px" class="form-control">
-        <option>Select Category</option>
-        <option>Angus Burger</option>
-        <option>Sides</option>
-        <option>Jalapeno Burger</option>
-        <option>Chargrilled Burger</option>
-        <option>Swiss Burger</option>
-    </select>
+    <select placeholder="" name="menu_category_id" placeholder="name" class="form-control input_border" required>
+                                <option>select category</option>
+                @foreach($Categories as $category)
+                <option value="{{$category->id}}" {{$menuItem->menu_category_id ==$category->id?'selected':''}}{{ old('menu_category_id') == $category->id? 'selected' : '' }}>{{$category->name}}</option>
+                @endforeach
+                            </select>
+                            @if ($errors->has('menu_category_id'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('menu_category_id') }}
+                            </span>
+                            @endif
 
 </div>
 </div>
@@ -116,22 +126,30 @@
 <div class="form-group">
   <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="restaurant">RESTAURANT</label>
 
-    <select id="restaurant" name="restaurant" style="border-radius: 0px" class="form-control">
-        <option>Select Branch</option>
-        <option>DHA</option>
-        <option>Packages Mall</option>
-        <option>M.M Alam</option>
-        <option>Lalik Chowk</option>
-        <option>Thokar Niaz Baig</option>
-    </select>
+    <select placeholder="" style="border-radius: 0px" name="restaurant_id" placeholder="name" class="form-control input_border" required="">
+                               <option>Select Restauarant Branch</option>
+                @foreach($restaurants as $restaurant)
+                <option value="{{$restaurant->id}}" {{$menuItem->restaurant_id ==$restaurant->id?'selected':''}} {{ old('restaurant_id') == $restaurant->id? 'selected' : '' }}>{{$restaurant->name}}</option>
+                @endforeach
+                            </select>
+                            @if ($errors->has('restaurant_id'))
+                            <span class="help-block text-danger">
+                              {{  $errors->first('restaurant_id') }}
+                            </span>
+                            @endif
 
 </div>
 </div>
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="ingredients">INGREDIENTS</label>
-
-  <input id="ingredients" name="ingredients" style="border-radius: 0px"  class="form-control " required="" type="text">
+@if($menuItem->ingredients)
+   @foreach ($menuItem->ingredients as $item)
+    <input name="ingredients" type="text" class="form-control input_border" placeholder="Ingredients" value="{{ $item }}" data-role="tagsinput" />
+    @endforeach
+    @else
+    <input name="ingredients" type="text" class="form-control input_border" placeholder="Ingredients" value="" data-role="tagsinput" />
+    @endif
 
 
 </div>
@@ -147,8 +165,12 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="weight">WEIGHT</label>
 
-  <input id="weight" name="weight"  style="border-radius: 0px" class="form-control " required="" type="text">
-
+  <input type="text" value="{{old('weight', substr($menuItem->weight, 0, -1))}}" name="weight" placeholder="weight" class="form-control input_border" required="">
+                            @if ($errors->has('weight'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('weight') }}
+                            </span>
+                            @endif
 
 </div>
 </div>
@@ -157,8 +179,12 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="discount">DISCOUNT</label>
 
-  <input id="discount" name="discount" style="border-radius: 0px"  class="form-control " required="" type="text">
-
+<input type="text" value="{{old('discount', $menuItem->discount)}}" name="discount" placeholder="Discount" class="form-control input_border" required="">
+                            @if ($errors->has('discount'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('discount') }}
+                            </span>
+                            @endif
 
 </div>
 </div>
@@ -170,9 +196,12 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="quantity">QUANTITY</label>
 
-  <input id="quantity" name="quantity" style="border-radius: 0px"  class="form-control " required="" type="text">
-
-
+  <input type="text" value="{{old('quantity', $menuItem->quantity)}}" name="quantity" placeholder="quantity" class="form-control input_border" required="">
+                            @if ($errors->has('quantity'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('quantity') }}
+                            </span>
+                            @endif
 </div>
 </div>
 
@@ -181,30 +210,53 @@
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="price">PRICE</label>
 
-    <input id="price" name="price"  style="border-radius: 0px" class="form-control " required="" type="search">
+    <input type="text" value="{{old('price', $menuItem->price)}}" style="border-radius: 0px" name="price" placeholder="price" class="form-control input_border" required="">
+                            @if ($errors->has('price'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('price') }}
+                            </span>
+                            @endif
 
 
 </div>
 </div>
 </div>
 <div class="row">
-    <div class="col-sm-6">
+   <!--  <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="preparation_time">FOOD PREPARATION TIME</label>
 
     <input id="preparation_time" name="preparation_time"  style="border-radius: 0px" class="form-control " required="" type="time">
   </div>
-  </div>
+  </div> -->
     <div class="col-sm-6">
 <div class="form-group">
   <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>
 
-    <select id="status" name="status" style="border-radius: 0px" class="form-control">
-        <option>Active</option>
-        <option>Disable</option>
-    </select>
+    <select id="menuitems-status" class="form-control input_border" name="status" aria-invalid="false">
+                                <option value="1" {{ $menuItem->status == 1 ? 'selected':'' }}>Active</option>
+                                <option value="0" {{ $menuItem->status == 0 ? 'selected':'' }}>InActive</option>
+                            </select>
+                            @if ($errors->has('status'))
+                            <span class="help-block text-danger">
+                                {{ $errors->first('status') }}
+                            </span>
+                            @endif
   </div>
   </div>
+  <div class="col-sm-6">
+<div class="form-group">
+  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">IS FAVORITE</label>
+  <br>
+  <input value="1" type="checkbox" id="menuitems-is_favourite" name="is_favourite" {{$menuItem->is_favourite == 1 ? 'checked':''}} aria-invalid="false">
+                            @if ($errors->has('is_favourite'))
+                            <span class="help-block">
+                                {{ $errors->first('is_favourite') }}
+                            </span>
+                            @endif
+
+</div>
+</div>
 </div>
 
 <div class="row">
@@ -212,15 +264,12 @@
 <div class="form-group">
   <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">MENU IMAGE</label>
   <br>
-  <input id="menu_image" class="col-md-6" name="menu_image" class="input-file" type="file">
-
-</div>
-</div>
-    <div class="col-sm-6">
-<div class="form-group">
-  <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="menu_image">IS FAVORITE</label>
-  <br>
-  <input id="menu_image" class="col-md-1" name="menu_image" class="input-file" type="checkbox">
+  <input id="itemImg" class="col-md-4" name="itemImg" class="input-file" type="file">
+                                                @if ($errors->has('itemImg'))
+                                                <span class="help-block text-danger">
+                                                {{ $errors->first('itemImg') }}
+                                                </span>
+                                                @endif
 
 </div>
 </div>
