@@ -31,7 +31,8 @@ Route::group(['middleware' => 'auth:api'], function() {
 
 Route::group(['middleware' => 'auth:api'], function() {
 	Route::get('get-slider', 'Api\HardeesApiController@getSlider');
-	Route::get('get-menu', 'Api\HardeesApiController@menu');
+	Route::get('get-menu-', 'Api\HardeesApiController@menu');
+	Route::get('get-single-items', 'Api\HardeesApiController@singleItems');
 	Route::get('get-special-offers', 'Api\HardeesApiController@getSpecialOffers');
 	Route::get('get-categories', 'Api\HardeesApiController@getCategories');
 	Route::post('get-menu-items', 'Api\HardeesApiController@menuItems');

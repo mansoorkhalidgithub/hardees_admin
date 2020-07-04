@@ -36,6 +36,22 @@ class HardeesApiController extends Controller
         return response()->json($response);
 	}
 	
+	public function singleItems(Request $request)
+	{
+		$singleItems = MenuCategory::with('menuItems')->get();
+		
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Menu fetched successfully',
+			'data' => [
+				'menuCategories' => $singleItems
+			]
+        ];
+
+        return response()->json($response);
+	}
+	
 	public function createCustomDeal(Request $request)
 	{
 		$response = [
