@@ -33,6 +33,9 @@ class Auth extends Authenticatable
         'city_id',
         'state_id',
         'country_id',
+        'type',
+        'last_login_at',
+        'last_login_ip'
     ];
 
     /**

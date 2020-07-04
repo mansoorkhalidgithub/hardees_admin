@@ -12,8 +12,8 @@ class City extends MasterModel
 
     public $timestamps = false;
 
-    public function state()
-    {
-        return $this->hasOne(State::class, 'id', 'state_id');
-    }
+    // public function state()
+    // {
+    //     return $this->hasOne(State::class, 'id', 'state_id');
+    // }
 }

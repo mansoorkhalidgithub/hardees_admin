@@ -10,9 +10,16 @@
  </style>
  <div style="margin: 0px 10px 10px 10px">
  	<div class="d-sm-flex align-items-center justify-content-between mb-4">
- 		<h3 style="color: black; font-family: serif; font-weight: bold">Hardees DHA</h3>
+ 		<h3 style="color: black; font-family: serif; font-weight: bold">{{$model->name}}</h3>
 
- 		<a href="#" class="d-none d-sm-inline-block btn btn-sm shadow-sm font-weight-bold" style="background-color: #dc3545; color: white">Delete</a>
+ 		<form action="{{ route('restaurant.destroy') }}" method="POST" onsubmit="return confirm('Please confirm you want to delete! {{$model->name}}');" style="display: inline-block;">
+ 			@csrf
+ 			<input type="hidden" name="id" value="{{$model->id}}">
+ 			<button type="submit" class="d-none d-sm-inline-block btn btn-sm shadow-sm font-weight-bold" style="background-color: #dc3545; color: white" title="Delete">
+ 				Delete
+ 			</button>
+ 		</form>
+ 		<!-- <a href="#" class="d-none d-sm-inline-block btn btn-sm shadow-sm font-weight-bold" style="background-color: #dc3545; color: white">Delete</a> -->
 
  	</div>
  	<hr>
@@ -23,15 +30,15 @@
  				<tbody>
  					<tr>
  						<td style="font-weight: bold">Name:</td>
- 						<td>Hardees DHA</td>
+ 						<td>{{$model->name}}</td>
  					</tr>
  					<tr>
  						<td style="font-weight: bold">Address:</td>
- 						<td>DHA</td>
+ 						<td>{{$model->address}}</td>
  					</tr>
  					<tr>
  						<td style="font-weight: bold">Status:</td>
- 						<td>Active</td>
+ 						<td>@if($model->status===1)Active @else In Active @endif</td>
  					</tr>
  				</tbody>
 

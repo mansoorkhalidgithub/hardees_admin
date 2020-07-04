@@ -30,11 +30,12 @@ class RiderRequest extends FormRequest
             'state_id' => 'required|numeric',
             'city_id' => 'required|numeric',
             'restaurant_id' => 'required|numeric',
-            'address' => 'required|max:255'
+            // 'address' => 'required|max:255'
         ];
 
         if ($this->route()->getActionMethod() == 'store') {
             $rules += ['password' => 'required|min:6'];
+            $rules += ['confirm_password' => 'required_with:password|same:password|min:6'];
             $rules += ['email' => 'required|unique:riders|max:255'];
             // $rules += ['role' => 'required|max:15'];
         } elseif ($this->route()->getActionMethod() == 'update') {

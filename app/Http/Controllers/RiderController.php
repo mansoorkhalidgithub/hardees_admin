@@ -74,7 +74,9 @@ class RiderController extends Controller
             'restaurant_id' => $request->restaurant_id,
             'state_id' => $request->state_id,
             'city_id' => $request->city_id,
-            'country_id' => 166,
+            'cnic' => $request->cnic,
+            'cnic_expire_date' => $request->cnic_expire_date,
+            'country_id' => $request->country_id,
             'latitude' => $request->latitude,
             'longitude' => $request->longitude,
             'phone_number' => $request->phone_number,
@@ -145,6 +147,7 @@ class RiderController extends Controller
 
             $data['profile_picture'] = $profilePath;
         }
+        // dd($data);
         $rider->update($data);
         return Redirect::route('rider.index');
     }
@@ -194,6 +197,17 @@ class RiderController extends Controller
         ];
 
         echo json_encode($data);
+    }
+
+    public function delivery_boy_management()
+    {
+        $model = Rider::all();
+        foreach ($model as $key => $rider) {
+            $city[] = $rider->city->name;
+            $cities = array_unique($city);
+        }
+        // dd($city);
+        return view('rider.delivery_boy_management', compact('model', 'cities'));
     }
 
     public function status($id)

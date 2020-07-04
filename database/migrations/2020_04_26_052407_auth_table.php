@@ -19,6 +19,7 @@ class AuthTable extends Migration
             $table->string('first_name', 50)->nullable();
             $table->string('last_name', 50)->nullable();
             $table->string('username');
+            $table->tinyInteger('type');
             $table->unsignedBigInteger('created_by')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
@@ -39,6 +40,7 @@ class AuthTable extends Migration
                 'first_name' => 'Muhammad',
                 'last_name' => 'Qadeer',
                 'username' => 'admin',
+                'type' => '1',
                 'email' => 'admin@hardees.com',
                 'password' => '$2y$10$68N8GubryLRmUzyvecqpWuAbix3gURUBs.OJdjF5laaFA2.2OiF96',
                 'phone_number' => '03336268994',

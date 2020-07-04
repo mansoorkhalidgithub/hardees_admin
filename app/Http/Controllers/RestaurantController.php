@@ -68,7 +68,7 @@ class RestaurantController extends Controller
 
 			$data['thumbnail'] = $coverPath;
 		}
-
+		// dd($data);
 		$restaurant = Restaurant::create($data);
 		if ($restaurant) {
 			foreach ($request->categories as $key => $category) {
@@ -88,24 +88,24 @@ class RestaurantController extends Controller
 
 	public function edit($restaurant)
 	{
-		$restaurant = $this->findModel($restaurant);
-		return view('restaurant.edit', compact('restaurant'));
+		$model = $this->findModel($restaurant);
+		return view('restaurant.edit', compact('model'));
 	}
 
 	public function show($id)
 	{
-		$restaurant = $this->findModel($id);
-		return view('restaurant.show', compact('restaurant'));
+		$model = $this->findModel($id);
+		return view('restaurant.show', compact('model'));
 	}
 	public function update(RestaurantRequest $request)
 	{
 		$restaurant = $this->findModel($request->id);
-		// print_r($restaurant);
+		// dd($restaurant);
 		// die;
 		$data = $request->all();
 		$data['created_by'] = Auth::user()->id;
 		$data['tags'] = serialize($request->tags);
-		$data['password'] = Hash::make($request->password);
+		// $data['password'] = Hash::make($request->password);
 
 		if ($request->has('logo')) {
 			if (!empty($restaurant->logo)) {

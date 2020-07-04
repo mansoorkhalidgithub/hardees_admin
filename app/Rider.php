@@ -19,6 +19,7 @@ class Rider extends MasterModel
         'dob',
         'device_token',
         'status',
+        'eStatus',
         'email',
         'password',
         'api_token',
@@ -36,6 +37,7 @@ class Rider extends MasterModel
         'cnic_expire_date',
         'city_id',
         'state_id',
+        'last_login_at',
         'country_id',
     ];
 }

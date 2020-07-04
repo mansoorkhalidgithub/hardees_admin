@@ -30,7 +30,7 @@ Route::group([
 	Route::get('menu', 'MenuController@index')->name('menu');
 	Route::get('orders', 'OrderController@index')->name('orders');
 	Route::get('customers', 'CustomerController@index')->name('customers');
-	Route::get('riders', 'RiderController@index')->name('riders');
+	// Route::get('riders', 'RiderController@index')->name('riders');
 	Route::get('inbox', 'HomeController@message')->name('inbox');
 	Route::get('app-sliders', 'HomeController@appSiders')->name('app-sliders');
 	Route::get('tax-setting', 'HomeController@taxSetting')->name('tax-setting');
@@ -64,7 +64,7 @@ Route::group([
 	Route::post('save-auth', 'AuthController@store')->name('auth.store');
 	Route::get('show-auth/{id}', 'AuthController@show')->name('auth.show');
 	Route::post('destroy-auth', 'AuthController@destroy')->name('auth.destroy');
-	// Route::get('status/{id}', 'RestaurantController@status')->name('restaurant.status');
+	Route::get('status/{id}', 'AuthController@status')->name('auth.status');
 });
 
 Route::group([
@@ -105,6 +105,7 @@ Route::group([
 	Route::get('show-rider/{id}', 'RiderController@show')->name('rider.show');
 	Route::post('destroy-rider', 'RiderController@destroy')->name('rider.destroy');
 	Route::post('info', 'RiderController@info')->name('rider.info');
+	Route::get('/delivery_boy_management', 'RiderController@delivery_boy_management')->name('rider.management');
 	Route::get('rider/status/{id}', 'RiderController@status')->name('rider.status');
 	Route::get('rider/eStatus/{id}', 'RiderController@eStatus')->name('rider.eStatus');
 	Route::post('getCities', 'RiderController@getCities')->name('getCities');
@@ -119,7 +120,7 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
-	Route::get('sliders', 'SliderController@index')->name('sliders');
+	Route::get('sliders', 'SliderController@index')->name('slider.index');
 	Route::get('add-slider', 'SliderController@create')->name('slider.create');
 	Route::get('edit-slider/{id}', 'SliderController@edit')->name('slider.edit');
 	Route::post('update-slider', 'SliderController@update')->name('slider.update');
@@ -138,20 +139,20 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
-	
+
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('create-category', 'MenuController@create')->name('create-category');
 	Route::post('add-category', 'MenuController@addCategory')->name('add-category');
 	Route::get('edit-category/{id}', 'MenuController@editCategory')->name('edit-category');
 	Route::post('update-category', 'MenuController@updateCategory')->name('update-category');
-	
+
 	Route::get('menu-items', 'MenuController@index')->name('menu-items');
 	Route::get('create-menu-item', 'MenuController@createMenuItem')->name('create-menu-item');
 	Route::post('add-menu-items', 'MenuController@addMenuItems')->name('add-menu-items');
 	Route::get('edit-menu/{id}', 'MenuController@editMenu')->name('edit-menu');
 	Route::get('show-menu-item/{id}', 'MenuController@show')->name('show');
 	Route::post('update-menu-item', 'MenuController@updateMenuItem')->name('update-menu-item');
-	
+
 	Route::get('deals', 'DealController@index')->name('deals');
 	Route::get('special-offers', 'DealController@specialOffers')->name('special-offers');
 });
@@ -203,7 +204,7 @@ Route::get('/view_user_list', 'HomeController@view_user_list')->name('view_user_
 Route::get('/zone_list', 'HomeController@zone_list')->name('zone_list');
 Route::get('/add_zone', 'HomeController@add_zone')->name('add_zone');
 Route::get('/update_zone', 'HomeController@update_zone')->name('update_zone');
-Route::get('/delivery_boy_management', 'HomeController@delivery_boy_management')->name('delivery_boy_management');
+// Route::get('/delivery_boy_management', 'HomeController@delivery_boy_management')->name('delivery_boy_management');
 Route::get('/delivery_boy_payment', 'HomeController@delivery_boy_payment')->name('delivery_boy_payment');
 Route::get('/riders_details', 'HomeController@riders_details')->name('riders_details');
 Route::get('/add_rider', 'HomeController@add_rider')->name('add_rider');
@@ -225,9 +226,7 @@ Route::get('/service_area', 'HomeController@service_area')->name('service_area')
 Route::get('/new_area', 'HomeController@new_area')->name('new_area');
 Route::get('/view_area', 'HomeController@view_area')->name('view_area');
 Route::get('/update_area', 'HomeController@update_area')->name('update_area');
-Route::get('/state', 'HomeController@state')->name('state');
 Route::get('/add_state', 'HomeController@add_state')->name('add_state');
 Route::get('/update_state', 'HomeController@update_state')->name('update_state');
-Route::get('/city', 'HomeController@city')->name('city');
 Route::get('/add_city', 'HomeController@add_city')->name('add_city');
 Route::get('/update_city', 'HomeController@update_city')->name('update_city');

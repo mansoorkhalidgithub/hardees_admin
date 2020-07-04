@@ -32,9 +32,7 @@ class AuthController extends Controller
 	public function store(AuthRequest $request)
 	{
 		$data = [];
-		$parts = explode("@", $request['email']);
-		$t = explode(" ", $request['title']);
-		$username = $parts[0];
+
 		if ($request->has('profile_picture')) {
 			$image = $request->file('profile_picture');
 			$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
@@ -53,21 +51,20 @@ class AuthController extends Controller
 		$data = [
 			'first_name' => $request->first_name,
 			'last_name' => $request->last_name,
-			'username' => $username,
+			'username' => $request->username,
+			'type' => $request->admin_type,
 			'email' => $request->email,
 			'created_by' => auth()->user()->id,
+			'status' => $request->status,
 			'state_id' => $request->state_id,
-			'city_id' => $request->city,
-			'country_id' => 166,
-			'latitude' => $request->latitude,
-			'longitude' => $request->longitude,
+			'city_id' => $request->city_id,
+			'country_id' => $request->country_id,
 			'phone_number' => $request->phone_number,
 			'password' => Hash::make($request->password),
 		];
 
 		$user = Auth::create($data);
 
-		$user->assignRole($request->role);
 		Session::flash('success', 'New User created successfully');
 		return Redirect::route('auth.index');
 		// return redirect('users', 'page=' . $title);
@@ -80,7 +77,7 @@ class AuthController extends Controller
 		return view('authuser.edit', compact('model'));
 	}
 
-	public function update(UserRequest $request)
+	public function update(AuthRequest $request)
 	{
 		$user = $this->findModel($request->id);
 		// dd($user);
@@ -107,9 +104,9 @@ class AuthController extends Controller
 
 			$data['profile_picture'] = $profilePath;
 		}
-		$data['country_id'] = 166;
+		// $data['country_id'] = 166;
 		$user->update($data);
-		$user->assignRole($request->role);
+		// $user->assignRole($request->role);
 		return redirect()->route('auth.index');
 	}
 	public function show($id)
@@ -128,5 +125,14 @@ class AuthController extends Controller
 	protected function findModel($id)
 	{
 		return Auth::find($id);
+	}
+
+	public function status($id)
+	{
+		$model = $this->findModel($id);
+		$st = $model->status === 1 ? 0 : 1;
+		$model->status = $st;
+		$model->save();
+		return redirect()->back();
 	}
 }

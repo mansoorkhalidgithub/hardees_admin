@@ -35,8 +35,8 @@ class RestaurantRequest extends FormRequest
             $rules += ['password' => 'required|min:6'];
             $rules += ['email' => 'required|unique:restaurants|max:255'];
             $rules += ['name' => 'required|unique:restaurants|max:255'];
-            $rules += ['logo' => 'image|mimes:jpeg,png,jpg,gif,svg|required|max:2048'];
-            $rules += ['cover' => 'image|mimes:jpeg,png,jpg,gif,svg|required|max:2048'];
+            // $rules += ['logo' => 'image|mimes:jpeg,png,jpg,gif,svg|required|max:2048'];
+            // $rules += ['cover' => 'image|mimes:jpeg,png,jpg,gif,svg|required|max:2048'];
         } elseif ($this->route()->getActionMethod() == 'update') {
             $rules += ['name' => Rule::unique('restaurants')->ignore($this->id)];
             $rules += ['email' => Rule::unique('restaurants')->ignore($this->id)];

@@ -18,7 +18,7 @@ class StatesTableSeeder extends Seeder
 			array('name' => "Andhra Pradesh", 'country_id' => 101),
 			array('name' => "Arunachal Pradesh", 'country_id' => 101),
 			array('name' => "Assam", 'country_id' => 101),
-			array('name' => "Bihar", 'country_id' => 101),
+			// array('name' => "Bihar", 'country_id' => 101),
 			array('name' => "Chandigarh", 'country_id' => 101),
 			array('name' => "Chhattisgarh", 'country_id' => 101),
 			array('name' => "Dadra and Nagar Haveli", 'country_id' => 101),

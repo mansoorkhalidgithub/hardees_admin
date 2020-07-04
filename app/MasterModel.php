@@ -6,6 +6,13 @@ use Illuminate\Database\Eloquent\Model;
 
 class MasterModel extends Model
 {
+    const ADMIN_TYPE = [
+        '1' => 'Country Admin',
+        '2' => 'City Admin',
+        '3' => 'State Admin',
+        '4' => 'Support User Admin',
+        '5' => 'Support Driver Admin',
+    ];
     public function createdBy()
     {
         return $this->hasOne(Auth::class, 'id', 'created_by');

@@ -2,26 +2,21 @@
 
 @section('content')
 <div  style="margin: 0px 10px 10px 10px; padding: 10px">
-    @if(session()->get('success'))
-    <div class="alert alert-success">
-      {{ session()->get('success') }}  
-    </div><br />
-  @endif
-  <div class="card">
+    
+    <div class="card">
 <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
-		<h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold">UPDATE STATE: Balochistan</h1>
-                <a href="{{ route('state') }}"
+		<h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold">ADD NEW CITY</h1>
+                <a href="{{ route('city') }}"
                    class="d-none d-sm-inline-block btn btn-sm shadow-sm" style="background-color:#ffc107; color: black"><i
-                        class="fas fa-fw fa-1x fa-arrow-left fa-sm text-dark-300"></i> <span style="font-weight: bold">Back to State List</span></a>
+                        class="fas fa-fw fa-1x fa-arrow-left fa-sm text-dark-300"></i> <span style="font-weight: bold">Back to City List</span></a>
                         
 	</div>
-      <div class="card-body">
+        <div class="card-body">
     <form>
 <fieldset>
 
-
 <div class="row">
-    <div class="col-sm-12"><div class="form-group">
+    <div class="col-sm-6"><div class="form-group">
   
     <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="country">COUNTRY</label>  
   
@@ -34,21 +29,31 @@
 </div>
 </div>
     
-</div>
-<div class="row">
-    <div class="col-sm-12"><div class="form-group">
+
+    <div class="col-sm-6"><div class="form-group">
     <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="state_name">STATE NAME</label>  
   
-    <input id="state_name" name="state_name" style="border-radius: 0px" class="form-control " required="" type="number">
+    <select id="state_name" name="state_name" style="border-radius: 0px" class="form-control">
+        <option>Select Country First</option>
+        <option></option>
+    </select>
     
   
 </div>
 </div>
     
 </div>
-
 <div class="row">
-    <div class="col-sm-12"><div class="form-group">
+    <div class="col-sm-6"><div class="form-group">
+    <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="city_name">CITY NAME</label>  
+  
+  <input id="city_name" name="city_name" style="border-radius: 0px" class="form-control " required="" type="text">
+    
+  
+</div>
+</div>
+
+    <div class="col-sm-6"><div class="form-group">
     <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="status">STATUS</label>  
   
     <select id="status" name="status" style="border-radius: 0px" class="form-control">
@@ -66,7 +71,7 @@
 <!-- Button -->
 <div class="form-group text-right" style="margin-top: 1rem">
   
-      <button id="update_state" name="update_state" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold">UPDATE STATE</button>
+      <button id="add_city" name="add_city" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold">ADD CITY</button>
   
   </div>
 </fieldset>

@@ -60,7 +60,6 @@ $(document).ready(function () {
 
 var timing = 1;
 function timing_fields() {
-    console.log("fff");
     timing++;
     var objTime = document.getElementById("timing_fields");
     var ItemTime = document.getElementById("time");
@@ -96,6 +95,7 @@ function remove_timing_fields(rid) {
 }
 var room = 1;
 function restaurantCategories() {
+    console.log("fff");
     room++;
     var objTo = document.getElementById("restaurant_categories");
     var Item = document.getElementById("item");
