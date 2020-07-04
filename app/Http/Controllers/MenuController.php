@@ -50,6 +50,7 @@ class MenuController extends Controller {
 	public function addMenuItems(Request $request) {
 
 		$this->validateMenuData($request);
+		
 		$createdBy = Auth::user()->id;
 		$add = new MenuItem();
 		$add->menu_category_id = $request->menu_category_id;
@@ -147,7 +148,7 @@ class MenuController extends Controller {
 			'weight' => 'required|numeric',
 			'status' => 'required|numeric|max:1',
 			// 'is_favourite'=>'required|numeric|max:3',
-			'itemImg' => 'mimes:jpeg,jpg,png | max:1000',
+			//'itemImg' => 'mimes:jpeg,jpg,png | max:1000',
 
 		],
 			[
