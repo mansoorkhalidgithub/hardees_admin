@@ -38,14 +38,14 @@ return [
     'guards' => [
         'web' => [
             'driver' => 'session',
-            'provider' => 'auth',
+            'provider' => 'users',
         ],
 
         'api' => [
-			'driver' => 'passport',
-			'provider' => 'users',
-			'hash' => true,
-		],
+            'driver' => 'passport',
+            'provider' => 'users',
+            'hash' => true,
+        ],
     ],
 
     /*
@@ -70,8 +70,8 @@ return [
             'driver' => 'eloquent',
             'model' => App\Auth::class,
         ],
-		
-		'users' => [
+
+        'users' => [
             'driver' => 'eloquent',
             'model' => App\User::class,
         ],

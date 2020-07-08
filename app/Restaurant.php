@@ -4,8 +4,8 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Restaurant extends Authenticatable {
-	protected $table = 'restaurants';
+class Restaurant extends Authenticatable
+{
 	protected $fillable = [
 		'name',
 		'status',
@@ -28,9 +28,13 @@ class Restaurant extends Authenticatable {
 		'thumbnail',
 		'password',
 		'tags',
+		'city_id',
+		'state_id',
+		'country_id'
 	];
 
-	public function category() {
+	public function category()
+	{
 		return $this->belongsTo(Category::class, 'category_id');
 	}
 }

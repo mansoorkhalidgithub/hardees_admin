@@ -18,7 +18,7 @@
  						<div class="col ml-5">
  							<div class="font-weight-bold text-uppercase mb-1" style="font-size:13px">Total Delivery Boys
  							</div>
- 							<div class="h5 mb-0 font-weight-bold text-dark-800" style="font-size:25px">60</div>
+ 							<div id="total" class="h5 mb-0 font-weight-bold text-dark-800" style="font-size:25px">{{$model->count()}}</div>
  						</div>
 
  					</div>
@@ -37,7 +37,7 @@
  						<div class="col ml-5">
  							<div class=" font-weight-bold  text-uppercase mb-1" style="font-size:13px">Total Delivery Boys
  								(Online)</div>
- 							<div class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">39</div>
+ 							<div id="online" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">{{ App\Rider::where('eStatus', App\Rider::STATUS_ONLINE)->count() }}</div>
  						</div>
 
  					</div>
@@ -54,7 +54,7 @@
  						<div class="col ml-5">
  							<div class="text-xs font-weight-bold  text-uppercase mb-1" style="font-size:13px">Total Delivery Boys
  								(Offline)</div>
- 							<div class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">21</div>
+ 							<div id="offline" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">{{ App\Rider::where('eStatus', App\Rider::STATUS_OFFLINE)->count() }}</div>
  						</div>
 
  					</div>
@@ -65,27 +65,25 @@
 
  	</div>
  	<div class="row" style="padding: 20px">
- 		<div class="col-sm-2">
- 			<select style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
- 				<option>Select Country</option>
- 				<option value="Pakistan">Pakistan</option>
- 				<option value="Dubai">Dubai</option>
- 				<option value="United State">United States</option>
+ 		<div class="col-sm-3">
+ 			<select id="country_id" style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
+ 				<option selected value="">Select Country</option>
+ 				@foreach($countries as $key => $country )
+ 				<option value="{{ $country }}">{{ $country }}</option>
+ 				@endforeach
  			</select>
  		</div>
- 		<div class="col-sm-2">
+ 		<div class="col-sm-3">
  			<select id="state_id" style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
- 				<option selected="" disabled="" hidden="">Select State</option>
- 				@foreach(Helper::getStates() as $key=> $state)
- 				<option value="{{$state->name}}">{{$state->name}}</option>
- 				@endforeach
+ 				<option selected>Select State</option>
+
  			</select>
  			</select>
  		</div>
  		<div class="col-sm-3">
 
  			<select id="city_id" style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
- 				<option selected="" disabled="" hidden="">Select City</option>
+ 				<option selected value="">Select City</option>
  				@foreach($cities as $key => $city )
  				<option value="{{ $city }}">{{ $city }}</option>
  				@endforeach
@@ -94,20 +92,12 @@
  		</div>
  		<div class="col-sm-3">
 
- 			<select style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
- 				<option>Select Branch</option>
- 				<option>M.M Alam Branch</option>
- 				<option>DHA Branch</option>
- 				<option>Lalik Chowk Branch</option>
- 				<option>Emporium Mall Branch</option>
- 				<option>Thokar Niaz Baig Branch</option>
- 				<option>Packages Mall Branch</option>
+ 			<select id="branch" style="height: 35px; border-radius: 10px; width: 100%; border:1px solid black; font-size: 13px">
+ 				<option selected>Select Branch</option>
  			</select>
 
  		</div>
- 		<div class="col-sm-2 text-right">
- 			<button type="button" style="height: 35px; width: 100%;" class="btn btn-success">Search</button>
- 		</div>
+
 
  	</div>
  	<div class="uper" style="overflow-x: scroll; margin-bottom: 50px; margin-top: 50px; font-size: 13px">
@@ -138,7 +128,7 @@
  			<tbody>
  				@foreach($model as $key => $rider)
  				<tr style="color: black">
- 					<td>1</td>
+ 					<td>{{ ++$key }}</td>
  					<td>
  						@if(!empty($rider->created_by))
  						{{ $rider->createdBy->username }}
@@ -219,9 +209,55 @@
  		var table = $('#rider_list').DataTable();
  		$('#state_id').on('change', function() {
  			table.columns(4).search(this.value).draw();
+ 			var info = $(rider_list).DataTable().page.info();
+ 			$('#total').html(info.recordsDisplay);
+ 			var name = $(this).val();
+ 			console.log(name)
+ 		});
+ 		$('#branch').on('change', function() {
+ 			table.columns(2).search(this.value).draw();
+ 		});
+ 		$('#country_id').on('change', function() {
+ 			table.columns(3).search(this.value).draw();
+ 			var name = $(this).val();
+ 			// console.log(table.data().length)
+ 			$.ajax({
+ 				type: "post",
+ 				url: "{{ URL::route('rider.states') }}",
+ 				data: {
+ 					"_token": "{{ csrf_token() }}",
+ 					name: name
+ 				},
+ 				success: function(data) {
+ 					var data = $.parseJSON(data);
+ 					console.log(data.html)
+ 					$('#state_id').html(data.html);
+ 					$('#total').html(data.total);
+ 					$('#online').html(data.online);
+ 					$('#offline').html(data.offline);
+ 				}
+ 			});
  		});
  		$('#city_id').on('change', function() {
  			table.columns(5).search(this.value).draw();
+ 			var name = $(this).val();
+ 			console.log(name)
+ 			$.ajax({
+ 				type: "post",
+ 				url: "{{ URL::route('rider.branch') }}",
+ 				data: {
+ 					"_token": "{{ csrf_token() }}",
+ 					name: name
+ 				},
+ 				success: function(data) {
+ 					var data = $.parseJSON(data);
+ 					console.log(data.html)
+ 					$('#branch').html(data.html);
+ 					$('#total').html(data.total);
+ 					$('#online').html(data.online);
+ 					$('#offline').html(data.offline);
+ 				}
+ 			});
  		});
  	});
  </script>

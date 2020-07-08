@@ -24,15 +24,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <div class="form-group">
-                                <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="restaurant_tags">RESTAURANT TAGS</label>
-                                <input type="text" name="tags" value="{{ old('tags') }}" style="border-radius: 0px" class="form-control" required="">
-                            </div>
-                        </div>
 
-                    </div>
                     <div class="row">
                         <div class="col-sm-12">
                             <div class="form-group">
@@ -56,6 +48,53 @@
                             <div class="form-group">
                                 <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="longitude">LONGITUDE</label>
                                 <input type="text" readonly id="longitude" style="border-radius: 0px" name="longitude" class="form-control" required="">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="restaurant_tags">RESTAURANT TAGS</label>
+                                <input type="text" name="tags" value="{{ old('tags') }}" style="border-radius: 0px" class="form-control" required="">
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="country">COUNTRY</label>
+                                <select id="country" name="country_id" style="border-radius: 0px" class="form-control">
+                                    <option>Select Country</option>
+                                    <option value="166">Pakistan</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="state">STATE</label>
+
+                                <select id="state" name="state_id" style="border-radius: 0px" class="form-control">
+                                    <option selected="" disabled="" hidden="">Select State</option>
+                                    @foreach(Helper::getStates() as $key=> $state)
+                                    <option value="{{$state->id}}" value="@if(old('state_id')) {{ old('state_id') }} @endif" @if(old('state_id')) {{ 'selected' }} @endif>{{$state->name}}</option>
+                                    @endforeach
+                                </select>
+                                @if($errors->has('state_id'))
+                                <small class="text-danger ml-2">{{ $errors->first('state_id') }}</small>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="col-sm-6">
+                            <div class="form-group">
+                                <label class="col-md-4 " style="color: black; font-size: 12px; font-weight: 700" for="city">CITY</label>
+
+                                <select id="city" name="city_id" style="border-radius: 0px" class="form-control">
+                                    <option selected="" disabled="" hidden="">Select City</option>
+                                </select>
+                                @if($errors->has('city_id'))
+                                <small class="text-danger ml-2">{{ $errors->first('city_id') }}</small>
+                                @endif
+                                </select>
                             </div>
                         </div>
                     </div>
@@ -279,6 +318,22 @@
             var fileName = e.target.files[0].name;
             //$('#imageLabel').html(fileName);
             readURLCover(this);
+        });
+        $("#state").change(function() {
+            var id = $(this).val();
+            console.log(id)
+            $.ajax({
+                type: "post",
+                url: "{{ URL::route('getCities') }}",
+                data: {
+                    "_token": "{{ csrf_token() }}",
+                    id: id
+                },
+                success: function(data) {
+                    console.log(data)
+                    $('#city').html(data.html);
+                }
+            });
         });
     });
 

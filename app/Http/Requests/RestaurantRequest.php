@@ -27,6 +27,8 @@ class RestaurantRequest extends FormRequest
         $rules =  [
             // 'name' => 'required|unique:restaurants|max:255',
             'address' => 'required',
+            'state_id' => 'required|numeric',
+            'city_id' => 'required|numeric',
             'latitude' => ['required', 'regex:/^[-]?(([0-8]?[0-9])\.(\d+))|(90(\.0+)?)$/'],
             'longitude' => ['required', 'regex:/^[-]?((((1[0-7][0-9])|([0-9]?[0-9]))\.(\d+))|180(\.0+)?)$/'],
         ];
@@ -43,5 +45,13 @@ class RestaurantRequest extends FormRequest
         }
 
         return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'state_id.required'  => 'Please Choose State',
+            'city_id.required'  => 'Please Choose City',
+        ];
     }
 }

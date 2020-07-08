@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
@@ -40,13 +41,26 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('get-menu-items', 'Api\HardeesApiController@menuItems');
 	Route::get('get-deals', 'Api\HardeesApiController@getDeals');
 	Route::post('create-customer-deal', 'Api\HardeesApiController@createCustomDeal');
-
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
-
 });
 
 Route::post('add-to-cart', 'Api\OrderApiController@addCart');
 Route::post('get-cart', 'Api\OrderApiController@addCart');
+
+
+// Rider Api Starting Point By Qadeer
+Route::post('rider-register', 'Api\RiderApiController@riderRegister');
+Route::post('rider-login', 'Api\RiderApiController@riderLogin');
+
+Route::post('request-accept', 'Api\RiderApiController@requestAccepted');
+
+Route::post('request-rejected', 'Api\RiderApiController@requestRejected');
+
+Route::post('store-review', 'Api\RiderApiController@storeReview');
+
+Route::post('earning-detail', 'Api\RiderApiController@earningDetail');
+
+// Rider Api Ending Point By Qadeer

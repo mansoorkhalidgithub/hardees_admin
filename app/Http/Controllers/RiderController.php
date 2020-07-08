@@ -3,11 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\City;
+use App\Country;
 use App\User;
 use App\Rider;
 use App\Helpers\Helper;
 use App\Http\Requests\RiderRequest;
 use App\Restaurant;
+use App\State;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -187,6 +189,103 @@ class RiderController extends Controller
         }
     }
 
+    public function getBranches(Request $request)
+    {
+        $total = '';
+        $online = '';
+        $offline = '';
+        if (isset($request) && !empty($request->name)) {
+            $city_id = City::where('name', '=', $request->name)->firstOrFail();
+            $total = Rider::where('city_id', '=', $city_id->id)->count();
+            $online = Rider::where('eStatus', '=', Rider::STATUS_ONLINE)
+                ->where('city_id', '=', $city_id->id)->count();
+            $offline = Rider::where('eStatus', '=', Rider::STATUS_OFFLINE)
+                ->where('city_id', '=', $city_id->id)->count();
+            if (!$city_id->id) {
+                $html = '<option value="">Select Branch</option>';
+            } else {
+                $html = '<option value="">Select Branch</option>';
+                $restaurants = Restaurant::where('city_id', $city_id->id)->get();
+                foreach ($restaurants as $restaurant) {
+                    $html .= '<option value="' . $restaurant->name . '">' . $restaurant->name . '</option>';
+                }
+            }
+            if (!empty($html))
+                echo json_encode([
+                    'total' => $total,
+                    'html' => $html,
+                    'online' => $online,
+                    'offline' => $offline,
+                ]);
+            else {
+                $html = '<option value="">Select Branch</option>';
+                echo json_encode([
+                    'total' => $total,
+                    'html' => $html,
+                    'online' => $online,
+                    'offline' => $offline,
+                ]);
+            }
+        } else {
+            $html = '<option value="">Select City First</option>';
+            echo json_encode([
+                'total' => $total,
+                'html' => $html,
+                'online' => $online,
+                'offline' => $offline,
+            ]);
+        }
+    }
+    public function getStates(Request $request)
+    {
+        $total = '';
+        $online = '';
+        $offline = '';
+        if (isset($request) && !empty($request->name)) {
+            $country_id = Country::where('name', '=', $request->name)
+                ->where('status', '=', 1)
+                ->firstOrFail();
+            $total = Rider::where('country_id', '=', $country_id->id)->count();
+            $online = Rider::where('eStatus', '=', Rider::STATUS_ONLINE)
+                ->where('country_id', '=', $country_id->id)->count();
+            $offline = Rider::where('eStatus', '=', Rider::STATUS_OFFLINE)
+                ->where('country_id', '=', $country_id->id)->count();
+            if (!$country_id->id) {
+                $html = '<option value="">Select State</option>';
+            } else {
+                $html = '<option value="">Select State</option>';
+                $states = State::where('country_id', '=', $country_id->id)->get();
+                foreach ($states as $state) {
+                    $html .= '<option value="' . $state->name . '">' . $state->name . '</option>';
+                }
+            }
+            if (!empty($html)) {
+                echo json_encode([
+                    'total' => $total,
+                    'html' => $html,
+                    'online' => $online,
+                    'offline' => $offline,
+                ]);
+                // return response()->json(['html' => $html]);
+            } else {
+                $html = '<option value="">Select State</option>';
+                echo json_encode([
+                    'total' => $total,
+                    'html' => $html,
+                    'online' => $online,
+                    'offline' => $offline,
+                ]);
+            }
+        } else {
+            $html = '<option value="">Select State</option>';
+            echo json_encode([
+                'total' => $total,
+                'html' => $html,
+                'online' => $online,
+                'offline' => $offline,
+            ]);
+        }
+    }
     public function info(Request $request)
     {
         $restaurant = Restaurant::find($request->id);
@@ -205,9 +304,11 @@ class RiderController extends Controller
         foreach ($model as $key => $rider) {
             $city[] = $rider->city->name;
             $cities = array_unique($city);
+            $country[] = $rider->country->name;
+            $countries = array_unique($country);
         }
         // dd($city);
-        return view('rider.delivery_boy_management', compact('model', 'cities'));
+        return view('rider.delivery_boy_management', compact('model', 'cities', 'countries'));
     }
 
     public function status($id)

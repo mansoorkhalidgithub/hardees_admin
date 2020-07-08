@@ -109,6 +109,8 @@ Route::group([
 	Route::get('rider/status/{id}', 'RiderController@status')->name('rider.status');
 	Route::get('rider/eStatus/{id}', 'RiderController@eStatus')->name('rider.eStatus');
 	Route::post('getCities', 'RiderController@getCities')->name('getCities');
+	Route::post('getBranches', 'RiderController@getBranches')->name('rider.branch');
+	Route::post('getStates', 'RiderController@getStates')->name('rider.states');
 });
 
 Route::group([

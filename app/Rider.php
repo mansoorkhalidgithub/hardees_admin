@@ -2,10 +2,14 @@
 
 namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
+use Spatie\Permission\Traits\HasRoles;
 
-class Rider extends MasterModel
+class Rider extends Authenticatable
 {
+    use HasApiTokens, HasRoles, Notifiable;
     const STATUS_ACTIVE = 1;
     const STATUS_INACTIVE = 0;
     const STATUS_ONLINE = 10;
@@ -40,4 +44,30 @@ class Rider extends MasterModel
         'last_login_at',
         'country_id',
     ];
+
+
+    public function createdBy()
+    {
+        return $this->hasOne(Auth::class, 'id', 'created_by');
+    }
+
+    public function getRestaurant()
+    {
+        return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
+    }
+
+    public function country()
+    {
+        return $this->hasOne(Country::class, 'id', 'country_id');
+    }
+
+    public function state()
+    {
+        return $this->hasOne(State::class, 'id', 'state_id');
+    }
+
+    public function city()
+    {
+        return $this->hasOne(City::class, 'id', 'city_id');
+    }
 }
