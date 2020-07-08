@@ -45,3 +45,6 @@ Route::group(['middleware' => 'auth:api'], function() {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
 
 });
+
+Route::post('add-to-cart', 'Api\OrderApiController@addCart');
+Route::post('get-cart', 'Api\OrderApiController@addCart');

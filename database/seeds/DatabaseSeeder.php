@@ -17,9 +17,9 @@ class DatabaseSeeder extends Seeder
         $this->call([
             Permissions::class,
             Roles::class,
-            AdminPermissions::class,
-            SubAdminPermissions::class,
-            AuthPermissions::class,
+            //AdminPermissions::class,
+            //SubAdminPermissions::class,
+            //AuthPermissions::class,
             PaymentMethodSeeder::class,
             RestaurantSeeder::class,
             MenuSeeder::class,
