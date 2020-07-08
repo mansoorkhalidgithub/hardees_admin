@@ -2,10 +2,10 @@
 
 namespace App;
 
-use App\MasterModel;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class Restaurant extends MasterModel
-{
+class Restaurant extends Authenticatable {
+	protected $table = 'restaurants';
 	protected $fillable = [
 		'name',
 		'status',
@@ -30,8 +30,7 @@ class Restaurant extends MasterModel
 		'tags',
 	];
 
-	public function category()
-	{
+	public function category() {
 		return $this->belongsTo(Category::class, 'category_id');
 	}
 }
