@@ -82,4 +82,14 @@ class OrderApiController extends Controller
 
         return response()->json($response);
 	}
+	
+	public function addCart(Request $request)
+	{
+		
+	}
+	
+	public function getCart(Request $request)
+	{
+		
+	}
 }

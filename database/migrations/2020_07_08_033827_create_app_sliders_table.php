@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAppSliderTable extends Migration
+class CreateAppSlidersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -16,11 +16,13 @@ class CreateAppSliderTable extends Migration
         Schema::create('sliders', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('created_by')->nullable();
-            $table->string('slider_img')->nullable();
+            $table->string('image')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->string('description')->nullable();
             $table->softDeletes();
             $table->timestamps();
+			
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
