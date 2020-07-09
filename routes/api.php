@@ -48,14 +48,15 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::post('add-to-cart', 'Api\OrderApiController@addCart');
-Route::post('get-cart', 'Api\OrderApiController@addCart');
+Route::post('update-cart', 'Api\OrderApiController@updateCart');
+Route::post('get-cart', 'Api\OrderApiController@getCart');
 
 
 // Rider Api Starting Point By Qadeer
 Route::post('rider-register', 'Api\RiderApiController@riderRegister');
 Route::post('rider-login', 'Api\RiderApiController@riderLogin');
 
-Route::post('request-accept', 'Api\RiderApiController@requestAccepted');
+Route::post('tripmanage', 'Api\RiderApiController@tripManage');
 
 Route::post('request-rejected', 'Api\RiderApiController@requestRejected');
 

@@ -98,7 +98,7 @@ class RiderApiController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function requestAccepted(Request $request)
+    public function tripManage(Request $request)
     {
         $total_time = '';
         $validator = Validator::make($request->all(), [
@@ -126,11 +126,32 @@ class RiderApiController extends Controller
             ->where('id', $order_id)->firstOrFail();
 
         $restaurant = Restaurant::find($order->restaurant_id);
+
+        // Delievry Rejected
+        if ($status == Order::STATUS_REJECT) {
+            $data = [
+                'order_id' => $request->order_id,
+                'rider_id' => $request->rider_id,
+                'status' => $status
+            ];
+            $order = OrderAssigned::create($data);
+            $response = [
+                'status' => 1,
+                'method' => $request->route()->getActionMethod(),
+                'message' => "Order Rejected By Rider",
+                'data' => $order
+            ];
+            return response()->json($response);
+        }
+
+        // Delivery Accepted
         if ($status == Order::STATUS_ACCEPT) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
             $message = 'DELIVERY_ACCPETED !';
         }
+
+        // Delivery Started
         if ($status == Order::STATUS_START_DELIVERY) {
             session_start();
             $time = date('Y-m-d h:i:s');
@@ -147,6 +168,8 @@ class RiderApiController extends Controller
 
             return response()->json($response);
         }
+
+        // Delievry Complete
         if ($status == Order::STATUS_COMPLETE) {
             $validator = Validator::make($request->all(), [
                 'end_lat' => 'required',
@@ -169,6 +192,8 @@ class RiderApiController extends Controller
             $order->save();
             $message = 'DELIVERY_COMPLETED !';
         }
+
+        // Cash Collected
         if ($status == Order::STATUS_CASH_COLLECTED) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
