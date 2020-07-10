@@ -55,7 +55,7 @@
                 <hr class="sidebar-divider my-0">
 
                 <!-- Nav Item - Dashboard -->
-                <li class="nav-item"><a class="nav-link " href="{{route('home') }}"> <i class="fas fa-fw fa-tachometer-alt"></i> {{ Auth::user()->role }}</a>
+                <li class="nav-item"><a class="nav-link " href="{{route('home') }}"> <i class="fas fa-fw fa-tachometer-alt"></i> {{ Auth::user()->username }}</a>
                 </li>
 
                 <!-- Divider -->
@@ -378,7 +378,7 @@
 
                             <!-- Nav Item - User Information -->
                             <li class="nav-item dropdown no-arrow"><a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <span class="mr-2 d-none d-lg-inline " style="color: #404e67">{{ Auth::user()->name }} </span>
-                                    <img class="img-profile rounded-circle" src="{{ asset('https://source.unsplash.com/QAB-WJcbgJk/60x60') }}">
+                                    <img class="img-profile rounded-circle" src="{{ (Auth::user()->profile_picture) ? asset(Auth::user()->profile_picture) : asset('https://source.unsplash.com/QAB-WJcbgJk/60x60') }}">
                                 </a> <!-- Dropdown - User Information -->
                                 <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                                     <a class="dropdown-item" href="#"> <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>Edit Profile

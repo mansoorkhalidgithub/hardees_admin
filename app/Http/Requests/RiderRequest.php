@@ -36,10 +36,10 @@ class RiderRequest extends FormRequest
         if ($this->route()->getActionMethod() == 'store') {
             $rules += ['password' => 'required|min:6'];
             $rules += ['confirm_password' => 'required_with:password|same:password|min:6'];
-            $rules += ['email' => 'required|unique:riders|max:255'];
+            $rules += ['email' => 'required|unique:users|max:255'];
             // $rules += ['role' => 'required|max:15'];
         } elseif ($this->route()->getActionMethod() == 'update') {
-            $rules += ['email' => Rule::unique('riders')->ignore($this->id)];
+            $rules += ['email' => Rule::unique('users')->ignore($this->id)];
         }
         // dd($rules);
         return $rules;

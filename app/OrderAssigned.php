@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class OrderAssigned extends Model
 {
-    public $timestamps = false;
+    // public $timestamps = false;
     protected $table = 'order_assigned';
     protected $fillable = [
         'order_id',

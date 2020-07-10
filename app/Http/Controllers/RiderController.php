@@ -25,7 +25,7 @@ class RiderController extends Controller
      */
     public function index()
     {
-        $model = Rider::all();
+        $model = User::role('rider')->get();
         return view('rider.index', compact('model'));
     }
 
@@ -127,7 +127,7 @@ class RiderController extends Controller
     {
         $rider = $this->findModel($request->id);
         $data = $request->all();
-        $data['created_by'] = auth()->user()->id;
+        // $data['created_by'] = auth()->user()->id;
         if ($request->has('profile')) {
             if (!empty($rider->profile_picture)) {
                 $riderImage = public_path($rider->profile_picture); // get previous image from folder
@@ -168,7 +168,7 @@ class RiderController extends Controller
     }
     protected function findModel($id)
     {
-        return Rider::find($id);
+        return User::find($id);
     }
     public function getCities(Request $request)
     {

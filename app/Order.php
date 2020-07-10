@@ -10,7 +10,7 @@ class Order extends Model
 	const STATUS_ACCEPT             = 1;
 	const STATUS_PICKUP             = 2;
 	const STATUS_START_DELIVERY     = 3;
-	const STATUS_COMPLETE           = 4;
+	const STATUS_COMPLETE_DELIVERY  = 4;
 	const STATUS_CASH_COLLECTED     = 5;
 	// const STATUS_START_DELIVERY     = 6;
 	protected $with = ['orderItems'];
