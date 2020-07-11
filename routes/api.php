@@ -23,7 +23,15 @@ Route::post('login', 'Api\AuthApiController@login');
 Route::post('forgot-password', 'Api\AuthApiController@forgetPassword');
 // retaurant apis
 Route::post('restaurantlogin', 'Api\RestaurantApiController@login');
-Route::post('restaurant/dashboard', 'Api\RestaurantApiController@dashboard');
+Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
+Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
+Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');
+Route::get('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
+Route::post('restaurant/order-accepted', 'Api\RestaurantApiController@orderAccepted');
+Route::get('restaurant/recent-orders', 'Api\RestaurantApiController@recentOrders');
+Route::post('restaurant/order-readyforpickup', 'Api\RestaurantApiController@orderReadyForPickup');
+
+// Route::group(['middleware' => 'auth:api'], function () {;});
 ///////////////////////////////////
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('get-profile', 'Api\CustomerApiController@profile');
@@ -50,7 +58,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::post('add-to-cart', 'Api\OrderApiController@addCart');
 Route::post('update-cart', 'Api\OrderApiController@updateCart');
 Route::post('get-cart', 'Api\OrderApiController@getCart');
-
 
 // Rider Api Starting Point By Qadeer
 Route::post('rider-register', 'Api\RiderApiController@riderRegister');

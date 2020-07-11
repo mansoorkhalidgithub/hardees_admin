@@ -4,14 +4,13 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model
-{
-	const STATUS_REJECT             = 0;
-	const STATUS_ACCEPT             = 1;
-	const STATUS_PICKUP             = 2;
-	const STATUS_START_DELIVERY     = 3;
-	const STATUS_COMPLETE           = 4;
-	const STATUS_CASH_COLLECTED     = 5;
+class Order extends Model {
+	const STATUS_REJECT = 0;
+	const STATUS_ACCEPT = 1;
+	const STATUS_PICKUP = 2;
+	const STATUS_START_DELIVERY = 3;
+	const STATUS_COMPLETE = 4;
+	const STATUS_CASH_COLLECTED = 5;
 	// const STATUS_START_DELIVERY     = 6;
 	protected $with = ['orderItems'];
 
@@ -30,19 +29,71 @@ class Order extends Model
 		'order_type_id',
 	];
 
-	public function orderItems()
-	{
-		return $this->hasMany(OrderItem::class, 'order_id');
+	public function orderItems() {
+		$data = $this->hasMany(OrderItem::class, 'order_id');
+		// $data->each->append(
+		// 	'Name'
+		// );
+		return $data;
 	}
+	public function getorderItemsWithNameAttribute() {
+		$data = OrderItem::where('order_id', $this->id)->get();
+		$data->each->append(
+			'Name'
+		);
+		return $data;
+	}
+	public function ordersAccepted() {
+		return $this->hasOne(Order_status::class, 'order_id')->where('name', 'Accepted');
+	}
+	public function orders() {
+		return $this->hasOne(Order_status::class, 'order_id');
+	}
+	public function belongToUser() {
+		return $this->belongsTo(User::class, 'user_id');
+	}
+	public function getOrdertypeAttribute() {
+		$orderStatus = OrderType::find($this->order_type_id);
+		if ($orderStatus) {
+			return $orderStatus->type;
+		}
 
+	}
+	public function getcustomerDataAttribute() {
+		$user = User::where('id', $this->user_id)->select(['id', 'first_name', 'last_name', 'phone_number'])->first();
+		$user->append(
+			'orderAddress'
+		);
+		return $user;
+	}
+	public function getapproxTimeAttribute() {
+		return 15;
+	}
+	public function getmenueItemNameAttribute() {
+		$orderitems = OrderItem::where('order_id', $this->id)->select('menu_item_id')->first();
+		$menueItem = MenuItem::where('id', $orderitems->menu_item_id)->select('name')->first();
+		return $menueItem->name;
+	}
+	public function getriderAsignedAttribute() {
+		$OrderAssigned = OrderAssigned::where('order_id', $this->id)->first();
+		$data = [];
+		if ($OrderAssigned) {
+			$data = User::where('id', $OrderAssigned->rider_id)->select(['first_name', 'last_name', 'phone_number'])->first();
+			$data->append(
+				'Rating'
+			);
+		}
+		return $data;
+	}
+	public function getbookingNoAttribute() {
 
-	public function restaurant()
-	{
+		return $this->id;
+	}
+	public function restaurant() {
 		return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
 	}
 
-	public function customer()
-	{
+	public function customer() {
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 }
