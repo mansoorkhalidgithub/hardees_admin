@@ -4,22 +4,19 @@ namespace App\Http\Controllers\Api;
 
 // use Auth;
 use App\Cart;
-use App\Order;
-use App\OrderItem;
 use App\Helpers\Helper;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\MenuItem;
+use App\Order;
+use App\OrderItem;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class OrderApiController extends Controller
-{
-	public function __construct()
-	{
+class OrderApiController extends Controller {
+	public function __construct() {
 	}
 
-	public function placeOrder(Request $request)
-	{
+	public function placeOrder(Request $request) {
 		$restaurantId = $request->input('restaurant_id');
 		$customerId = Auth::user()->id;
 		$latitude = $request->input('latitude');
@@ -62,7 +59,7 @@ class OrderApiController extends Controller
 				'order_id' => $orderId,
 				'menu_item_id' => $itemId,
 				'item_price' => $itemPrice,
-				'item_quantity' => $itemQunatity
+				'item_quantity' => $itemQunatity,
 			];
 
 			OrderItem::create($orderItem);
@@ -78,14 +75,13 @@ class OrderApiController extends Controller
 			'data' => [
 				'order_reference' => $orderReference,
 				'contact_number' => $contact_number,
-			]
+			],
 		];
 
 		return response()->json($response);
 	}
 
-	public function addCart(Request $request)
-	{
+	public function addCart(Request $request) {
 		$data = $request->all();
 		$data['user_id'] = $request->access_token;
 		$data['status'] = 0;
@@ -98,13 +94,12 @@ class OrderApiController extends Controller
 			'data' => [
 				'cart_reference' => $cartRefrence,
 				'cart' => $cart,
-			]
+			],
 		];
 		return response()->json($response);
 	}
 
-	public function getCart(Request $request)
-	{
+	public function getCart(Request $request) {
 		$cart = Cart::where('user_id', '=', $request->access_token)
 			->where('status', '=', 0)->get();
 		$cart->each->append(
@@ -115,11 +110,11 @@ class OrderApiController extends Controller
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Get Cart Successfully',
-			'data' => $cart
+			'data' => $cart,
 		];
-		if ($cart->count() > 0)
+		if ($cart->count() > 0) {
 			return response()->json($response);
-		else {
+		} else {
 			$response = [
 				'status' => 0,
 				'method' => $request->route()->getActionMethod(),
@@ -130,8 +125,7 @@ class OrderApiController extends Controller
 		}
 	}
 
-	public function updateCart(Request $request)
-	{
+	public function updateCart(Request $request) {
 		$data['quantity'] = $request->quantity;
 		$cart = Cart::find($request->id);
 		if ($request->quantity == 0) {
@@ -153,7 +147,7 @@ class OrderApiController extends Controller
 				'data' => [
 					'total' => $price * $cart->quantity,
 					'quantity' => $cart->quantity,
-				]
+				],
 			];
 			return response()->json($response);
 		}
