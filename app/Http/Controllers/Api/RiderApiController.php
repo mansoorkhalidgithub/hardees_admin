@@ -5,15 +5,20 @@ namespace App\Http\Controllers\Api;
 use App\User;
 use DateTime;
 use App\Order;
+use App\Review;
 use Carbon\Carbon;
 use App\Restaurant;
 use App\MasterModel;
+use App\ReviewDetail;
+use App\OrderAssigned;
+use App\Helpers\Helper;
+use App\RiderEarningSummary;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\OrderAssigned;
-use App\RiderEarningSummary;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Validator;
 
 class RiderApiController extends Controller
@@ -109,15 +114,15 @@ class RiderApiController extends Controller
                             // "eVisible" => "Y"
                         ],
                         'dataVehicle' => [
-                            "iDriverVehicleId" => 262,
-                            "vPlateno" => "leu-112",
-                            "vMake" => "Suzuki",
-                            "vModel" => "125",
-                            "vColour" => "RED",
-                            "vImage" => "https://beshappii.happiiride.org/uploads/images/Membercar/default.png",
-                            "vYear" => "2017",
-                            "iVehicleTypeId" => 52,
-                            "vTitle" => "Delivery Lahore"
+                            "id" => 262,
+                            "plate_number" => "leu-112",
+                            "made_by" => "Suzuki",
+                            "model" => "125",
+                            "color" => "RED",
+                            "image" => asset('images/ic_gallery.jpg'),
+                            "model_year" => "2017",
+                            "vehicle_type_id" => 52,
+                            "title" => "Delivery Lahore"
                         ]
                     ]
                 ];
@@ -169,9 +174,8 @@ class RiderApiController extends Controller
             ->where('id', $order_id)->firstOrFail();
 
         $restaurant = Restaurant::find($order->restaurant_id);
-
-        // Delievry Rejected
-        if ($status == Order::STATUS_REJECT) {
+        // Delivery Rejected
+        if ($status == Config::get('constants.STATUS_REJECT')) {
             $data = [
                 'order_id' => $request->order_id,
                 'rider_id' => $request->rider_id,
@@ -188,31 +192,50 @@ class RiderApiController extends Controller
         }
 
         // Delivery Accepted
-        if ($status == Order::STATUS_ACCEPT) {
+        if ($status == Config::get('constants.STATUS_ACCEPT')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
             $message = 'DELIVERY_ACCPETED !';
             $eta = 45;
         }
 
+        // Rider Arrived 
+        if ($status == Config::get('constants.STATUS_ARRIVED')) {
+            $response = [
+                'status' => 1,
+                'method' => $request->route()->getActionMethod(),
+                'message' => "Rider Arrived",
+            ];
+            return response()->json($response);
+        }
+
+        // Rider Pickup
+        if ($status == Config::get('constants.STATUS_PICKUP')) {
+            $response = [
+                'status' => 1,
+                'method' => $request->route()->getActionMethod(),
+                'message' => "Order Pickup by Rider",
+            ];
+            return response()->json($response);
+        }
+
         // Delivery Started
-        if ($status == Order::STATUS_START_DELIVERY) {
+        if ($status == Config::get('constants.STATUS_START_DELIVERY')) {
             // session_start();
             // $_SESSION['start_time'][$rider_id][$order_id] = date('Y-m-d h:i:s');
-            // Session::put('start_time', $time);
             $message = "START_DELIVERY";
             $data = [
                 'order_id' => $order_id,
                 'rider_id' => $rider_id,
-                'status' => Order::STATUS_START_DELIVERY
+                'status' => Config::get('constants.STATUS_START_DELIVERY')
             ];
             OrderAssigned::updateOrCreate($data);
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
         }
 
-        // Delievry Complete
-        if ($status == Order::STATUS_COMPLETE_DELIVERY) {
+        // Delivery Complete
+        if ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY')) {
             $validator = Validator::make($request->all(), [
                 'end_lat' => 'required',
                 'end_long' => 'required',
@@ -235,8 +258,8 @@ class RiderApiController extends Controller
             $message = 'DELIVERY_COMPLETED !';
             $order_assigned = OrderAssigned::where('order_id', $order_id)
                 ->where('rider_id', $rider_id)
-                ->where('status', Order::STATUS_START_DELIVERY)->first();
-            $order_assigned->status = Order::STATUS_COMPLETE_DELIVERY;
+                ->where('status', Config::get('constants.STATUS_START_DELIVERY'))->first();
+            $order_assigned->status = Config::get('constants.STATUS_COMPLETE_DELIVERY');
             $order_assigned->save();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
@@ -245,7 +268,7 @@ class RiderApiController extends Controller
         }
 
         // Cash Collected
-        if ($status == Order::STATUS_CASH_COLLECTED) {
+        if ($status == Config::get('constants.STATUS_CASH_COLLECTED')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
             // session_start();
@@ -254,7 +277,7 @@ class RiderApiController extends Controller
 
             $order_assigned = OrderAssigned::where('order_id', $order_id)
                 ->where('rider_id', $rider_id)
-                ->where('status', Order::STATUS_COMPLETE_DELIVERY)->first();
+                ->where('status', Config::get('constants.STATUS_COMPLETE_DELIVERY'))->first();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
 
@@ -268,6 +291,7 @@ class RiderApiController extends Controller
             // ];
             // RiderEarningSummary::create($rider_payment);
         }
+
         $lat1 = $restaurant->latitude;
         $lon1 = $restaurant->longitude;
 
@@ -275,16 +299,16 @@ class RiderApiController extends Controller
         $distance = round($distance, 2);
         $eta = $distance > 10 ? round(5 * $distance) // if
             : ($distance > 5 && $distance <= 10 ? round(7 * $distance) // elseif
-                : ($status == Order::STATUS_COMPLETE_DELIVERY ? $total_time->i // elseif
+                : ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY') ? $total_time->i // elseif
                     : round(10 * $distance))); // else
-        $order['distance'] = round($distance, 2);
+        $order['distance'] = $distance;
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
             'message' => $message,
 
             'data' => [
-                'name' => $user->first_name . " " . $user->last_name,
+                'name' => $user->name,
                 'phone_number' => $user->phone_number,
                 'invoice_number' => $order->id,
                 'total_amount' => $order->total,
@@ -296,7 +320,7 @@ class RiderApiController extends Controller
                 'end_lat' => $lat2,
                 'end_lon' => $lon2,
                 'items' => $order->orderItems->pluck('items.name'),
-                'ETA' => $eta . " Mins",
+                'ETA' => $eta . "Mins",
                 'total_time' => $total_time,
             ],
 
@@ -349,8 +373,61 @@ class RiderApiController extends Controller
      */
     public function storeReview(Request $request)
     {
-        echo "Review";
-        exit;
+        $data = [
+            'user_id' => $request->rider_id,
+            'order_id' => $request->order_id,
+            'note' => $request->note,
+            'rating' => $request->rating,
+        ];
+        $review = Review::updateOrCreate($data);
+        if ($request->has('signatures')) {
+            $image = $request->file('signatures');
+            $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+
+            $destinationPath = public_path('/uploads/signatures');
+            if (!file_exists($destinationPath)) {
+                mkdir($destinationPath, 0777, true);
+            }
+            $img = Image::make($image->getRealPath());
+            $img->save($destinationPath . '/' . $input['imagename']);
+
+            $signaturePath = 'uploads/signatures/' . $input['imagename'];
+            $signature = [
+                'review_id' => $review->id,
+                'review_img' => $signaturePath,
+                'review_type' => 'signature',
+            ];
+            ReviewDetail::create($signature);
+            // $data['profile_picture'] = $profilePath;
+        }
+        if ($request->has('product_img')) {
+            $images = $request->file('product_img');
+            foreach ($images as $key => $image) {
+                $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+
+                $destinationPath = public_path('/uploads/orders');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                $img = Image::make($image->getRealPath());
+                $img->save($destinationPath . '/' . $input['imagename']);
+
+                $ordersPath = 'uploads/orders/' . $input['imagename'];
+                $signature = [
+                    'review_id' => $review->id,
+                    'review_img' => $ordersPath,
+                    'review_type' => 'orders',
+                ];
+                ReviewDetail::updateOrCreate($signature);
+            }
+        }
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "Review Added Successfully",
+            // 'detail' => $order
+        ];
+        return response()->json($response);
     }
 
     public function earningDetail(Request $request)
@@ -376,5 +453,28 @@ class RiderApiController extends Controller
         $lastdayofweek->modify('this sunday');
         $week_booking = Order::whereBetween('created_at', [$firstdayofweek, $lastdayofweek])->get();
         print_r($week_booking->count());
+    }
+
+    public function riderDetail(Request $request)
+    {
+        $rider_detail = User::where('device_id', '=', $request->device_id)->first();
+        $rider_detail->append(
+            'name'
+        );
+        if (!$rider_detail) {
+            $response = [
+                'status' => 0,
+                'method' => $request->route()->getActionMethod(),
+                'message' => "Rider Detail Not Found",
+            ];
+            return response()->json($response);
+        }
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "Rider Detail",
+            'data' => $rider_detail,
+        ];
+        return response()->json($response);
     }
 }

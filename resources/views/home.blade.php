@@ -1,5 +1,10 @@
+<?php
+
+use App\OrderAssigned;
+use App\Helpers\Helper;
+?>
 @extends('layouts.main')
- @section('content')
+@section('content')
 
 <!-- Begin Page Content -->
 <div style="margin: 0px 10px 10px 10px">
@@ -17,17 +22,16 @@
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6d00 30%, #ffb278 85%); border-radius: 0px; color: white">
+      <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6d00 30%, #ffb278 85%); border-radius: 0px; color: white">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col-auto">
               <i class="fas fa-car fa-2x text-light-300"></i>
             </div>
-                                            <div class="col ml-5">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1">Total Rides
-                (Monthly)</div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">767</div>
+            <div class="col ml-5">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Total Deliveries
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-light-800">{{Helper::getDeliveryCount()->count()}}</div>
             </div>
 
           </div>
@@ -37,17 +41,16 @@
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-                    <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6275 40%, #ff9caa 75%); border-radius: 0px; color: white;">
+      <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6275 40%, #ff9caa 75%); border-radius: 0px; color: white;">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col-auto">
               <i class="fas fa-dollar-sign fa-2x text-light-300"></i>
             </div>
-                                            <div class="col ml-5">
-              <div
-                class="text-xs font-weight-bold  text-uppercase mb-1">Total Earning
-                (Monthly)</div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">$215,000</div>
+            <div class="col ml-5">
+              <div class="text-xs font-weight-bold  text-uppercase mb-1">Total Earning
+              </div>
+              <div class="h5 mb-0 font-weight-bold text-light-800">Rs:{{Helper::getDeliveryCount()->sum('total')}}</div>
             </div>
 
           </div>
@@ -57,24 +60,21 @@
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card shadow h-100 py-2"  style="background:linear-gradient(to right, #ff976a 40%, #ffc1a3 75%); border-radius: 0px; color: white;">
+      <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #ff976a 40%, #ffc1a3 75%); border-radius: 0px; color: white;">
         <div class="card-body">
           <div class="row no-gutters align-items-center">
             <div class="col-auto">
               <i class="fas fa-cart-arrow-down fa-2x text-light-300"></i>
             </div>
-                                            <div class="col ml-5">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
+            <div class="col ml-5">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
               <div class="row no-gutters align-items-center">
                 <div class="col-auto">
-                  <div class="h5 mb-0 mr-3 font-weight-bold text-light-800">85%</div>
+                  <div class="h5 mb-0 mr-3 font-weight-bold text-light-800">{{Helper::getCompleteDeliveries()}}%</div>
                 </div>
                 <div class="col">
                   <div class="progress progress-sm ml-1">
-                    <div class="progress-bar bg-light" role="progressbar"
-                      style="width: 85%" aria-valuenow="50" aria-valuemin="0"
-                      aria-valuemax="100"></div>
+                    <div class="progress-bar bg-light" role="progressbar" style="width: {{Helper::getCompleteDeliveries()}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
                 </div>
               </div>
@@ -92,12 +92,11 @@
             <div class="col-auto">
               <i class="fas fa-cart-plus fa-2x text-light-300"></i>
             </div>
-                                            <div class="col ml-5">
-              <div
-                class="text-xs font-weight-bold text-uppercase mb-1">Pending
-                Orders</div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">18</div>
+            <div class="col ml-5">
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Orders</div>
+              <div class="h5 mb-0 font-weight-bold text-light-800">{{helper::progress()}}</div>
             </div>
+
           </div>
         </div>
       </div>
@@ -112,21 +111,15 @@
     <div class="col-xl-8 col-lg-7">
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
-        <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background-color: #FF976A">
-                                    <h6 class="m-0 font-weight-bold text-white">Earnings Overview</h6>
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background-color: #FF976A">
+          <h6 class="m-0 font-weight-bold text-white">Earnings Overview</h6>
           <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -147,21 +140,15 @@
     <div class="col-xl-4 col-lg-5">
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
-        <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background:  linear-gradient(to right, #ff6d00 30%, #ffb278 85%);">
+        <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between" style="background:  linear-gradient(to right, #ff6d00 30%, #ffb278 85%);">
           <h6 class="m-0 font-weight-bold text-white">Orders Summary</h6>
           <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink1">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink1">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -172,14 +159,13 @@
         <!-- Card Body -->
         <div class="card-body">
           <div class="chart-pie pt-4 pb-2">
-            <canvas id="myPieChart"></canvas>
+            <canvas id="order_summary"></canvas>
           </div>
           <div class="mt-4 text-center small">
-            <span class="mr-2"> <i class="fas fa-circle text-primary"></i>
+            <span class="mr-2"> <i class="fas fa-circle text-success"></i>
               Completed
-            </span> <span class="mr-2"> <i class="fas fa-circle text-danger"></i>
-              Rejected
-            </span> <span class="mr-2"> <i class="fas fa-circle text-info"></i>
+            </span>
+            <span class="mr-2" data-toggle="tooltip" title="<?php echo helper::progress() ?>"> <i class="fas fa-circle text-warning"></i>
               InProgress
             </span>
           </div>
@@ -193,21 +179,15 @@
     <div class="col-xl-8 col-lg-7">
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
-        <div
-          class="card-header py-3 d-flex bg-success flex-row align-items-center justify-content-between">
+        <div class="card-header py-3 d-flex bg-success flex-row align-items-center justify-content-between">
           <h6 class="m-0 font-weight-bold text-white">Order Details</h6>
           <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink2">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink2">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -226,21 +206,15 @@
     <div class="col-xl-4 col-lg-5">
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
-        <div
-          class="card-header py-3 bg-secondary d-flex flex-row align-items-center justify-content-between">
+        <div class="card-header py-3 bg-secondary d-flex flex-row align-items-center justify-content-between">
           <h6 class="m-0 font-weight-bold text-white">Menu Categories</h6>
           <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink3" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink3">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink3">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -266,18 +240,13 @@
       <div class="card shadow mb-4">
         <div class="card-header bg-info py-3 d-flex flex-row align-items-center justify-content-between">
           <h6 class="m-0 font-weight-bold text-white">Menu Items</h6>
-                                        <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
+          <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -286,81 +255,34 @@
           </div>
         </div>
         <div class="card-body">
+          @foreach($data as $key => $item)
           <h4 class="small font-weight-bold">
-            Low Carb Angus Burger <span class="float-right">26</span>
+            {{$item->name}}
+            <span class="float-right">{{$item->total}}</span>
           </h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-danger" role="progressbar"
-              style="width: 12%" aria-valuenow="12" aria-valuemin="0"
-              aria-valuemax="100"></div>
+            <div class="progress-bar {{
+              $item->total > 200 ? 'bg-success' // if
+            : ($item->total > 100 ? 'bg-primary' // elseif
+                : ($item->total >= 50 && $item->total < 100 ? 'bg-warning'// elseif
+                    : 'bg-danger'))
+            }}" role="progressbar" style="width: <?php echo $item->total / $getTotal * 100 ?>%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-          <h4 class="small font-weight-bold">
-            Crispy Curls Fries <span class="float-right">229</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-success" role="progressbar"
-              style="width: 76%" aria-valuenow="76" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Super Star Chicken Fillet <span class="float-right">196</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-primary" role="progressbar" style="width: 65%"
-              aria-valuenow="65" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Jalapeno Burger <span class="float-right">115</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-warning" role="progressbar"
-              style="width: 40%" aria-valuenow="40" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-                                        <h4 class="small font-weight-bold">
-            Mushroom N Swiss Burger <span class="float-right">149</span>
-          </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-warning" role="progressbar"
-              style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Super Star Burger <span class="float-right">269</span>
-          </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-success" role="progressbar"
-              style="width: 90%" aria-valuenow="90" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Classic Angus Thickburger <span class="float-right">50</span>
-          </h4>
-          <div class="progress">
-            <div class="progress-bar bg-secondary" role="progressbar"
-              style="width: 25%" aria-valuenow="25" aria-valuemin="0"
-              aria-valuemax="100"></div>
-          </div>
-
+          @endforeach
         </div>
       </div>
-                </div>
-                <div class="col-sm-6">
+    </div>
+    <div class="col-sm-6">
       <div class="card shadow mb-4">
         <div class="card-header bg-warning py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold" style="color: black">Hardees Branches</h6>
-                                        <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button"
-              id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-              aria-expanded="false"> <i
-              class="fas fa-ellipsis-v fa-sm fa-fw text-dark-400"></i>
+          <h6 class="m-0 font-weight-bold" style="color: black">Hardees Branches</h6>
+          <div class="dropdown no-arrow">
+            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-dark-400"></i>
             </a>
-            <div
-              class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-              aria-labelledby="dropdownMenuLink">
+            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink">
               <a class="dropdown-item" href="#">Today</a>
               <a class="dropdown-item" href="#">Yesterday</a>
-                                                        <a class="dropdown-item" href="#">Last 7 Days</a>
+              <a class="dropdown-item" href="#">Last 7 Days</a>
               <a class="dropdown-item" href="#">Last Month</a>
               <a class="dropdown-item" href="#">Last 3 Month</a>
               <a class="dropdown-item" href="#">Last 6 Month</a>
@@ -370,94 +292,127 @@
         </div>
         <div class="card-body">
           <h4 class="small font-weight-bold">
-            M.M Alam <span class="float-right">536535</span>
+            M.M Alam <span class="float-right">53653</span>
           </h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-success" role="progressbar"
-              style="width: 89%" aria-valuenow="89" aria-valuemin="0"
-              aria-valuemax="100"></div>
+            <div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees DHA <span class="float-right">212352</span>
           </h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-primary" role="progressbar"
-              style="width: 60%" aria-valuenow="60" aria-valuemin="0"
-              aria-valuemax="100"></div>
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees Emporium Mall <span class="float-right">196550</span>
           </h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 35%"
-              aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees MOG <span class="float-right">96000</span>
           </h4>
           <div class="progress mb-4">
-            <div class="progress-bar bg-danger" role="progressbar"
-              style="width: 20%" aria-valuenow="20" aria-valuemin="0"
-              aria-valuemax="100"></div>
+            <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
-                                        <h4 class="small font-weight-bold">
+          <h4 class="small font-weight-bold">
             Hardees Lalik Chowk <span class="float-right">256100</span>
           </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar"
-              style="width: 50%" aria-valuenow="50" aria-valuemin="0"
-              aria-valuemax="100"></div>
+          <div class="progress" style="margin-bottom: 1.5rem">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees F7 Islamabad <span class="float-right">156700</span>
           </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar"
-              style="width: 45%" aria-valuenow="45" aria-valuemin="0"
-              aria-valuemax="100"></div>
+          <div class="progress" style="margin-bottom: 1.5rem">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees Thokar Niaz Baig <span class="float-right">235650</span>
           </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-primary" role="progressbar"
-              style="width: 68%" aria-valuenow="68" aria-valuemin="0"
-              aria-valuemax="100"></div>
+          <div class="progress" style="margin-bottom: 1.5rem">
+            <div class="progress-bar bg-primary" role="progressbar" style="width: 68%" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees Faisalabad <span class="float-right">135000</span>
           </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-warning" role="progressbar"
-              style="width: 35%" aria-valuenow="35" aria-valuemin="0"
-              aria-valuemax="100"></div>
+          <div class="progress" style="margin-bottom: 1.5rem">
+            <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees Fazal Center <span class="float-right">156700</span>
           </h4>
-                                    <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar"
-              style="width: 45%" aria-valuenow="45" aria-valuemin="0"
-              aria-valuemax="100"></div>
+          <div class="progress" style="margin-bottom: 1.5rem">
+            <div class="progress-bar bg-info" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
           <h4 class="small font-weight-bold">
             Hardees Guldasht Colony Multan <span class="float-right">132550</span>
           </h4>
           <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar"
-              style="width: 29%" aria-valuenow="29" aria-valuemin="0"
-              aria-valuemax="100"></div>
+            <div class="progress-bar bg-warning" role="progressbar" style="width: 29%" aria-valuenow="29" aria-valuemin="0" aria-valuemax="100"></div>
           </div>
 
         </div>
       </div>
-                </div>
-        </div>
-
-
+    </div>
   </div>
-
-<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+</div>
 
 @endsection
+<script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
+<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
+<script type="text/javascript">
+  $(document).ready(function() {
+    $.noConflict();
+    var ctx = document.getElementById("order_summary");
+    var order_summary = new Chart(ctx, {
+      type: "doughnut",
+      data: {
+        labels: ["Completed", "Inprogress"],
+        datasets: [{
+          data: [<?php echo Helper::complete() ?>, <?php echo Helper::progress() ?>],
+          backgroundColor: ["#1cc88a", "#fcbd12", ],
+          hoverBorderColor: "rgba(234, 236, 244, 1)",
+        }, ],
+      },
+      options: {
+        maintainAspectRatio: false,
+        tooltips: {
+          backgroundColor: "rgb(255,255,255)",
+          bodyFontColor: "#858796",
+          borderColor: "#dddfeb",
+          borderWidth: 1,
+          xPadding: 15,
+          yPadding: 15,
+          displayColors: false,
+          caretPadding: 10,
+        },
+        legend: {
+          display: false,
+        },
+        cutoutPercentage: 70,
+      },
+    });
+
+    var chart = new CanvasJS.Chart("pyramid-chart", {
+
+      animationEnabled: true,
+      data: [{
+        type: "pyramid",
+        //valueRepresents: "area",
+        indexLabelFontSize: 15,
+        indexLabelFontFamily: "Lucida",
+        dataPoints: [
+          <?php foreach ($data as $item) { ?> {
+              y: <?php echo $item->total ?>,
+              indexLabel: "<?php echo $item->name ?>"
+            },
+          <?php } ?>
+        ]
+      }]
+    });
+    chart.render();
+
+  });
+</script>

@@ -37,7 +37,7 @@
  						<div class="col ml-5">
  							<div class=" font-weight-bold  text-uppercase mb-1" style="font-size:13px">Total Delivery Boys
  								(Online)</div>
- 							<div id="online" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">{{ App\Rider::where('eStatus', App\Rider::STATUS_ONLINE)->count() }}</div>
+ 							<div id="online" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">5</div>
  						</div>
 
  					</div>
@@ -54,7 +54,7 @@
  						<div class="col ml-5">
  							<div class="text-xs font-weight-bold  text-uppercase mb-1" style="font-size:13px">Total Delivery Boys
  								(Offline)</div>
- 							<div id="offline" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">{{ App\Rider::where('eStatus', App\Rider::STATUS_OFFLINE)->count() }}</div>
+ 							<div id="offline" class="h5 mb-0 font-weight-bold text-light-800" style="font-size:25px">8</div>
  						</div>
 
  					</div>

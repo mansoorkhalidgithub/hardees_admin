@@ -9,6 +9,7 @@ use App\Category;
 use App\Restaurant;
 use App\PaymentMethod;
 use App\CurrencySymbols;
+use App\Order;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
@@ -54,6 +55,11 @@ class Helper
         return Rider::get()->count();
     }
 
+    public static function getDeliveryCount()
+    {
+        return Order::get();
+    }
+
     public static function getPaymentMethods()
     {
         return PaymentMethod::all();
@@ -72,5 +78,22 @@ class Helper
     public static function branch()
     {
         return Restaurant::select('id', 'name')->get();
+    }
+
+    public static function getCompleteDeliveries()
+    {
+        $total = Order::all()->count();
+        $complete = Order::where('status', 10)->count();
+        return $complete / $total * 100;
+    }
+
+    public static function complete()
+    {
+        return Order::where('status', '=', 10)->count();
+    }
+
+    public static function progress()
+    {
+        return Order::where('status', 9)->count();
     }
 }

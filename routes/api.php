@@ -72,8 +72,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 /********** End Customer Side API's ***************************/
 
 // Rider Api Starting Point By Qadeer
-
 Route::post('rider-register', 'Api\RiderApiController@riderRegister');
+
 Route::post('rider-login', 'Api\RiderApiController@riderLogin');
 
 Route::post('tripmanage', 'Api\RiderApiController@tripManage');
@@ -83,5 +83,7 @@ Route::post('request-rejected', 'Api\RiderApiController@requestRejected');
 Route::post('store-review', 'Api\RiderApiController@storeReview');
 
 Route::post('earning-detail', 'Api\RiderApiController@earningDetail');
+
+Route::post('rider-detail', 'Api\RiderApiController@riderDetail');
 
 // Rider Api Ending Point By Qadeer

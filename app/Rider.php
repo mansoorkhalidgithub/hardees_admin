@@ -10,10 +10,6 @@ use Spatie\Permission\Traits\HasRoles;
 class Rider extends Authenticatable
 {
     use HasApiTokens, HasRoles, Notifiable;
-    const STATUS_ACTIVE = 1;
-    const STATUS_INACTIVE = 0;
-    const STATUS_ONLINE = 10;
-    const STATUS_OFFLINE = 9;
     protected $fillable = [
         'username',
         'first_name',

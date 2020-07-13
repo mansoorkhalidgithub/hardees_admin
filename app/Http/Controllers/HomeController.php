@@ -2,6 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Helpers\Helper;
+use App\OrderItem;
+use Illuminate\Support\Facades\DB;
+
 class HomeController extends Controller
 {
 	/**
@@ -21,7 +25,20 @@ class HomeController extends Controller
 	 */
 	public function index()
 	{
-		return view('home');
+		$getTotal = OrderItem::all()->sum('item_quantity');
+		$data = DB::table('order_items')
+			->join('menu_items', 'order_items.menu_item_id', 'menu_items.id')
+			->select(
+				DB::raw('menu_items.name as name'),
+				DB::raw('sum(item_quantity) as total'),
+			)
+			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
+			->limit(Helper::getRestaurants()->count())
+			->get();
+
+		// print_r($data);
+		// die;
+		return view('home', compact('data', 'getTotal'));
 	}
 	//
 	//

@@ -3,16 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\City;
-use App\Country;
 use App\User;
 use App\Rider;
-use App\Helpers\Helper;
-use App\Http\Requests\RiderRequest;
-use App\Restaurant;
 use App\State;
+use App\Country;
+use App\Restaurant;
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
+use App\Http\Requests\RiderRequest;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
 
@@ -87,7 +88,7 @@ class RiderController extends Controller
 
         // print_r($data);
         // die;
-        $rider = Rider::create($data);
+        $rider = User::create($data);
         Session::flash('success', 'New User created successfully');
         return Redirect::route('rider.index');
     }
@@ -196,11 +197,13 @@ class RiderController extends Controller
         $offline = '';
         if (isset($request) && !empty($request->name)) {
             $city_id = City::where('name', '=', $request->name)->firstOrFail();
-            $total = Rider::where('city_id', '=', $city_id->id)->count();
-            $online = Rider::where('eStatus', '=', Rider::STATUS_ONLINE)
-                ->where('city_id', '=', $city_id->id)->count();
-            $offline = Rider::where('eStatus', '=', Rider::STATUS_OFFLINE)
-                ->where('city_id', '=', $city_id->id)->count();
+            $total = User::where('city_id', '=', $city_id->id)->count();
+            // $online = User::where('eStatus', '=', Config::get('constants.STATUS_ONLINE'))
+            //     ->where('city_id', '=', $city_id->id)->count();
+            // $offline = User::where('eStatus', '=', Config::get('constants.STATUS_OFFLINE'))
+            //     ->where('city_id', '=', $city_id->id)->count();
+            $online = 1;
+            $offline = 0;
             if (!$city_id->id) {
                 $html = '<option value="">Select Branch</option>';
             } else {
@@ -245,11 +248,13 @@ class RiderController extends Controller
             $country_id = Country::where('name', '=', $request->name)
                 ->where('status', '=', 1)
                 ->firstOrFail();
-            $total = Rider::where('country_id', '=', $country_id->id)->count();
-            $online = Rider::where('eStatus', '=', Rider::STATUS_ONLINE)
-                ->where('country_id', '=', $country_id->id)->count();
-            $offline = Rider::where('eStatus', '=', Rider::STATUS_OFFLINE)
-                ->where('country_id', '=', $country_id->id)->count();
+            $total = User::where('country_id', '=', $country_id->id)->count();
+            // $online = User::where('eStatus', '=', Config::get('constants.STATUS_ONLINE'))
+            //     ->where('country_id', '=', $country_id->id)->count();
+            // $offline = User::where('eStatus', '=', Config::get('constants.STATUS_OFFLINE'))
+            //     ->where('country_id', '=', $country_id->id)->count();
+            $online = 5;
+            $offline = 1;
             if (!$country_id->id) {
                 $html = '<option value="">Select State</option>';
             } else {
@@ -300,7 +305,7 @@ class RiderController extends Controller
 
     public function delivery_boy_management()
     {
-        $model = Rider::all();
+        $model = User::role('rider')->get();
         foreach ($model as $key => $rider) {
             $city[] = $rider->city->name;
             $cities = array_unique($city);
@@ -314,7 +319,7 @@ class RiderController extends Controller
     public function status($id)
     {
         $rider = $this->findModel($id);
-        $st = $rider->status === Rider::STATUS_ACTIVE ? Rider::STATUS_INACTIVE : Rider::STATUS_ACTIVE;
+        $st = $rider->status === Config::get('constants.STATUS_ACTIVE') ? Config::get('constants.STATUS_INACTIVE') : Config::get('constants.STATUS_ACTIVE');
         $rider->status = $st;
         $rider->save();
         return redirect()->back();
@@ -323,7 +328,7 @@ class RiderController extends Controller
     public function eStatus($id)
     {
         $rider = $this->findModel($id);
-        $st = $rider->eStatus === Rider::STATUS_ONLINE ? Rider::STATUS_OFFLINE : Rider::STATUS_ONLINE;
+        $st = $rider->eStatus === Config::get('constants.STATUS_ONLINE') ? Config::get('constants.STATUS_OFFLINE') : Config::get('constants.STATUS_ONLINE');
         $rider->eStatus = $st;
         $rider->save();
         return redirect()->back();
