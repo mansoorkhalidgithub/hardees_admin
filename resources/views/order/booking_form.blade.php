@@ -325,22 +325,22 @@
 			
 			e.preventDefault();
 			
-			// var bookingForm = $("#msform");
+			var bookingForm = $("#msform");
 			
-			// var validator = bookingForm.validate({
+			var validator = bookingForm.validate({
 				
-				// rules:{
-					// first_name : {
-						// required : true 
-					// },
-				// },
-				// messages:{
-					// first_name :{
-						// required : "This field is required"
-					// },
+				rules:{
+					first_name : {
+						required : true 
+					},
+				},
+				messages:{
+					first_name :{
+						required : "This field is required"
+					},
 					
-				// });
-			// });
+				});
+			});
 			
 			current_fs = $(this).parent();
 			next_fs = $(this).parent().next();

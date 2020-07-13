@@ -100,9 +100,6 @@ class OrderApiController extends Controller {
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Item add to cart successfully',
-			'data' => [
-				
-			]
 		];
 		
 		return response()->json($response);
@@ -126,6 +123,67 @@ class OrderApiController extends Controller {
 		];
 		
 		return response()->json($response);		
+	}
+	
+	public function addQuantity(Request $request)
+	{
+		$cart = Cart::where('id', $request->cart_id)->first();
+		
+		$newQuantity = 0;
+		if(!empty($cart))
+		{
+			$newQuantity = $cart->quantity + 1;
+		}
+		
+		Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
+		
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Quantiyt updated successfully',
+		];
+		
+		return response()->json($response);	
+	}
+	
+	public function removeQuantity(Request $request)
+	{
+		$cart = Cart::where('id', $request->cart_id)->first();
+		
+		$newQuantity = 0;
+		if(!empty($cart))
+		{
+			if($cart->quantity > 0) :
+				$newQuantity = $cart->quantity - 1;
+			endif;
+		}
+		
+		Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
+		
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Quantiyt updated successfully',
+		];
+		
+		return response()->json($response);	
+	}
+	
+	public function deleteCart(Request $request)
+	{
+		$userId = Auth::user()->id;
+		
+		$cartItems = Cart::where('user_id', $userId)->pluck('id');
+		
+		Cart::destroy($cartItems);
+		
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'User cart removed successfully',
+		];
+		
+		return response()->json($response);	
 	}
 
 	public function updateCart(Request $request) {
