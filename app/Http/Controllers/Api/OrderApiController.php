@@ -13,7 +13,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class OrderApiController extends Controller {
+	
 	public function __construct() {
+		
 	}
 
 	public function placeOrder(Request $request) {
@@ -81,26 +83,36 @@ class OrderApiController extends Controller {
 		return response()->json($response);
 	}
 
-	public function addCart(Request $request) {
+	public function addCart(Request $request)
+	{
 		$data = $request->all();
-		$data['user_id'] = $request->access_token;
+		
+		$userId = Auth::user()->id;
+		
+		$data['user_id'] = $userId;
 		$data['status'] = 0;
+		
 		$cart = Cart::create($data);
+		
 		$cartRefrence = Helper::orderReference($cart->id);
+		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Value Add in Cart successfully',
+			'message' => 'Item add to cart successfully',
 			'data' => [
-				'cart_reference' => $cartRefrence,
-				'cart' => $cart,
-			],
+				
+			]
 		];
+		
 		return response()->json($response);
 	}
 
-	public function getCart(Request $request) {
-		$cart = Cart::where('user_id', '=', $request->access_token)
+	public function getCart(Request $request)
+	{
+		$userId = Auth::user()->id;
+		
+		$cart = Cart::with('item')->where('user_id', '=', $userId)
 			->where('status', '=', 0)->get();
 		$cart->each->append(
 			'total'
@@ -110,19 +122,10 @@ class OrderApiController extends Controller {
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Get Cart Successfully',
-			'data' => $cart,
+			'data' => $cart
 		];
-		if ($cart->count() > 0) {
-			return response()->json($response);
-		} else {
-			$response = [
-				'status' => 0,
-				'method' => $request->route()->getActionMethod(),
-				'message' => 'Cart Is Empty',
-				// 'data' => $cart
-			];
-			return response()->json($response);
-		}
+		
+		return response()->json($response);		
 	}
 
 	public function updateCart(Request $request) {

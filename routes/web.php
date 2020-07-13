@@ -116,7 +116,7 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
-	Route::resource('booking', 'BookingController');
+	Route::get('booking', 'BookingController@index')->name('booking');
 	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
 });
 Route::group([
@@ -165,7 +165,7 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Waqar Ahmad Routes
 
-Route::get('/booking', 'HomeController@booking')->name('booking');
+//Route::get('/booking', 'HomeController@booking')->name('booking');
 
 Route::get('/booking_show', 'HomeController@booking_show')->name('booking_show');
 

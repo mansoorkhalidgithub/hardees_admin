@@ -18,9 +18,6 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 	return $request->user();
 });
 
-Route::post('signup', 'Api\AuthApiController@signup');
-Route::post('login', 'Api\AuthApiController@login');
-Route::post('forgot-password', 'Api\AuthApiController@forgetPassword');
 // retaurant apis
 Route::post('restaurantlogin', 'Api\RestaurantApiController@login');
 Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
@@ -33,6 +30,13 @@ Route::post('restaurant/order-readyforpickup', 'Api\RestaurantApiController@orde
 
 // Route::group(['middleware' => 'auth:api'], function () {;});
 ///////////////////////////////////
+
+/********** Start Customer Side API's ***************************/
+
+Route::post('signup', 'Api\AuthApiController@signup');
+Route::post('login', 'Api\AuthApiController@login');
+Route::post('forgot-password', 'Api\AuthApiController@forgetPassword');
+
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('get-profile', 'Api\CustomerApiController@profile');
 	Route::post('update-profile', 'Api\CustomerApiController@updateProfile');
@@ -42,7 +46,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('get-slider', 'Api\HardeesApiController@getSlider');
-	Route::get('get-menu-', 'Api\HardeesApiController@menu');
+	Route::get('get-menu', 'Api\HardeesApiController@menu');
 	Route::get('get-single-items', 'Api\HardeesApiController@singleItems');
 	Route::get('get-special-offers', 'Api\HardeesApiController@getSpecialOffers');
 	Route::get('get-categories', 'Api\HardeesApiController@getCategories');
@@ -55,11 +59,17 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
 });
 
-Route::post('add-to-cart', 'Api\OrderApiController@addCart');
-Route::post('update-cart', 'Api\OrderApiController@updateCart');
-Route::post('get-cart', 'Api\OrderApiController@getCart');
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('add-to-cart', 'Api\OrderApiController@addCart');
+	Route::post('update-cart', 'Api\OrderApiController@updateCart');
+	Route::post('get-cart', 'Api\OrderApiController@getCart');
+});
+
+
+/********** End Customer Side API's ***************************/
 
 // Rider Api Starting Point By Qadeer
+
 Route::post('rider-register', 'Api\RiderApiController@riderRegister');
 Route::post('rider-login', 'Api\RiderApiController@riderLogin');
 

@@ -9,9 +9,15 @@ class Cart extends Model
     // protected $price;
     // protected $total;
     protected $table = 'cart';
+	
     protected $fillable = [
         'item_id', 'user_id', 'status', 'quantity'
     ];
+	
+	public function item()
+	{
+		return $this->belongsTo(MenuItem::class, 'item_id');
+	}
 
     public function getTotalAttribute()
     {

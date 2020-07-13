@@ -6,6 +6,7 @@ use App\Deal;
 use App\Slider;
 use App\MenuItem;
 use App\MenuCategory;
+use App\DealCategory;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -46,6 +47,22 @@ class HardeesApiController extends Controller
             'message' => 'Menu fetched successfully',
 			'data' => [
 				'menuCategories' => $singleItems
+			]
+        ];
+
+        return response()->json($response);
+	}
+	
+	public function getDeals(Request $request)
+	{
+		$dealCategories = DealCategory::with('deals')->get();
+		
+		$response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => 'Get deals by categories ',
+			'data' => [
+				'dealCategories' => $dealCategories
 			]
         ];
 
@@ -97,21 +114,7 @@ class HardeesApiController extends Controller
         return response()->json($response);
 	}
 	
-	public function getDeals(Request $request)
-	{
-		$deals = Deal::all();
-		
-		$response = [
-            'status' => 1,
-            'method' => $request->route()->getActionMethod(),
-            'message' => 'Get deals ',
-			'data' => [
-				'deals' => $deals
-			]
-        ];
-
-        return response()->json($response);
-	}
+	
 	
 	public function getSpecialOffers(Request $request)
 	{
