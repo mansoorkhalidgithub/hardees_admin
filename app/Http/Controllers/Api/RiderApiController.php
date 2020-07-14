@@ -15,6 +15,7 @@ use App\Helpers\Helper;
 use App\RiderEarningSummary;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\TripStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -75,6 +76,7 @@ class RiderApiController extends Controller
                     "latitude" => $request->latitude,
                 ];
                 $loggedInRider->update($data);
+
                 $role = $loggedInRider->roles->pluck('name');
                 $tokenResult = $loggedInRider->createToken('rider');
                 $token = $tokenResult->token;
@@ -168,66 +170,68 @@ class RiderApiController extends Controller
         $user_id = $request->user_id;
         $rider_id = $request->rider_id;
         $order_id = $request->order_id;
-        $status = $request->status;
+        $status = TripStatus::where('name', '=', $request->status)->first();
+        // echo $status->name;
+        // die;
         $user  = User::find($user_id);
         $order = Order::with('orderItems.items')
             ->where('id', $order_id)->firstOrFail();
 
         $restaurant = Restaurant::find($order->restaurant_id);
         // Delivery Rejected
-        if ($status == Config::get('constants.STATUS_REJECT')) {
+        if ($status->name == Config::get('constants.STATUS_REJECT')) {
             $data = [
                 'order_id' => $request->order_id,
                 'rider_id' => $request->rider_id,
-                'status' => $status
+                'trip_status_id' => $status->id
             ];
             $order = OrderAssigned::create($data);
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
-                'message' => "Order Rejected By Rider",
+                'message' => $status->description,
                 'data' => $order
             ];
             return response()->json($response);
         }
 
         // Delivery Accepted
-        if ($status == Config::get('constants.STATUS_ACCEPT')) {
+        if ($status->name == Config::get('constants.STATUS_ACCEPT')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
-            $message = 'DELIVERY_ACCPETED !';
+            // $message = $status->description;
             $eta = 45;
         }
 
         // Rider Arrived 
-        if ($status == Config::get('constants.STATUS_ARRIVED')) {
+        if ($status->name == Config::get('constants.STATUS_ARRIVED')) {
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
-                'message' => "Rider Arrived",
+                'message' => $status->description,
             ];
             return response()->json($response);
         }
 
         // Rider Pickup
-        if ($status == Config::get('constants.STATUS_PICKUP')) {
+        if ($status->name == Config::get('constants.STATUS_PICKUP')) {
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
-                'message' => "Order Pickup by Rider",
+                'message' => $status->description,
             ];
             return response()->json($response);
         }
 
         // Delivery Started
-        if ($status == Config::get('constants.STATUS_START_DELIVERY')) {
+        if ($status->name == Config::get('constants.STATUS_START_DELIVERY')) {
             // session_start();
             // $_SESSION['start_time'][$rider_id][$order_id] = date('Y-m-d h:i:s');
-            $message = "START_DELIVERY";
+            // $message = $status->description;
             $data = [
                 'order_id' => $order_id,
                 'rider_id' => $rider_id,
-                'status' => Config::get('constants.STATUS_START_DELIVERY')
+                'trip_status_id' => $status->id
             ];
             OrderAssigned::updateOrCreate($data);
             $lat2 = $order->latitude;
@@ -235,7 +239,7 @@ class RiderApiController extends Controller
         }
 
         // Delivery Complete
-        if ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY')) {
+        if ($status->name == Config::get('constants.STATUS_COMPLETE_DELIVERY')) {
             $validator = Validator::make($request->all(), [
                 'end_lat' => 'required',
                 'end_long' => 'required',
@@ -255,11 +259,12 @@ class RiderApiController extends Controller
             $order->latitude = $lat2;
             $order->longitude = $lon2;
             $order->save();
-            $message = 'DELIVERY_COMPLETED !';
+            // $message = $status->description;
+            $order_status = TripStatus::where('name', '=', 'TS')->first();
             $order_assigned = OrderAssigned::where('order_id', $order_id)
                 ->where('rider_id', $rider_id)
-                ->where('status', Config::get('constants.STATUS_START_DELIVERY'))->first();
-            $order_assigned->status = Config::get('constants.STATUS_COMPLETE_DELIVERY');
+                ->where('trip_status_id', $order_status->id)->first();
+            $order_assigned->trip_status_id = $status->id;
             $order_assigned->save();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
@@ -268,21 +273,23 @@ class RiderApiController extends Controller
         }
 
         // Cash Collected
-        if ($status == Config::get('constants.STATUS_CASH_COLLECTED')) {
+        if ($status->name == Config::get('constants.STATUS_CASH_COLLECTED')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
             // session_start();
             // $start_time = $_SESSION['start_time'][$rider_id][$order_id];
             // unset($_SESSION['start_time'][$rider_id][$order_id]);
-
+            // echo $status->id;
+            // die;
+            $order_status = TripStatus::where('name', '=', 'TC')->first();
             $order_assigned = OrderAssigned::where('order_id', $order_id)
                 ->where('rider_id', $rider_id)
-                ->where('status', Config::get('constants.STATUS_COMPLETE_DELIVERY'))->first();
+                ->where('trip_status_id', $order_status->id)->first();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
 
             $total_time = date_diff($end, $start);
-            $message = "CASH_COLLECTED";
+            // $message = $status->description;
 
             // $rider_payment = [
             //     'order_id' => $order_id,
@@ -292,6 +299,65 @@ class RiderApiController extends Controller
             // RiderEarningSummary::create($rider_payment);
         }
 
+        // Review By Rider 
+        if ($status->name == Config::get('constants.STATUS_REVIEW')) {
+            $data = [
+                'user_id' => $request->rider_id,
+                'order_id' => $request->order_id,
+                'note' => $request->note,
+                'rating' => $request->rating,
+                'amount' => $request->amount
+            ];
+            $review = Review::updateOrCreate($data);
+            if ($request->has('signatures')) {
+                $image = $request->file('signatures');
+                $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+
+                $destinationPath = public_path('/uploads/signatures');
+                if (!file_exists($destinationPath)) {
+                    mkdir($destinationPath, 0777, true);
+                }
+                $img = Image::make($image->getRealPath());
+                $img->save($destinationPath . '/' . $input['imagename']);
+
+                $signaturePath = 'uploads/signatures/' . $input['imagename'];
+                $signature = [
+                    'review_id' => $review->id,
+                    'review_img' => $signaturePath,
+                    'review_type' => 'signature',
+                ];
+                ReviewDetail::create($signature);
+                // $data['profile_picture'] = $profilePath;
+            }
+            if ($request->has('product_img')) {
+                $images = $request->file('product_img');
+                foreach ($images as $key => $image) {
+                    $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+
+                    $destinationPath = public_path('/uploads/orders');
+                    if (!file_exists($destinationPath)) {
+                        mkdir($destinationPath, 0777, true);
+                    }
+                    $img = Image::make($image->getRealPath());
+                    $img->save($destinationPath . '/' . $input['imagename']);
+
+                    $ordersPath = 'uploads/orders/' . $input['imagename'];
+                    $signature = [
+                        'review_id' => $review->id,
+                        'review_img' => $ordersPath,
+                        'review_type' => 'orders',
+                    ];
+                    ReviewDetail::updateOrCreate($signature);
+                }
+            }
+            $response = [
+                'status' => 1,
+                'method' => $request->route()->getActionMethod(),
+                'message' => $status->description,
+                // 'detail' => $order
+            ];
+            return response()->json($response);
+        }
         $lat1 = $restaurant->latitude;
         $lon1 = $restaurant->longitude;
 
@@ -305,7 +371,7 @@ class RiderApiController extends Controller
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
-            'message' => $message,
+            'message' => $status->description,
 
             'data' => [
                 'name' => $user->name,

@@ -10,6 +10,7 @@ use App\Restaurant;
 use App\PaymentMethod;
 use App\CurrencySymbols;
 use App\Order;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
 
@@ -30,7 +31,7 @@ class Helper
     public static function getStates()
     {
         return State::where('country_id', 166)
-            ->where('status', State::STATUS_ACTIVE)->get();
+            ->where('status', Config::get('constants.STATUS_ACTIVE'))->get();
     }
 
     public static function getCities()
@@ -82,14 +83,14 @@ class Helper
 
     public static function getCompleteDeliveries()
     {
-		$total = 0;
-		
+        $total = 0;
+
         $totalOrders = Order::all()->count();
-		$complete = Order::where('status', 10)->count();
-		
-		if($totalOrders > 0)
-			$total = $complete / $totalOrders * 100;
-		
+        $complete = Order::where('status', 10)->count();
+
+        if ($totalOrders > 0)
+            $total = $complete / $totalOrders * 100;
+
         return $total;
     }
 

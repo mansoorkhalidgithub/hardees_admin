@@ -25,7 +25,7 @@ class RiderRequest extends FormRequest
     public function rules()
     {
         $rules =  [
-            'phone_number' => 'required|numeric',
+            // 'phone_number' => 'required|numeric',
             'profile' => 'mimes:jpeg,jpg,png|max:1000',
             'state_id' => 'required|numeric',
             'city_id' => 'required|numeric',
@@ -37,9 +37,12 @@ class RiderRequest extends FormRequest
             $rules += ['password' => 'required|min:6'];
             $rules += ['confirm_password' => 'required_with:password|same:password|min:6'];
             $rules += ['email' => 'required|unique:users|max:255'];
+            $rules += ['phone_number' => 'required|numeric|unique:users|max:255'];
             // $rules += ['role' => 'required|max:15'];
         } elseif ($this->route()->getActionMethod() == 'update') {
             $rules += ['email' => Rule::unique('users')->ignore($this->id)];
+            $rules += ['phone_number' => Rule::unique('users')->ignore($this->id)];
+            // $rules += ['phone_number' => 'required|numeric|unique:users|max:255'];
         }
         // dd($rules);
         return $rules;

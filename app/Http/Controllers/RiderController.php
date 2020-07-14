@@ -73,7 +73,7 @@ class RiderController extends Controller
             'last_name' => $request->last_name,
             'username' => $ridername,
             'email' => $request->email,
-            'created_by' => auth()->user()->id,
+            // 'created_by' => auth()->user()->id,
             'restaurant_id' => $request->restaurant_id,
             'state_id' => $request->state_id,
             'city_id' => $request->city_id,
@@ -89,6 +89,7 @@ class RiderController extends Controller
         // print_r($data);
         // die;
         $rider = User::create($data);
+        $rider->assignRole('rider');
         Session::flash('success', 'New User created successfully');
         return Redirect::route('rider.index');
     }
@@ -305,12 +306,16 @@ class RiderController extends Controller
 
     public function delivery_boy_management()
     {
+        $cities = '';
+        $countries = '';
         $model = User::role('rider')->get();
-        foreach ($model as $key => $rider) {
-            $city[] = $rider->city->name;
-            $cities = array_unique($city);
-            $country[] = $rider->country->name;
-            $countries = array_unique($country);
+        if (!empty($model)) {
+            foreach ($model as $key => $rider) {
+                $city[] = $rider->city->name;
+                $cities = array_unique($city);
+                $country[] = $rider->country->name;
+                $countries = array_unique($country);
+            }
         }
         // dd($city);
         return view('rider.delivery_boy_management', compact('model', 'cities', 'countries'));

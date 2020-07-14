@@ -11,6 +11,6 @@ class OrderAssigned extends Model
     protected $fillable = [
         'order_id',
         'rider_id',
-        'status'
+        'trip_status_id'
     ];
 }
