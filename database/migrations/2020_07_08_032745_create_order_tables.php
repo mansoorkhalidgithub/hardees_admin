@@ -43,7 +43,7 @@ class CreateOrderTables extends Migration
             $table->double('sub_total', 8, 2)->default(0);
             $table->double('total', 8, 2)->default(0);
             $table->tinyInteger('payment_method_id')->nullable();
-            $table->tinyInteger('status')->default(0);
+            $table->tinyInteger('status')->default(1);
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('customer_address')->nullable();

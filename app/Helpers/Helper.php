@@ -82,9 +82,15 @@ class Helper
 
     public static function getCompleteDeliveries()
     {
-        $total = Order::all()->count();
-        $complete = Order::where('status', 10)->count();
-        return $complete / $total * 100;
+		$total = 0;
+		
+        $totalOrders = Order::all()->count();
+		$complete = Order::where('status', 10)->count();
+		
+		if($totalOrders > 0)
+			$total = $complete / $totalOrders * 100;
+		
+        return $total;
     }
 
     public static function complete()

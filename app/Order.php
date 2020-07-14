@@ -2,12 +2,15 @@
 
 namespace App;
 
+use Helper;
+use App\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-	// const STATUS_START_DELIVERY     = 6;
 	protected $with = ['orderItems'];
+	
+	protected $appends = ['order_reference', 'status_html'];
 
 	protected $fillable = [
 		'restaurant_id',
@@ -26,12 +29,9 @@ class Order extends Model
 
 	public function orderItems()
 	{
-		$data = $this->hasMany(OrderItem::class, 'order_id');
-		// $data->each->append(
-		// 	'Name'
-		// );
-		return $data;
+		return $this->hasMany(OrderItem::class, 'order_id');
 	}
+	
 	public function getorderItemsWithNameAttribute()
 	{
 		$data = OrderItem::where('order_id', $this->id)->get();
@@ -91,7 +91,6 @@ class Order extends Model
 	}
 	public function getbookingNoAttribute()
 	{
-
 		return $this->id;
 	}
 	public function restaurant()
@@ -102,5 +101,19 @@ class Order extends Model
 	public function customer()
 	{
 		return $this->hasOne(User::class, 'id', 'user_id');
+	}
+	
+	public function getOrderReferenceAttribute()
+	{
+		return Helper::orderReference($this->id);
+	}
+	
+	public function getStatusHtmlAttribute()
+	{
+		$orderStatus = OrderStatus::where('id', $this->status)->pluck('name');
+		
+		$html = '<span class="btn btn-success btn-sm">' . $orderStatus[0] . '<span>';
+		
+		return $html;
 	}
 }

@@ -44,6 +44,17 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
+	Route::get('orders', 'OrderController@index')->name('orders');
+	Route::get('new-orders', 'OrderController@newOrders')->name('new-orders');
+	Route::get('booking', 'BookingController@index')->name('booking');
+	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
+	Route::get('order-status', 'OrderController@orderStatus')->name('order-status');
+});
+
+
+Route::group([
+	'middleware' => 'auth',
+], function () {
 	Route::get('restaurants', 'RestaurantController@index')->name('restaurants');
 	Route::get('add-restaurant', 'RestaurantController@add')->name('add-restaurant');
 	Route::get('edit-restaurant/{id}', 'RestaurantController@edit')->name('restaurant.edit');
@@ -113,12 +124,7 @@ Route::group([
 	Route::post('getStates', 'RiderController@getStates')->name('rider.states');
 });
 
-Route::group([
-	'middleware' => 'auth',
-], function () {
-	Route::get('booking', 'BookingController@index')->name('booking');
-	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
-});
+
 Route::group([
 	'middleware' => 'auth',
 ], function () {
