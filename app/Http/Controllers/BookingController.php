@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\MenuItem;
+use App\MenuCategory;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -14,7 +16,10 @@ class BookingController extends Controller
      */
     public function index()
     {
-        return view('order.booking_form');
+		$itemCategories = MenuCategory::all();
+		$items = MenuItem::all();
+		
+        return view('order.booking_form', compact('itemCategories', 'items'));
     }
 
     /**

@@ -66,6 +66,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart');
+	Route::post('checkout', 'Api\OrderApiController@checkout');
 });
 
 

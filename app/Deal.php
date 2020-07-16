@@ -14,4 +14,10 @@ class Deal extends Model
 	{
 		return $this->hasMany(DealItem::class, 'deal_id');
 	}
+	
+	public function dealCategory()
+	{
+		return $this->belongsTo(DealCategory::class, 'deal_category_id');
+	}
+	
 }

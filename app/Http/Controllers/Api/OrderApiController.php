@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\MenuItem;
 use App\Order;
 use App\OrderItem;
+use App\OrderDeal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -85,21 +86,44 @@ class OrderApiController extends Controller {
 
 	public function addCart(Request $request)
 	{
-		$data = $request->all();
-		
 		$userId = Auth::user()->id;
 		
-		$data['user_id'] = $userId;
-		$data['status'] = 0;
+		$data = [
+			'user_id'  => $userId,
+			'item_id'  => $request->item_id,
+			'quantity'  => $request->quantity,
+			'deal_id'  => $request->deal_id,
+			'deal_quantity'  => $request->deal_quantity,
+		];
 		
-		$cart = Cart::create($data);
+		$cartItem = "";
+		$cartDeal = "";
+		if(isset($request->item_id)) {
+			$cartItem = Cart::where(['user_id' => $userId, 'item_id' => $request->item_id])->first();
+		}
 		
-		$cartRefrence = Helper::orderReference($cart->id);
+		if(isset($request->deal_id)) {
+			$cartDeal = Cart::where(['user_id' => $userId, 'deal_id' => $request->deal_id])->first();
+		}
+		
+		if(!empty($cartItem)) 
+		{
+			$quantity = $cartItem->quantity + $request->quantity;
+			$cartItem->update(['quantity' => $quantity]);
+		} else if(!empty($cartDeal))
+		{
+			$dealQuantity = $cartDeal->deal_quantity + $request->deal_quantity;
+			$cartDeal->update(['deal_quantity' => $dealQuantity]);
+		}
+		else 
+		{
+			$cart = Cart::create($data);
+		}
 		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Item add to cart successfully',
+			'message' => 'success',
 		];
 		
 		return response()->json($response);
@@ -110,16 +134,21 @@ class OrderApiController extends Controller {
 		$userId = Auth::user()->id;
 		
 		$cart = Cart::with('item')->where('user_id', '=', $userId)
-			->where('status', '=', 0)->get();
+			->where('status', '=', 1)->get();
 		$cart->each->append(
 			'total'
 		);
-
+		
+		$grandTotal = $cart->sum('total');
+		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Get Cart Successfully',
-			'data' => $cart
+			'data' => [
+				'cart' => $cart,
+				'cartTotalAmount' => $grandTotal,
+			]
 		];
 		
 		return response()->json($response);		
@@ -132,10 +161,15 @@ class OrderApiController extends Controller {
 		$newQuantity = 0;
 		if(!empty($cart))
 		{
-			$newQuantity = $cart->quantity + 1;
+			if(isset($request->item_id)) {
+				$newQuantity = $cart->quantity + 1;
+				Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
+			}
+			if(isset($request->deal_id)) {
+				$newQuantity = $cart->deal_quantity + 1;
+				Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
+			}	
 		}
-		
-		Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
 		
 		$response = [
 			'status' => 1,
@@ -151,15 +185,14 @@ class OrderApiController extends Controller {
 		$cart = Cart::where('id', $request->cart_id)->first();
 		
 		$newQuantity = 0;
-		if(!empty($cart))
+		if(!empty($cart) && $cart->quantity > 1)
 		{
-			if($cart->quantity > 0) :
-				$newQuantity = $cart->quantity - 1;
-			endif;
+			$newQuantity = $cart->quantity - 1;
+			Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
+			
+		} else {
+			Cart::destroy($request->cart_id);
 		}
-		
-		Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
-		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -212,5 +245,86 @@ class OrderApiController extends Controller {
 			];
 			return response()->json($response);
 		}
+	}
+	
+	public function checkout(Request $request)
+	{
+		$model = new Order;
+		$modelItems = new OrderItem;
+		$modelDeals = new OrderItem;
+		
+		$userId = Auth::user()->id;
+		
+		$cartItems = Cart::where('user_id', $userId)->where('item_id', '!=', null)->pluck('item_id');
+		
+		$menuItems = MenuItem::whereIn('id', $cartItems)->get();
+		
+		$cartDeals = Cart::where('user_id', $userId)->where('deal_id', '!=', null)->pluck('deal_id');
+		
+		$deals = MenuItem::whereIn('id', $cartDeals)->get();
+		
+		$cart = Cart::where('user_id', '=', $userId)
+			->where('status', '=', 1)->get();
+		$cart->each->append(
+			'total'
+		);
+		
+		$total = $cart->sum('total');
+		
+		$orderData = [
+			'user_id' => $userId,
+			'latitude' => $request->latitude,
+			'longitude' => $request->longitude,
+			'customer_address' => $request->customer_address,
+			'order_type_id' => $request->order_type_id,
+			'payment_method_id' => $request->payment_method_id,
+			'sub_total' => $total,
+			'total' => $total,
+		];
+		
+		$newOrder = Order::create($orderData);
+		$orderId = $newOrder->id;
+
+		foreach ($menuItems as $key => $item) {
+			$itemId = $item->id;
+			$itemPrice = $item->price;
+			$itemQunatity = $item->quantity;
+
+			$orderItem = [
+				'order_id' => $orderId,
+				'menu_item_id' => $itemId,
+				'item_price' => $itemPrice,
+				'item_quantity' => $itemQunatity,
+			];
+
+			OrderItem::create($orderItem);
+		}
+		
+		foreach ($deals as $key => $deal) {
+			$dealId = $deal->id;
+			
+			$orderDeals = [
+				'order_id' => $orderId,
+				'deal_id' => $dealId,
+				'deal_quantity' => 1,
+			];
+
+			OrderDeal::create($orderDeals);
+		}
+
+		$contact_number = '111-222-333';
+		$order_reference = Helper::orderReference($orderId);
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Order placed successfully',
+			'data' => [
+				'contact_number' => $contact_number,
+				'order_reference' => $order_reference,
+			],
+		];
+
+		return response()->json($response);
 	}
 }
