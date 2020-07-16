@@ -31,7 +31,7 @@ use App\Helpers\Helper;
             <div class="col ml-5">
               <div class="text-xs font-weight-bold text-uppercase mb-1">Total Deliveries
               </div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">{{Helper::getDeliveryCount()->count()}}</div>
+              <div id="total" class="h5 mb-0 font-weight-bold text-light-800"></div>
             </div>
 
           </div>
@@ -50,7 +50,7 @@ use App\Helpers\Helper;
             <div class="col ml-5">
               <div class="text-xs font-weight-bold  text-uppercase mb-1">Total Earning
               </div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">Rs:{{Helper::getDeliveryCount()->sum('total')}}</div>
+              <div id="totalEarning" class="h5 mb-0 font-weight-bold text-light-800">Rs:</div>
             </div>
 
           </div>
@@ -67,14 +67,14 @@ use App\Helpers\Helper;
               <i class="fas fa-cart-arrow-down fa-2x text-light-300"></i>
             </div>
             <div class="col ml-5">
-              <div class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
+              <div id="completeOrder" class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
               <div class="row no-gutters align-items-center">
                 <div class="col-auto">
-                  <div class="h5 mb-0 mr-3 font-weight-bold text-light-800">{{Helper::getCompleteDeliveries()}}%</div>
+                  <div id="complete" class="h5 mb-0 mr-3 font-weight-bold text-light-800"></div>
                 </div>
                 <div class="col">
                   <div class="progress progress-sm ml-1">
-                    <div class="progress-bar bg-light" role="progressbar" style="width: {{Helper::getCompleteDeliveries()}}%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    <div id="completeOrderBar" class="progress-bar bg-red" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                   </div>
                 </div>
               </div>
@@ -93,8 +93,8 @@ use App\Helpers\Helper;
               <i class="fas fa-cart-plus fa-2x text-light-300"></i>
             </div>
             <div class="col ml-5">
-              <div class="text-xs font-weight-bold text-uppercase mb-1">Pending Orders</div>
-              <div class="h5 mb-0 font-weight-bold text-light-800">{{helper::progress()}}</div>
+              <div class="text-xs font-weight-bold text-uppercase mb-1">Inprogress Orders</div>
+              <div id="progress" class="h5 mb-0 font-weight-bold text-light-800"></div>
             </div>
 
           </div>
@@ -165,7 +165,7 @@ use App\Helpers\Helper;
             <span class="mr-2"> <i class="fas fa-circle text-success"></i>
               Completed
             </span>
-            <span class="mr-2" data-toggle="tooltip" title="<?php echo helper::progress() ?>"> <i class="fas fa-circle text-warning"></i>
+            <span class="mr-2" data-toggle="tooltip" title="<?php echo "12" ?>"> <i class="fas fa-circle text-warning"></i>
               InProgress
             </span>
           </div>
@@ -254,21 +254,8 @@ use App\Helpers\Helper;
             </div>
           </div>
         </div>
-        <div class="card-body">
-          @foreach($data as $key => $item)
-          <h4 class="small font-weight-bold">
-            {{$item->name}}
-            <span class="float-right">{{$item->total}}</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar {{
-              $item->total > 200 ? 'bg-success' // if
-            : ($item->total > 100 ? 'bg-primary' // elseif
-                : ($item->total >= 50 && $item->total < 100 ? 'bg-warning'// elseif
-                    : 'bg-danger'))
-            }}" role="progressbar" style="width: <?php echo $item->total / $getTotal * 100 ?>%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          @endforeach
+        <div class="card-body" id="live_menu_data">
+
         </div>
       </div>
     </div>
@@ -360,7 +347,7 @@ use App\Helpers\Helper;
 
 @endsection
 <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
-<script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+
 
 <script type="text/javascript">
   $(document).ready(function() {
@@ -371,7 +358,7 @@ use App\Helpers\Helper;
       data: {
         labels: ["Completed", "Inprogress"],
         datasets: [{
-          data: [<?php echo Helper::complete() ?>, <?php echo Helper::progress() ?>],
+          data: [],
           backgroundColor: ["#1cc88a", "#fcbd12", ],
           hoverBorderColor: "rgba(234, 236, 244, 1)",
         }, ],
@@ -413,6 +400,38 @@ use App\Helpers\Helper;
       }]
     });
     chart.render();
+
+    var updateChart = function() {
+      $.ajax({
+        url: "{{ route('api.chart') }}",
+        type: 'POST',
+        dataType: 'json',
+        data: {
+          "_token": "{{ csrf_token() }}",
+        },
+        success: function(data) {
+          console.log(data.data[0])
+          completeOrder
+          $('#completeOrder').text('Complete Orders (' + data.data[0] + ')');
+          $('#progress').text(data.data[1]);
+          $('#total').text(data.totalOrders);
+          $('#totalEarning').text('Rs : ' + data.totalEarning);
+          $('#complete').text(data.completeOrders + ' %');
+          $('#completeOrderbar').width(15);
+          $('#live_menu_data').html(data.html)
+          order_summary.data.datasets[0].data = data.data;
+          order_summary.update();
+        },
+        error: function(data) {
+          console.log(data);
+        }
+      });
+    }
+
+    updateChart();
+    setInterval(() => {
+      updateChart();
+    }, 10000);
 
   });
 </script>

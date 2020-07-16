@@ -81,7 +81,8 @@ class RiderApiController extends Controller
                 $tokenResult = $loggedInRider->createToken('rider');
                 $token = $tokenResult->token;
                 $token->expires_at = Carbon::now()->addDays(1);
-
+                $status = ($loggedInRider->status == 1 ?  "Active" : "InActive");
+                $trip_status = ($loggedInRider->status == 1 ?  "Yes" : "No");
                 $response = [
                     'status' => 1,
                     'method' => $request->route()->getActionMethod(),
@@ -99,6 +100,9 @@ class RiderApiController extends Controller
                             "latitude" => $loggedInRider->latitude,
                             "longitude" => $loggedInRider->longitude,
                             "profile_picture" => asset($loggedInRider->profile_picture),
+                            "status" => $status,
+                            "trip_status" => $trip_status,
+                            "notification_status" => "Yes",
                         ],
                         'dataDevices' => [
                             "device_type" => $loggedInRider->device_type,
@@ -258,6 +262,7 @@ class RiderApiController extends Controller
             $lon2 = $request->end_long;
             $order->latitude = $lat2;
             $order->longitude = $lon2;
+            $order->status = 10;
             $order->save();
             // $message = $status->description;
             $order_status = TripStatus::where('name', '=', 'TS')->first();
@@ -269,7 +274,7 @@ class RiderApiController extends Controller
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
 
-            $total_time = date_diff($end, $start);
+            $total_time = date_diff($end, $start)->format('%H:%i:%s');
         }
 
         // Cash Collected
@@ -288,7 +293,8 @@ class RiderApiController extends Controller
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
 
-            $total_time = date_diff($end, $start);
+            $total_time = $end->diff($start)->format('%H:%i:%s');
+            // $total_time = date_diff($end, $start);
             // $message = $status->description;
 
             // $rider_payment = [
@@ -523,11 +529,11 @@ class RiderApiController extends Controller
 
     public function riderDetail(Request $request)
     {
-        $rider_detail = User::where('device_id', '=', $request->device_id)->first();
-        $rider_detail->append(
+        $loggedInRider = User::where('device_id', '=', $request->device_id)->first();
+        $loggedInRider->append(
             'name'
         );
-        if (!$rider_detail) {
+        if (!$loggedInRider) {
             $response = [
                 'status' => 0,
                 'method' => $request->route()->getActionMethod(),
@@ -535,12 +541,53 @@ class RiderApiController extends Controller
             ];
             return response()->json($response);
         }
+        $status = ($loggedInRider->status == 1 ?  "Active" : "InActive");
+        $trip_status = ($loggedInRider->status == 1 ?  "Yes" : "No");
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
             'message' => "Rider Detail",
-            'data' => $rider_detail,
+            'data' => [
+                'datamodel' => [
+                    'rider_id' => $loggedInRider->id,
+                    'first_name' => $loggedInRider->first_name,
+                    'last_name' => $loggedInRider->last_name,
+                    'email' => $loggedInRider->email,
+                    'phone_number' => $loggedInRider->phone_number,
+                    "city" => $loggedInRider->city->name,
+                    "state" => $loggedInRider->state->name,
+                    "country" => $loggedInRider->country->name,
+                    "latitude" => $loggedInRider->latitude,
+                    "longitude" => $loggedInRider->longitude,
+                    "profile_picture" => asset($loggedInRider->profile_picture),
+                    "status" => $status,
+                    "trip_status" => $trip_status,
+                    "notification_status" => "Yes",
+                ],
+                'dataDevices' => [
+                    "device_type" => $loggedInRider->device_type,
+                    "device_name" => $loggedInRider->device_name,
+                    "device_id" => $loggedInRider->device_id,
+                    "device_token" => $loggedInRider->device_token,
+                    "app_version" => $loggedInRider->app_version,
+                    'token_type' => 'Bearer',
+                    // "eLoginWith" => "N",
+                    // "eVisible" => "Y"
+                ],
+                'dataVehicle' => [
+                    "id" => 262,
+                    "plate_number" => "leu-112",
+                    "made_by" => "Suzuki",
+                    "model" => "125",
+                    "color" => "RED",
+                    "image" => asset('images/ic_gallery.jpg'),
+                    "model_year" => "2017",
+                    "vehicle_type_id" => 52,
+                    "title" => "Delivery Lahore"
+                ]
+            ]
         ];
+
         return response()->json($response);
     }
 }

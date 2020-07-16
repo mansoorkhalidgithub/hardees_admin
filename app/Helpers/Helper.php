@@ -93,14 +93,4 @@ class Helper
 
         return $total;
     }
-
-    public static function complete()
-    {
-        return Order::where('status', '=', 10)->count();
-    }
-
-    public static function progress()
-    {
-        return Order::where('status', 9)->count();
-    }
 }

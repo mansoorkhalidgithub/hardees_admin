@@ -26,6 +26,7 @@ Route::group([
 	'middleware' => 'auth',
 ], function () {
 	Route::get('dashboard', 'HomeController@index')->name('dashboard');
+	Route::post('chart', 'HomeController@chart')->name('api.chart');
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('menu', 'MenuController@index')->name('menu');
 	Route::get('orders', 'OrderController@index')->name('orders');

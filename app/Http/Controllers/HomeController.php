@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Helpers\Helper;
+use App\Order;
 use App\OrderItem;
 use Illuminate\Support\Facades\DB;
 
@@ -23,6 +24,54 @@ class HomeController extends Controller
 	 *
 	 * @return \Illuminate\Contracts\Support\Renderable
 	 */
+	public function chart()
+	{
+		$html = '';
+		$completeOrders = 0;
+		$totalOrders = Order::all()->count();
+		$complete = Order::where('status', 10)->count();
+		$totalEarning = Helper::getDeliveryCount()->where('status', '=', 10)->sum('total');
+		if ($totalOrders > 0) {
+			$completeOrders = $complete / $totalOrders * 100;
+			$completeOrders = round($completeOrders, 0);
+		}
+
+		$menuData = DB::table('order_items')
+			->join('menu_items', 'order_items.menu_item_id', 'menu_items.id')
+			->select(
+				DB::raw('menu_items.name as name'),
+				DB::raw('sum(item_quantity) as total'),
+			)
+			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
+			->limit(Helper::getRestaurants()->count())
+			->get();
+		$getTotal = OrderItem::all()->sum('item_quantity');
+		foreach ($menuData as $key => $item) {
+			$html .= '<h4 class="small font-weight-bold">';
+			$html .= $item->name;
+			$html .= '<span class="float-right">';
+			$html .= $item->total;
+			$bgClass = $item->total > 200 ? 'bg-success' // if
+				: ($item->total > 100 ? 'bg-primary' // elseif
+					: ($item->total >= 50 && $item->total < 100 ? 'bg-warning' // elseif
+						: 'bg-danger'));
+
+			$html .= '</span> </h4><div class="progress mb-4">
+				  <div class="progress-bar ' . $bgClass;
+
+			$html .= '" style="width:';
+			$html .= round($item->total / $getTotal * 100);
+
+			$html .= '%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
+				</div>';
+		}
+
+		$complete = Order::where('status', '=', 10)->count();
+		$inprogress = Order::where('status', 1)->count();
+		$data = [$complete, $inprogress];
+
+		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders'));
+	}
 	public function index()
 	{
 		$getTotal = OrderItem::all()->sum('item_quantity');

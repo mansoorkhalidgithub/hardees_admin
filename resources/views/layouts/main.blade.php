@@ -81,26 +81,26 @@
                 </li>
 
                 <hr class="sidebar-divider d-none d-md-block">
-				
-				<li class="nav-item"><a class="nav-link" href="{{ route('orders') }}">
+
+                <li class="nav-item"><a class="nav-link" href="{{ route('orders') }}">
                         <i class="fas fa-fw fa-shopping-cart"></i> <span> Orders </span></a>
                 </li>
-				
-				<li class="nav-item"><a class="nav-link" href="{{ route('new-orders') }}">
+
+                <li class="nav-item"><a class="nav-link" href="{{ route('new-orders') }}">
                         <i class="fas fa-fw fa-cart-arrow-down"></i> <span> New Orders </span></a>
                 </li>
 
                 <li class="nav-item"><a class="nav-link" href="{{ route('booking') }}">
                         <i class="fas fa-fw fa-cart-plus"></i> <span> Order Booking</span></a>
                 </li>
-				
-				
-				<li class="nav-item"><a class="nav-link" href="{{ route('order-status') }}">
+
+
+                <li class="nav-item"><a class="nav-link" href="{{ route('order-status') }}">
                         <i class="fas fa-fw fa-shoppings-cart"></i> <span> Order Status Handling </span></a>
                 </li>
 
                 <hr class="sidebar-divider d-none d-md-block">
-				
+
                 <li class="nav-item"><a class="nav-link" href="{{ route('restaurants') }}"> <i class="fas fa-fw fa-list"></i> <span>Hardees Branches</span></a></li>
 
                 <li class="nav-item"><a class="nav-link" href="{{ route('booking_show') }}"> <i class="fas fa-fw fa-bicycle"></i> <span>Trips to Delivery</span></a></li>
@@ -457,7 +457,7 @@
 
 
 
-
+    <script type="text/javascript" src="{{ asset('admin') }}/plugins/js/canvasjs.min.js"></script>
     <script src="{{ asset('js/jquery.min.js') }}" defer></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
     <script src="{{ asset('js/jquery.easing.min.js') }}" defer></script>
