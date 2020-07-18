@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="">
     <meta name="author" content="">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
 
     <title>Hardees</title>
 
@@ -457,7 +458,7 @@
 
 
 
-    <script type="text/javascript" src="{{ asset('admin') }}/plugins/js/canvasjs.min.js"></script>
+    <script type="text/javascript" src="{{ asset('admin') }}/js/canvasjs.min.js"></script>
     <script src="{{ asset('js/jquery.min.js') }}" defer></script>
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
     <script src="{{ asset('js/jquery.easing.min.js') }}" defer></script>
@@ -470,7 +471,6 @@
     <script src="{{ asset('admin/dist/js/custom.js') }}" defer></script>
     <script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
     <script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-    <script type="text/javascript" src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
     <!-- jQuery UI 1.11.4 -->
 
 </body>

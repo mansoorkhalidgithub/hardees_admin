@@ -196,6 +196,7 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 'data' => $order
             ];
+            MasterModel::notification('token', $status->description);
             return response()->json($response);
         }
 
@@ -203,7 +204,7 @@ class RiderApiController extends Controller
         if ($status->name == Config::get('constants.STATUS_ACCEPT')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
-            // $message = $status->description;
+            MasterModel::notification('token', $status->description);
             $eta = 45;
         }
 
@@ -214,6 +215,7 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
+            MasterModel::notification('token', $status->description);
             return response()->json($response);
         }
 
@@ -224,6 +226,7 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
+            MasterModel::notification('token', $status->description);
             return response()->json($response);
         }
 
@@ -240,6 +243,7 @@ class RiderApiController extends Controller
             OrderAssigned::updateOrCreate($data);
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
+            MasterModel::notification('token', $status->description);
         }
 
         // Delivery Complete
@@ -273,7 +277,7 @@ class RiderApiController extends Controller
             $order_assigned->save();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-
+            MasterModel::notification('token', $status->description);
             $total_time = date_diff($end, $start)->format('%H:%i:%s');
         }
 
@@ -292,7 +296,7 @@ class RiderApiController extends Controller
                 ->where('trip_status_id', $order_status->id)->first();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-
+            MasterModel::notification('token', $status->description);
             $total_time = $end->diff($start)->format('%H:%i:%s');
             // $total_time = date_diff($end, $start);
             // $message = $status->description;
@@ -362,6 +366,7 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 // 'detail' => $order
             ];
+            MasterModel::notification('token', $status->description);
             return response()->json($response);
         }
         $lat1 = $restaurant->latitude;
@@ -371,7 +376,7 @@ class RiderApiController extends Controller
         $distance = round($distance, 2);
         $eta = $distance > 10 ? round(5 * $distance) // if
             : ($distance > 5 && $distance <= 10 ? round(7 * $distance) // elseif
-                : ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY') ? $total_time->i // elseif
+                : ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY') ? $total_time // elseif
                     : round(10 * $distance))); // else
         $order['distance'] = $distance;
         $response = [
@@ -515,6 +520,7 @@ class RiderApiController extends Controller
             ];
             return response()->json($response);
         }
+
         $from = date('Y-m-d 00:00:01');
         $to = date('Y-m-d 23:59:59');
         $today_booking = Order::whereBetween('created_at', [$from, $to])->get();

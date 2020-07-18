@@ -242,7 +242,7 @@
         type: "post",
         url: "{{ URL::route('getCities') }}",
         data: {
-          "_token": "{{ csrf_token() }}",
+          "_token": $('meta[name="csrf-token"]').attr('content'),
           id: id
         },
         success: function(data) {
