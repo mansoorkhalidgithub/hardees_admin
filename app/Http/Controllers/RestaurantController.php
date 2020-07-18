@@ -2,36 +2,31 @@
 
 namespace App\Http\Controllers;
 
-use App\Restaurant;
 use App\Helpers\Helper;
 use App\Http\Requests\RestaurantRequest;
+use App\Restaurant;
 use App\RestaurantCategories;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
+use Intervention\Image\Facades\Image;
 
-class RestaurantController extends Controller
-{
-	public function __construct()
-	{
+class RestaurantController extends Controller {
+	public function __construct() {
 	}
 
-	public function index()
-	{
+	public function index() {
 		$model = Restaurant::all();
 
 		return view('restaurant/index', compact('model'));
 	}
 
-	public function add()
-	{
+	public function add() {
 		return view('restaurant/create');
 	}
 
-	public function store(RestaurantRequest $request)
-	{
+	public function store(RestaurantRequest $request) {
 		$data = $request->all();
 		$data['created_by'] = Auth::user()->id;
 		$data['tags'] = serialize($request->tags);
@@ -74,7 +69,7 @@ class RestaurantController extends Controller
 			foreach ($request->categories as $key => $category) {
 				$res_data = [
 					'restaurant_id' => $restaurant->id,
-					'title' => $category
+					'title' => $category,
 				];
 
 				RestaurantCategories::create($res_data);
@@ -86,19 +81,16 @@ class RestaurantController extends Controller
 		return redirect('restaurants');
 	}
 
-	public function edit($restaurant)
-	{
+	public function edit($restaurant) {
 		$model = $this->findModel($restaurant);
 		return view('restaurant.edit', compact('model'));
 	}
 
-	public function show($id)
-	{
+	public function show($id) {
 		$model = $this->findModel($id);
 		return view('restaurant.show', compact('model'));
 	}
-	public function update(RestaurantRequest $request)
-	{
+	public function update(RestaurantRequest $request) {
 		$restaurant = $this->findModel($request->id);
 		// dd($restaurant);
 		// die;
@@ -110,7 +102,8 @@ class RestaurantController extends Controller
 		if ($request->has('logo')) {
 			if (!empty($restaurant->logo)) {
 				$restaurantImage = public_path($restaurant->logo); // get previous image from folder
-				if (file_exists($restaurantImage)) { // unlink or remove previous image from folder
+				if (file_exists($restaurantImage)) {
+					// unlink or remove previous image from folder
 					unlink($restaurantImage);
 				}
 			}
@@ -131,7 +124,8 @@ class RestaurantController extends Controller
 
 		if ($request->has('cover')) {
 			$restaurantCover = public_path($restaurant->thumbnail); // get previous image from folder
-			if (file_exists($restaurantCover)) { // unlink or remove previous image from folder
+			if (file_exists($restaurantCover)) {
+				// unlink or remove previous image from folder
 				unlink($restaurantCover);
 			}
 			$image = $request->file('cover');
@@ -158,23 +152,27 @@ class RestaurantController extends Controller
 		return redirect('restaurants');
 	}
 
-	public function destroy(Request $request)
-	{
+	public function destroy(Request $request) {
 		$restaurant = $this->findModel($request->id);
 		$restaurant->delete();
 		return redirect()->route('restaurants');
 	}
-	protected function findModel($id)
-	{
+	protected function findModel($id) {
 		return Restaurant::find($id);
 	}
 
-	public function status($id)
-	{
+	public function status($id) {
 		$restaurant = $this->findModel($id);
 		$st = $restaurant->status === 1 ? 0 : 1;
 		$restaurant->status = $st;
 		$restaurant->save();
 		return redirect()->back();
+	}
+	/*********************************** restaurant user ************************************/
+	public function getrestaurantUser() {
+		return view('restaurant/user');
+	}
+	public function createUser() {
+		return view('restaurant/create-user');
 	}
 }

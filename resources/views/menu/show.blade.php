@@ -32,8 +32,8 @@
 						<th>
 							Ingredients
 						</th>
-						
-   					 
+
+
 
 						<td>
 
@@ -41,7 +41,7 @@
 							{{ $item.',' }}
 							@endforeach
 						</td>
-						
+
 					</tr>
 					@endif
 

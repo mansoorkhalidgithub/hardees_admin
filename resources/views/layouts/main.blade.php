@@ -181,7 +181,12 @@
                         </i> <span>Riders</span>
                     </a>
                 </li>
-
+                <li class="nav-item">
+                    <a class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}" href="{{ route('rider.index') }}">
+                        <i class="fas fa-fw fa-users">
+                        </i> <span>Restaurant users</span>
+                    </a>
+                </li>
                 <hr class="sidebar-divider d-none d-md-block">
 
                 <div class="sidebar-heading">Legal Section</div>

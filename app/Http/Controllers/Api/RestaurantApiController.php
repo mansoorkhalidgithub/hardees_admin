@@ -4,68 +4,101 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Order;
-use App\Restaurant;
+use App\User;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 
 class RestaurantApiController extends Controller {
-	public function recentOrders(Request $request) {
-		$restaurant_id = $request->bearerToken();
-		$data = Order::where('restaurant_id', $restaurant_id)->select(['id', 'user_id', 'created_at'])->get();
-		return $data;
+	public function recentYesterdayOrders(Request $request) {
+		$restaurant_id = Auth::user()->restaurant_id;
+		$dt = Carbon::yesterday();
+		$startDate = $dt->copy()->startOfDay();
+		$endDate = $dt->copy()->endOfDay();
+		$model = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', [$startDate, $endDate])->get();
+		$model->each->append(
+			['orderStatus', 'customerData']
+		);
 		$data = [];
-		$data[] = [
-			'time' => '09:23:01',
-			'orderNo' => '#023',
-			'customer' => 'Iram',
-			'total' => '2000',
-			'orderStatus' => 'Trip compeleted',
-		];
-		$data[] = [
-			'time' => '10:23:01',
-			'orderNo' => '#024',
-			'customer' => 'Imran',
-			'total' => '3000',
-			'orderStatus' => 'Trip Started',
-		];
-		$data[] = [
-			'time' => '10:44:01',
-			'orderNo' => '#025',
-			'customer' => 'Shoaib',
-			'total' => '1500',
-			'orderStatus' => 'Trip Cancel',
-		];
-		$data[] = [
-			'time' => '09:53:09',
-			'orderNo' => '#026',
-			'customer' => 'Fatima',
-			'total' => '900',
-			'orderStatus' => 'Trip Request',
-		];
-		$data[] = [
-			'time' => '11:33:01',
-			'orderNo' => '#027',
-			'customer' => 'Babu',
-			'total' => '1400',
-			'orderStatus' => 'Trip Rejected',
-		];
-		$data[] = [
-			'time' => '23:23:05',
-			'orderNo' => '#034',
-			'customer' => 'Nisar',
-			'total' => '340',
-			'orderStatus' => 'Trip Compeleted',
-		];
+		if ($model->isNotEmpty()) {
+			foreach ($model as $value) {
+				$data[] = [
+					'time' => $value->created_at->toTimeString(),
+					'orderNo' => '#0' . $value->id,
+					'customer' => $value->customerData->name,
+					'total' => $value->total,
+					'orderStatus' => $value->orderStatus,
+				];
+			}
+		}
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Order accepted',
+			'message' => 'All recent orders',
+			'data' => $data,
+		];
+		return response()->json($response);
+	}
+	public function recentTodayOrders(Request $request) {
+		$restaurant_id = Auth::user()->restaurant_id;
+		$startDate = Carbon::now()->toDateString();
+		$endDate = Carbon::now()->toDateTimeString();
+		$model = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', [$startDate, $endDate])->get();
+		$model->each->append(
+			['orderStatus', 'customerData']
+		);
+		$data = [];
+		if ($model->isNotEmpty()) {
+			foreach ($model as $value) {
+				$data[] = [
+					'time' => $value->created_at->toTimeString(),
+					'orderNo' => '#0' . $value->id,
+					'customer' => $value->customerData->name,
+					'total' => $value->total,
+					'orderStatus' => $value->orderStatus,
+				];
+			}
+		}
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Today recent orders',
+			'data' => $data,
+		];
+		return response()->json($response);
+	}
+	public function recentAllOrders(Request $request) {
+		$restaurant_id = Auth::user()->restaurant_id;
+		$model = Order::where('restaurant_id', $restaurant_id)->get();
+		$model->each->append(
+			['orderStatus', 'customerData']
+		);
+		$data = [];
+		if ($model->isNotEmpty()) {
+			foreach ($model as $value) {
+				$data[] = [
+					'time' => $value->created_at->toTimeString(),
+					'orderNo' => '#0' . $value->id,
+					'customer' => $value->customerData->name,
+					'total' => $value->total,
+					'orderStatus' => $value->orderStatus,
+				];
+			}
+		}
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'All recent orders',
 			'data' => $data,
 		];
 		return response()->json($response);
 	}
 	public function orderAccepted(Request $request) {
+		$dataUpdate = Order::where('id', $reques->order_id)->first();
+		$dataUpdate->status = Config::get('constants.order_completed');
+		$dataUpdate->save();
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -74,6 +107,9 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function orderReadyForPickup(Request $request) {
+		$dataUpdate = Order::where('id', $reques->order_id)->first();
+		$dataUpdate->status = Config::get('constants.order_ready');
+		$dataUpdate->save();
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -82,28 +118,37 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function login(Request $request) {
-		$loggedInUser = Restaurant::where('email', $request['email'])->first();
+		$loggedInUser = User::where('email', $request['email'])->first();
+		$userRole = $loggedInUser->roles->pluck('name');
+
+		if ($userRole[0] != 'user') {
+			return $response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'message' => 'Access denied',
+			];
+		}
 		if (!empty($loggedInUser)):
 			if (Hash::check($request['password'], $loggedInUser->password)) {
-				//$loggedInUser = Auth::user();
-				// $tokenResult = $loggedInUser->createToken('restaurant');
-				// $token = $tokenResult->token;
+				// $loggedInUser = Auth::user();
+				$tokenResult = $loggedInUser->createToken('restaurant');
+				$token = $tokenResult->accessToken;
 				// $token->expires_at = Carbon::now()->addDays(1);
-
+				$userRole = $loggedInUser->roles->pluck('name');
 				$customer = [
-					'name' => $loggedInUser->name,
+					'name' => $loggedInUser->first_name . $loggedInUser->last_name ? $loggedInUser->last_name : '',
 					'email' => $loggedInUser->email,
-					'contact_number' => $loggedInUser->contact_number,
-					'logo' => $loggedInUser->logo,
-					'thumbnail' => $loggedInUser->thumbnail,
-					// 'role' => $loggedInUser->roles->pluck('name'),
+					'contact_number' => $loggedInUser->phone_number,
+					// 'logo' => $loggedInUser->logo,
+					// 'thumbnail' => $loggedInUser->thumbnail,
+					'role' => $userRole[0],
 				];
 
 				$response = [
 					'status' => 1,
 					'method' => $request->route()->getActionMethod(),
 					'message' => 'Customer logged in successfully !',
-					'access_token' => $loggedInUser->id,
+					'access_token' => $token,
 					'token_type' => 'Bearer',
 					// 'customer_id' => $loggedInUser->customer_id,
 					'customer_profile' => $customer,
@@ -126,16 +171,25 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function dashboardByToday(Request $request) {
+		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->toDateString();
 		$endDate = Carbon::now()->toDateTimeString();
-
+		$statusCompleted = Config::get('constants.order_completed');
+		$statusCancel = Config::get('constants.order_rejected');
+		$statusAccepted = Config::get('constants.order_accepted');
+		$total_orders = $this->getTotalCount($userRestaurantId, [$startDate, $endDate]);
+		$cancel_orders = $this->getCount($statusCancel, $userRestaurantId, [$startDate, $endDate]);
+		$accepted_orders = $this->getCount($statusAccepted, $userRestaurantId, [$startDate, $endDate]);
+		$total_completed = $this->getCount($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
+		$total_accepted = $total_completed + $accepted_orders;
+		$count = $this->getSum($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
 		$revenue_summary = [
-			'today' => 300,
+			'today' => $count,
 		];
 		$order_summary = [
-			'total_orders' => 200,
-			'cancel_orders' => 20,
-			'accepted_orders' => 180,
+			'total_orders' => $total_orders,
+			'cancel_orders' => $cancel_orders,
+			'accepted_orders' => $total_accepted,
 		];
 		$data = [
 			'order_summary' => $order_summary,
@@ -149,16 +203,38 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
+	public function getSum($status, $restaurant_id, $date) {
+		$total = Order::where('status', $status)->where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->sum('total');
+		return $total;
+	}
+	public function getTotalCount($restaurant_id, $date) {
+		$total = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->count();
+		return $total;
+	}
+	public function getCount($status, $restaurant_id, $date) {
+		$total = Order::where('status', $status)->where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->count();
+		return $total;
+	}
 	public function dashboardByWeek(Request $request) {
+		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->startOfWeek()->format('Y-m-d H:i');
 		$endDate = Carbon::now()->toDateTimeString();
+		$statusCompleted = Config::get('constants.order_completed');
+		$statusCancel = Config::get('constants.order_rejected');
+		$statusAccepted = Config::get('constants.order_accepted');
+		$total_orders = $this->getTotalCount($userRestaurantId, [$startDate, $endDate]);
+		$cancel_orders = $this->getCount($statusCancel, $userRestaurantId, [$startDate, $endDate]);
+		$accepted_orders = $this->getCount($statusAccepted, $userRestaurantId, [$startDate, $endDate]);
+		$total_completed = $this->getCount($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
+		$total_accepted = $total_completed + $accepted_orders;
+		$count = $this->getSum($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
 		$revenue_summary = [
-			'this_week' => 50000,
+			'this_week' => $count,
 		];
 		$order_summary = [
-			'total_orders' => 1800,
-			'cancel_orders' => 90,
-			'accepted_orders' => 1710,
+			'total_orders' => $total_orders,
+			'cancel_orders' => $cancel_orders,
+			'accepted_orders' => $total_accepted,
 		];
 		$data = [
 			'order_summary' => $order_summary,
@@ -173,15 +249,25 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function dashboardByMonth(Request $request) {
+		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->startOfMonth()->format('Y-m-d H:i');
 		$endDate = Carbon::now()->toDateTimeString();
+		$statusCompleted = Config::get('constants.order_completed');
+		$statusCancel = Config::get('constants.order_rejected');
+		$statusAccepted = Config::get('constants.order_accepted');
+		$total_orders = $this->getTotalCount($userRestaurantId, [$startDate, $endDate]);
+		$cancel_orders = $this->getCount($statusCancel, $userRestaurantId, [$startDate, $endDate]);
+		$accepted_orders = $this->getCount($statusAccepted, $userRestaurantId, [$startDate, $endDate]);
+		$total_completed = $this->getCount($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
+		$total_accepted = $total_completed + $accepted_orders;
+		$count = $this->getSum($statusCompleted, $userRestaurantId, [$startDate, $endDate]);
 		$revenue_summary = [
-			'this_month' => 100000,
+			'this_month' => $count,
 		];
 		$order_summary = [
-			'total_orders' => 2000,
-			'cancel_orders' => 200,
-			'accepted_orders' => 180,
+			'total_orders' => $total_orders,
+			'cancel_orders' => $cancel_orders,
+			'accepted_orders' => $total_accepted,
 		];
 		$data = [
 			'order_summary' => $order_summary,
@@ -196,21 +282,21 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function orderProcessing(Request $request) {
-		$restaurant_id = $request->bearerToken();
+		$restaurant_id = 1;
 		$accptedOrders = Order::has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
 		if ($accptedOrders->isNotEmpty()) {
 			$accptedOrders->each->append(
-				['bookingNo', 'ordertype', 'approxTime', 'riderAsigned', 'customerData', 'orderItemsWithName']
+				['bookingNo', 'ordertype', 'approxTime', 'riderAsigned', 'customerData']
 			);
 			// $accptedOrders->order_items->each->append(
 			// 	'Name'
 			// );
 		}
 
-		$newOrders = Order::doesnthave('orders')->where('restaurant_id', $restaurant_id)->get();
+		$newOrders = Order::has('newOrders')->where('restaurant_id', $restaurant_id)->get();
 		if ($newOrders->isNotEmpty()) {
 			$newOrders->each->append(
-				['bookingNo', 'ordertype', 'approxTime', 'customerData', 'orderItemsWithName']
+				['bookingNo', 'ordertype', 'approxTime', 'customerData']
 			);
 		}
 

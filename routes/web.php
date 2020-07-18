@@ -52,7 +52,6 @@ Route::group([
 	Route::get('order-status', 'OrderController@orderStatus')->name('order-status');
 });
 
-
 Route::group([
 	'middleware' => 'auth',
 ], function () {
@@ -125,7 +124,6 @@ Route::group([
 	Route::post('getStates', 'RiderController@getStates')->name('rider.states');
 });
 
-
 Route::group([
 	'middleware' => 'auth',
 ], function () {
@@ -144,7 +142,6 @@ Route::group([
 	// Route::post('getBranches', 'RestaurantUserController@getBranches')->name('rider.branch');
 	// Route::post('getStates', 'RiderController@getStates')->name('rider.states');
 });
-
 
 Route::group([
 	'middleware' => 'auth',
@@ -259,3 +256,10 @@ Route::get('/add_state', 'HomeController@add_state')->name('add_state');
 Route::get('/update_state', 'HomeController@update_state')->name('update_state');
 Route::get('/add_city', 'HomeController@add_city')->name('add_city');
 Route::get('/update_city', 'HomeController@update_city')->name('update_city');
+/********************************** restaurant user ******************************************/
+Route::group([
+	'middleware' => 'auth',
+], function () {
+	Route::get('/restaurants-user', 'RestaurantController@getrestaurantUser')->name('restaurant.user');
+	Route::get('add-restaurants-user', 'RestaurantController@createUser')->name('restaurant.create-user');
+});

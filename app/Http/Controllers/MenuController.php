@@ -33,28 +33,28 @@ class MenuController extends Controller {
 
 		return view('menu/edit-category', ['catgorey' => $catgorey]);
 	}
-	
+
 	public function editMenu($id) {
 		$menuItem = MenuItem::find($id);
 		$Categories = MenuCategory::all();
 		$restaurants = Restaurant::all();
 		return view('menu/edit-menu', compact(['restaurants', 'Categories'], 'menuItem'));
 	}
-	
+
 	public function createMenuItem() {
 		$Categories = MenuCategory::all();
 		$restaurants = Restaurant::all();
 		return view('menu/create-menu', compact(['restaurants', 'Categories']));
 	}
-	
+
 	public function serializeAttr($val) {
 		return serialize(array($val));
 	}
-	
+
 	public function addMenuItems(Request $request) {
 
 		$this->validateMenuData($request);
-		
+
 		$createdBy = Auth::user()->id;
 		$add = new MenuItem();
 		$add->menu_category_id = $request->menu_category_id;
@@ -88,7 +88,7 @@ class MenuController extends Controller {
 		$add->save();
 		return redirect('menu')->with('message', 'Menue item added successfully');
 	}
-	
+
 	public function updateMenuItem(Request $request) {
 		$id = $request->menuItemId;
 		$this->validateMenuEditData($request, $id);
@@ -123,7 +123,7 @@ class MenuController extends Controller {
 		$add->save();
 		return redirect('menu')->with('message', 'Menue item updated successfully');
 	}
-	
+
 	private function validateMenuEditData($request, $id) {
 		$this->validate($request, [
 			'name' => 'required|max:60|unique:menu_items,name,' . $id,
@@ -143,7 +143,7 @@ class MenuController extends Controller {
 				'restaurant_id.numeric' => 'Please Select Restaurants Branch',
 			]);
 	}
-	
+
 	private function validateMenuData($request) {
 		$this->validate($request, [
 			'name' => 'required|max:60|unique:menu_items,name',

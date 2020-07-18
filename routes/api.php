@@ -20,13 +20,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 
 // retaurant apis
 Route::post('restaurantlogin', 'Api\RestaurantApiController@login');
-Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
-Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
-Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');
-Route::get('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
-Route::post('restaurant/order-accepted', 'Api\RestaurantApiController@orderAccepted');
-Route::get('restaurant/recent-orders', 'Api\RestaurantApiController@recentOrders');
-Route::post('restaurant/order-readyforpickup', 'Api\RestaurantApiController@orderReadyForPickup');
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
+	Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
+	Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');
+	Route::get('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
+	Route::post('restaurant/order-accepted', 'Api\RestaurantApiController@orderAccepted');
+	Route::get('restaurant/recent-allorders', 'Api\RestaurantApiController@recentAllOrders');
+	Route::get('restaurant/recent-todayorders', 'Api\RestaurantApiController@recentTodayOrders');
+	Route::get('restaurant/recent-yesterdayorders', 'Api\RestaurantApiController@recentYesterdayOrders');
+	Route::post('restaurant/order-readyforpickup', 'Api\RestaurantApiController@orderReadyForPickup');
+});
 
 // Route::group(['middleware' => 'auth:api'], function () {;});
 ///////////////////////////////////
@@ -68,7 +72,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart');
 	Route::post('checkout', 'Api\OrderApiController@checkout');
 });
-
 
 /********** End Customer Side API's ***************************/
 

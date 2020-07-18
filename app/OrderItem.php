@@ -5,6 +5,7 @@ namespace App;
 use Illuminate\Database\Eloquent\Model;
 
 class OrderItem extends Model {
+	protected $with = ['items'];
 	public $timestamps = false;
 	protected $fillable = [
 		'order_id',
