@@ -6,9 +6,11 @@ use App\Helpers\Helper;
 use App\Http\Requests\RestaurantRequest;
 use App\Restaurant;
 use App\RestaurantCategories;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Intervention\Image\Facades\Image;
 
@@ -170,9 +172,55 @@ class RestaurantController extends Controller {
 	}
 	/*********************************** restaurant user ************************************/
 	public function getrestaurantUser() {
-		return view('restaurant/user');
+		$model = User::role('user')->get();
+		return view('restaurant/user', compact('model'));
 	}
 	public function createUser() {
 		return view('restaurant/create-user');
+	}
+	public function storeRestaurantUser(Request $request) {
+		$data = [];
+		$parts = explode("@", $request['email']);
+		$t = explode(" ", $request['title']);
+		$ridername = $parts[0];
+		if ($request->has('profile')) {
+			$image = $request->file('profile');
+			$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+
+			$destinationPath = public_path('/uploads/profile');
+			if (!file_exists($destinationPath)) {
+				mkdir($destinationPath, 0777, true);
+			}
+			$img = Image::make($image->getRealPath());
+			$img->save($destinationPath . '/' . $input['imagename']);
+
+			$profilePath = 'uploads/profile/' . $input['imagename'];
+
+			// $data['profile_picture'] = $profilePath;
+		}
+		$data = [
+			'profile_picture' => $profilePath,
+			'first_name' => $request->first_name,
+			'last_name' => $request->last_name,
+			'username' => $ridername,
+			'email' => $request->email,
+			// 'created_by' => auth()->user()->id,
+			'restaurant_id' => $request->restaurant_id,
+			// 'state_id' => $request->state_id,
+			// 'city_id' => $request->city_id,
+			// 'cnic' => $request->cnic,
+			// 'cnic_expire_date' => $request->cnic_expire_date,
+			// 'country_id' => $request->country_id,
+			// 'latitude' => $request->latitude,
+			// 'longitude' => $request->longitude,
+			'phone_number' => $request->phone_number,
+			'password' => Hash::make($request->password),
+		];
+
+		// print_r($data);
+		// die;
+		$restaurantUser = User::create($data);
+		$restaurantUser->assignRole('user');
+		return Redirect::route('restaurant.user')->with('message', 'New User created successfully');
 	}
 }

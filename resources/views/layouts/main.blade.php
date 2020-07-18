@@ -182,7 +182,7 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}" href="{{ route('rider.index') }}">
+                    <a class="nav-link {{ (request()->is('restaurants')) ? 'active' : '' }}" href="{{ route('restaurant.user') }}">
                         <i class="fas fa-fw fa-users">
                         </i> <span>Restaurant users</span>
                     </a>

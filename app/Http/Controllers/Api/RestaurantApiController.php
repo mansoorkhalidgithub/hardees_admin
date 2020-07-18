@@ -96,7 +96,7 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function orderAccepted(Request $request) {
-		$dataUpdate = Order::where('id', $reques->order_id)->first();
+		$dataUpdate = Order::where('id', $request->order_id)->first();
 		$dataUpdate->status = Config::get('constants.order_completed');
 		$dataUpdate->save();
 		$response = [
@@ -107,7 +107,7 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function orderReadyForPickup(Request $request) {
-		$dataUpdate = Order::where('id', $reques->order_id)->first();
+		$dataUpdate = Order::where('id', $request->order_id)->first();
 		$dataUpdate->status = Config::get('constants.order_ready');
 		$dataUpdate->save();
 		$response = [

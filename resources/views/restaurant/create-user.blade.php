@@ -17,7 +17,7 @@
 
         <div class="card">
             <div class="card-body cat-card-body">
-                <form role="form" method="post" action="{{ route('rider.store') }}" enctype="multipart/form-data">
+                <form role="form" method="post" action="{{ route('store-restaurant-user') }}" enctype="multipart/form-data">
                     @csrf
                     <div class="row form-group category-table">
                         <div class="col col-6 col-sm-6">
@@ -28,7 +28,14 @@
                         </div>
                     </div>
                     <div class="row form-group category-table">
-                        <div class="col col-12 col-sm-12">
+                        <div class="col col-6 col-sm-6">
+                            <input type="text" value="{{ old('phone_number') }}" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
+                            @if($errors->has('phone_number'))
+                            <small class="text-danger ml-2">{{ $errors->first('phone_number') }}</small>
+                            @endif
+                        </div>
+                        <div class="col col-6 col-sm-6">
+
                             <select name="restaurant_id" id="branch" class="form-control selectpicker" data-live-search="true" tabindex="-98">
                                 <option selected="" disabled="" hidden="">Choose Branch</option>
                                 @foreach(Helper::branch() as $key=> $branch)
@@ -69,15 +76,6 @@
                             <small class="text-danger ml-2">{{ $errors->first('address') }}</small>
                             @endif
                         </div>
-                    </div>
-                    <div class="row form-group category-table">
-                        <div class="col col-6 col-sm-6">
-                            <input type="text" value="{{ old('phone_number') }}" id="phone" name="phone_number" placeholder="Enter Phone Number" class="form-control" required="">
-                            @if($errors->has('phone_number'))
-                            <small class="text-danger ml-2">{{ $errors->first('phone_number') }}</small>
-                            @endif
-                        </div>
-
                     </div>
                     <div class="row">
                         <div class="col col-12 col-sm-12">

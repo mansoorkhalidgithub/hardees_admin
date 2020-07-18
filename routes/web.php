@@ -262,4 +262,5 @@ Route::group([
 ], function () {
 	Route::get('/restaurants-user', 'RestaurantController@getrestaurantUser')->name('restaurant.user');
 	Route::get('add-restaurants-user', 'RestaurantController@createUser')->name('restaurant.create-user');
+	Route::post('store-restaurant-user', 'RestaurantController@storeRestaurantUser')->name('store-restaurant-user');
 });
