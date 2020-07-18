@@ -179,6 +179,7 @@ class RestaurantController extends Controller {
 		return view('restaurant/create-user');
 	}
 	public function storeRestaurantUser(Request $request) {
+		$this->validateRestaurantUserData($request);
 		$data = [];
 		$parts = explode("@", $request['email']);
 		$t = explode(" ", $request['title']);
@@ -222,5 +223,28 @@ class RestaurantController extends Controller {
 		$restaurantUser = User::create($data);
 		$restaurantUser->assignRole('user');
 		return Redirect::route('restaurant.user')->with('message', 'New User created successfully');
+	}
+	private function validateRestaurantUserData($request) {
+		$this->validate($request, [
+			'email' => 'required|unique:users,email',
+			'first_name' => 'required',
+			// 'menu_category_id' => 'required|numeric',
+			// 'restaurant_id' => 'required|numeric',
+			// 'price' => 'required|numeric',
+			// 'quantity' => 'required|numeric',
+			// 'discount' => 'required|numeric',
+			// 'weight' => 'required|numeric',
+			// 'status' => 'required|numeric|max:1',
+			// 'is_favourite'=>'required|numeric|max:3',
+			//'itemImg' => 'mimes:jpeg,jpg,png | max:1000',
+
+		]
+			// ,
+			// [
+			// 	'menu_category_id.numeric' => 'Please Select Categorie',
+			// 	'restaurant_id.numeric' => 'Please Select Restaurants Branch',
+			// ]
+		);
+
 	}
 }
