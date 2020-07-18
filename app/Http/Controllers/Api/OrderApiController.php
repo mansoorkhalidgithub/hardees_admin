@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 // use Auth;
+use App\User;
 use App\Cart;
 use App\Helpers\Helper;
 use App\Http\Controllers\Controller;
@@ -12,6 +13,11 @@ use App\OrderItem;
 use App\OrderDeal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Log;
+
+use Kreait\Firebase;
+use Kreait\Firebase\Messaging\Notification;
+use Kreait\Firebase\Messaging\CloudMessage;
 
 class OrderApiController extends Controller {
 	
@@ -133,7 +139,7 @@ class OrderApiController extends Controller {
 	{
 		$userId = Auth::user()->id;
 		
-		$cart = Cart::with('item')->where('user_id', '=', $userId)
+		$cart = Cart::with('item', 'deal')->where('user_id', '=', $userId)
 			->where('status', '=', 1)->get();
 		$cart->each->append(
 			'total'
@@ -156,16 +162,20 @@ class OrderApiController extends Controller {
 	
 	public function addQuantity(Request $request)
 	{
+		$version = 1;
 		$cart = Cart::where('id', $request->cart_id)->first();
 		
 		$newQuantity = 0;
 		if(!empty($cart))
 		{
+			$version = 2;
 			if(isset($request->item_id)) {
+				$version = 3;
 				$newQuantity = $cart->quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
 			}
 			if(isset($request->deal_id)) {
+				$version = 4;
 				$newQuantity = $cart->deal_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
 			}	
@@ -174,7 +184,8 @@ class OrderApiController extends Controller {
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Quantiyt updated successfully',
+			'message' => 'Quantity updated successfully',
+			//'version' => $version,
 		];
 		
 		return response()->json($response);	
@@ -185,18 +196,19 @@ class OrderApiController extends Controller {
 		$cart = Cart::where('id', $request->cart_id)->first();
 		
 		$newQuantity = 0;
-		if(!empty($cart) && $cart->quantity > 1)
-		{
+		if(isset($request->item_id) && $cart->quantity > 0) {
 			$newQuantity = $cart->quantity - 1;
 			Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
-			
-		} else {
-			Cart::destroy($request->cart_id);
 		}
+		if(isset($request->deal_id) && $cart->deal_quantity > 0) {
+			$newQuantity = $cart->deal_quantity - 1;
+			Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
+		}
+		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Quantiyt updated successfully',
+			'message' => 'Quantity updated successfully',
 		];
 		
 		return response()->json($response);	
@@ -311,7 +323,36 @@ class OrderApiController extends Controller {
 
 			OrderDeal::create($orderDeals);
 		}
-
+		
+		$cartItems = $cart->pluck('id');
+		
+		Cart::destroy($cartItems);
+		
+		$rider = User::where('user_type', 'rider')->first();
+		
+		$rider = User::where('user_type', 'rider')->first();
+		$deviceToken = $rider->device_token;
+		
+		Log::info($deviceToken);
+		
+		$riderNotificationData = [
+			"order_id" => $orderId,
+			"device_token" => $deviceToken,
+			"status" => "TR",
+			"message" => "New Order Assigned"
+		];
+		
+		// $restaurantNotificationData = [
+			// "order_id" => $orderId,
+			// "device_token" => $deviceTokens,
+			// "status" => 1,
+			// "message" => "New Order"
+		// ];
+		
+		$notification = Helper::sendNotification($riderNotificationData);
+		
+		//Helper::sendNotification($restaurantNotificationData);
+		
 		$contact_number = '111-222-333';
 		$order_reference = Helper::orderReference($orderId);
 
@@ -322,9 +363,20 @@ class OrderApiController extends Controller {
 			'data' => [
 				'contact_number' => $contact_number,
 				'order_reference' => $order_reference,
+				'rider_id' => $rider->id,
+				'notification' => json_decode($notification),
 			],
 		];
 
 		return response()->json($response);
+	}
+	
+	public static function notification(Request $request)
+	{
+		try{
+			echo Helper::sendNotification($request->order_id, $request->device_token);
+		} catch (Exception $e) {
+			echo $e->getMessage();
+		}
 	}
 }

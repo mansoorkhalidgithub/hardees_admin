@@ -63,7 +63,7 @@ class RiderApiController extends Controller
      */
     public function riderLogin(Request $request)
     {
-        $loggedInRider = User::where('phone_number', $request['phone_number'])->first();
+        $loggedInRider = User::where('phone_number', $request['phone_number'])->where('user_type', 'rider')->first();
         if (!empty($loggedInRider)) :
             if (Hash::check($request['password'], $loggedInRider->password)) {
                 $data = [

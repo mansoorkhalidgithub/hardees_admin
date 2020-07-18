@@ -61,6 +61,7 @@ class AuthController extends Controller
 			'country_id' => $request->country_id,
 			'phone_number' => $request->phone_number,
 			'password' => Hash::make($request->password),
+			'role' => 'customer',
 		];
 
 		$user = Auth::create($data);

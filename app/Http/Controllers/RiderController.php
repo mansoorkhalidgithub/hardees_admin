@@ -84,6 +84,7 @@ class RiderController extends Controller
             'longitude' => $request->longitude,
             'phone_number' => $request->phone_number,
             'password' => Hash::make($request->password),
+            'user_type' => 'rider',
         ];
 
         // print_r($data);

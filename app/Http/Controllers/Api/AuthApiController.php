@@ -6,6 +6,7 @@ use App\User;
 use Carbon\Carbon;
 use App\RestaurantUser;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
@@ -21,10 +22,18 @@ class AuthApiController extends Controller
 	
 	public function signup(Request $request)
 	{
+		$phone_number = $request->phone_number;
+		
 		$validator = Validator::make($request->all(), [
            'username' => 'required',
            'email' => 'required|email|unique:users',
-           'phone_number' => 'required|unique:users',
+           //'phone_number' => 'required|unique:users',
+		   'phone_number' =>[ 
+				'required',
+				Rule::unique('users')->where(function ($query) use ($phone_number) {
+					$query->where(['phone_number' => $phone_number, 'user_type' => 'customer']);
+				}),
+			],
            'password' => 'required'
 		]);
 
@@ -40,7 +49,7 @@ class AuthApiController extends Controller
 		}
 		
 		$data = [
-			'role' => 'customer',
+			'user_type' => 'customer',
 			'username' => $request->username,
 			'email' => $request->email,
 			'phone_number' => $request->phone_number,
@@ -67,7 +76,7 @@ class AuthApiController extends Controller
 	
 	public function login(Request $request)
 	{
-		$loggedInUser = User::where('phone_number' ,$request['phone_number'])->first();
+		$loggedInUser = User::where('phone_number' ,$request['phone_number'])->where('user_type', 'customer')->first();
 		if(!empty($loggedInUser)) :
 			if(Hash::check($request['password'], $loggedInUser->password))
 			{

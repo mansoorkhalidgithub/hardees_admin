@@ -93,3 +93,5 @@ Route::post('rider-detail', 'Api\RiderApiController@riderDetail');
 Route::post('notification', 'Api\RiderApiController@testNotification');
 
 // Rider Api Ending Point By Qadeer
+
+Route::post('test-notification', 'Api\OrderApiController@notification');

@@ -21,7 +21,7 @@ class Cart extends Model
 	
 	public function deal()
 	{
-		return $this->belongsTo(Deals::class, 'deal_id');
+		return $this->belongsTo(Deal::class, 'deal_id');
 	}
 
     public function getTotalAttribute()

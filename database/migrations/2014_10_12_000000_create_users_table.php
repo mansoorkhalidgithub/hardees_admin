@@ -23,6 +23,7 @@ class CreateUsersTable extends Migration
 			$table->date('dob')->nullable();
             $table->tinyInteger('status')->default(1);
             $table->string('password')->nullable();
+            $table->string('user_type')->nullable();
             $table->string('latitude')->nullable();
             $table->string('longitude')->nullable();
             $table->string('phone_number')->nullable();
@@ -50,6 +51,7 @@ class CreateUsersTable extends Migration
                 'username' => 'admin',
                 'email' => 'superadmin@hardees.com',
                 'password' => '$2y$10$68N8GubryLRmUzyvecqpWuAbix3gURUBs.OJdjF5laaFA2.2OiF96',
+				'user_type' => 'admin',
             ],
         ]);
 		

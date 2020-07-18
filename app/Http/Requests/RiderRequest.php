@@ -37,7 +37,12 @@ class RiderRequest extends FormRequest
             $rules += ['password' => 'required|min:6'];
             $rules += ['confirm_password' => 'required_with:password|same:password|min:6'];
             $rules += ['email' => 'required|unique:users|max:255'];
-            $rules += ['phone_number' => 'required|numeric|unique:users|max:255'];
+            $rules += ['phone_number' => 'required|numeric|unique:users'];
+			$rules += [
+				'phone_number' => Rule::unique('users')->where(function ($query) {
+					$query->where(['phone_number' => $this->phone_number, 'user_type' => 'rider']);
+				}),
+			];
             // $rules += ['role' => 'required|max:15'];
         } elseif ($this->route()->getActionMethod() == 'update') {
             $rules += ['email' => Rule::unique('users')->ignore($this->id)];

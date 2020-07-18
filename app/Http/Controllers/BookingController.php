@@ -17,10 +17,15 @@ class BookingController extends Controller
     public function index()
     {
 		$itemCategories = MenuCategory::all();
-		$items = MenuItem::all();
+		$items = MenuItem::where('menu_category_id', $itemCategories[0]->id)->get();
 		
-        return view('order.booking_form', compact('itemCategories', 'items'));
+        return view('order.new_booking_form', compact('itemCategories', 'items'));
     }
+	
+	public function save(Request $request)
+	{
+		dd($request->all());
+	}
 
     /**
      * Show the form for creating a new resource.
