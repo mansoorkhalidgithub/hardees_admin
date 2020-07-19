@@ -220,6 +220,19 @@ class OrderApiController extends Controller {
 		return response()->json($response);	
 	}
 	
+	public function removeCartItem(Request $request)
+	{
+		Cart::destroy($request->cart_id);
+		
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Item removed successfully',
+		];
+		
+		return response()->json($response);	
+	}
+	
 	public function deleteCart(Request $request)
 	{
 		$userId = Auth::user()->id;

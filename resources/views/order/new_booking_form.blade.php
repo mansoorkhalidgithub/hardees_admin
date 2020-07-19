@@ -386,20 +386,34 @@
 				}
 			});
 		} else {
-			alert("OK ");
+			var cartId = attribute.getAttribute('cart_id');
+			console.log(cartId);
+			$.ajax({
+				type : 'POST',
+				url  : 'remove-to-cart',
+				data : {"cart_id" : cartId},
+				headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+				success : function(response) {
+					console.log('message');
+				},
+				error : function(error) {
+					console.log(error)
+				}
+			});
 		}
 	}
 	
 	function addQuantity(value)
 	{
 		var element = document.getElementById("quantity-"+value);
-		var cartId = document.getElementById(element.data_id).attr("cart_id");
+		var itemId = element.getAttribute('data_id');
+		var cartId = document.getElementById(itemId).getAttribute("cart_id");
 		var newQuantity = +element.value + +1;
 		element.value = newQuantity;
 		$.ajax({
 			type : 'POST',
 			url  : 'add-quantity',
-			data : {"cart_id": cartId,"item_id" : element.data_id},
+			data : {"cart_id": cartId, "item_id" : itemId},
 			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
 			success : function(response) {
 				console.log(response.message);
@@ -413,12 +427,14 @@
 	function removeQuantity(value)
 	{
 		var element = document.getElementById("quantity-"+value);
+		var itemId = element.getAttribute('data_id');
+		var cartId = document.getElementById(itemId).getAttribute("cart_id");
 		var newQuantity = element.value - 1;
 		element.value = newQuantity;
 		$.ajax({
 			type : 'POST',
 			url  : 'remove-quantity',
-			data : {"item_id" : element.data_id},
+			data : {"cart_id": cartId,"item_id" : itemId},
 			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
 			success : function(response) {
 				console.log(response.message);

@@ -189,6 +189,7 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::post('add-to-cart', 'Api\OrderApiController@addCart')->name('add-to-cart');
+	Route::post('remove-to-cart', 'Api\OrderApiController@removeCartItem')->name('remove-to-cart');
 	Route::post('get-cart', 'Api\OrderApiController@getCart')->name('get-cart');
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity')->name('add-quantity');
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity')->name('remove-quantity');
