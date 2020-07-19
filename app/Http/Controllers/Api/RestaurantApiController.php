@@ -97,7 +97,7 @@ class RestaurantApiController extends Controller {
 	}
 	public function orderAccepted(Request $request) {
 		$dataUpdate = Order::where('id', $request->order_id)->first();
-		$dataUpdate->status = Config::get('constants.order_completed');
+		$dataUpdate->status = Config::get('constants.order_accepted');
 		$dataUpdate->save();
 		$response = [
 			'status' => 1,
