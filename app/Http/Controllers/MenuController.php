@@ -202,12 +202,13 @@ class MenuController extends Controller {
 		
 		$itemsByCategory = MenuItem::where('menu_category_id', $menuCategoryId)->get();
 		
-		$checked = '';
+		
 		
 		$html = '';
 		foreach($itemsByCategory as $key => $item) 
 		{
-			if(in_array($item->id, $cartItems->all()))
+			$checked = '';
+			if(in_array($item->id, $cartItems->all(), true))
 			{
 				$checked = 'checked';
 			}
@@ -248,14 +249,15 @@ class MenuController extends Controller {
         
             if (count($pincode) > 0) {
                 foreach ($pincode as $key => $get_pincode) {
-					$orderRecord = Order::where(['user_id' => $get_pincode->id]);
+					$orderRecord = Order::where(['user_id' => $get_pincode->id])->first();
 					
-                    $data[$get_pincode->phone_number] = $get_pincode->phone_number . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . "Burewala";
-                  
+					if(!empty($orderRecord)) {
+						$data[$get_pincode->phone_number] = $get_pincode->first_name . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . $orderRecord->customer_address ;
+					} else {
+						$data[$get_pincode->phone_number] = $get_pincode->first_name . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . " " ;
+					}
                 }
-            } else {
-                echo "Nothing found";
-            }
+            } 
         }
 
         echo json_encode($data);

@@ -341,9 +341,11 @@
        
     </div>
 </div>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.min.css" rel="stylesheet"></link>
-<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
+<!--<script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyCFCa3wPW-wlb_TZWOBw-r-wdfgrlAJC_w&libraries=places"></script>-->
+
 <script>
 	$("#searchbox").autocomplete({
 		source: function(request, response) {
