@@ -90,7 +90,11 @@ Route::post('earning-detail', 'Api\RiderApiController@earningDetail');
 
 Route::post('rider-detail', 'Api\RiderApiController@riderDetail');
 
-Route::post('notification', 'Api\RiderApiController@testNotification');
+Route::post('update-profile', 'Api\RiderApiController@updateProfile');
+
+Route::post('delivery-detail', 'Api\RiderApiController@deliveryDetail');
+
+// Rider Api Ending Point By Qadeer
 
 // Rider Api Ending Point By Qadeer
 

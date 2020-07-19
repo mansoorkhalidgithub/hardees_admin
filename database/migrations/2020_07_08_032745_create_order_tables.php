@@ -23,13 +23,13 @@ class CreateOrderTables extends Migration
             ['type' => 'Delivery'],
             ['type' => 'Pickup'],
         ]);
-		
-		Schema::create('order_status', function (Blueprint $table) {
+
+        Schema::create('order_status', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->nullable();
-			$table->unsignedInteger('order_type_id')->nullable();
-			
-			$table->foreign('order_type_id')->references('id')->on('order_types')->onDelete('cascade');
+            $table->unsignedInteger('order_type_id')->nullable();
+
+            $table->foreign('order_type_id')->references('id')->on('order_types')->onDelete('cascade');
         });
 
         Schema::create('orders', function (Blueprint $table) {
@@ -60,16 +60,17 @@ class CreateOrderTables extends Migration
             $table->unsignedBigInteger('menu_item_id')->nullable();
             $table->double('item_price', 8, 2)->default(0);
             $table->unsignedBigInteger('item_quantity')->nullable();
-           
+
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
         });
-		
-		Schema::create('order_assigned', function (Blueprint $table) {
+
+        Schema::create('order_assigned', function (Blueprint $table) {
             $table->bigIncrements('id');
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('rider_id')->nullable();
-           
+            $table->tinyInteger('trip_status_id');
+            $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('rider_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -85,6 +86,6 @@ class CreateOrderTables extends Migration
         Schema::dropIfExists('order_assigned');
         Schema::dropIfExists('order_items');
         Schema::dropIfExists('orders');
-		Schema::dropIfExists('order_types');
+        Schema::dropIfExists('order_types');
     }
 }

@@ -596,4 +596,63 @@ class RiderApiController extends Controller
 
         return response()->json($response);
     }
+
+
+    public function deliveryDetail(Request $request)
+    {
+        $order = Order::with('orderItems.items')
+            ->where('id', $request->order_id)->firstOrFail();
+        // dd($order);
+        // die;
+        if (!$order) {
+            $response = [
+                'status' => 0,
+                'method' => $request->route()->getActionMethod(),
+                'message' => "Order Detail Not Found",
+            ];
+            return response()->json($response);
+        }
+
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "Order Detail",
+            'data' => [
+                "booking_id" => 2000,
+                "booking_number" => "Hardees002000",
+                "country" => "Pakistan",
+                "state" => "Punjab",
+                "city" => "lahore",
+                "user_id" => 259,
+                "user_email" => "umarjee01@gmail.com",
+                "phone_number" => "3014028286",
+                'name' => "Name",
+                "invoice_number" => "000364",
+                "customer_address" => "",
+                "total" => $order->total,
+                'items' => $order->orderItems->pluck('items.name'),
+                "start_latitude" => "31.4685611",
+                "start_ongitude" => "74.3180583",
+                "start_point" => "MM Alam Road",
+                "end_atitude" => $order->latitude,
+                "end_longitude" => $order->longitude,
+                "end_point" => "Unnamed Road, Ejaz Park Bhatti Colony, Lahore, Punjab 54600, Pakistan",
+                "total_time" => "00:0:6",
+                "distance" => "0 KM",
+                "delivery_date" => $order->created_at,
+                "booking_date" => $order->created_at,
+                "end_delivery_date" => $order->updated_at,
+                "status" => "TPDD",
+                "trip_status" => "N",
+                "user_rating" => 2,
+            ]
+
+        ];
+
+        return response()->json($response);
+    }
+    public function updateProfile(Request $request)
+    {
+        return 'Update Profile';
+    }
 }
