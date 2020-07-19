@@ -8,7 +8,7 @@
 					{{ session()->get('message') }}
 				</div>
 				@endif
- 		<a href="{{ route('restaurant.create-user') }}" class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>{{ session()->get('message') }}</a>
+ 		<a href="{{ route('restaurant.create-user') }}" class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>Create User</a>
  	</div>
  	<div class="uper" style="overflow-x: scroll; margin-bottom: 50px">
 
