@@ -341,8 +341,46 @@
        
     </div>
 </div>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<link href="https://code.jquery.com/ui/1.10.2/themes/smoothness/jquery-ui.min.css" rel="stylesheet"></link>
+<script src="https://code.jquery.com/ui/1.10.2/jquery-ui.min.js"></script>
 <script>
-// When the user clicks on div, open the popup
+	$("#searchbox").autocomplete({
+		source: function(request, response) {
+			$.ajax({
+				url: "search-customer",
+				dataType: "json",
+				method: "POST",
+				data: {
+					term: request.term
+				},
+				success: function(data) {
+				
+					response($.map(data, function(item) {
+						var code = item.split("|");
+						return {
+							label: code[0] + ', ' + code[1] + ', ' + code[2] + ', ' + code[3],
+							value: code[2],
+							data: item
+						}
+						
+					}));
+				}
+			});
+		},
+		autoFocus: true,
+		minLength: 2,
+		select: function(event, ui) {
+			var names = ui.item.data.split("|");
+
+			$("#first_name").val(names[0]);
+			$("#last_name").val(names[1]);
+			$("#phone").val(names[2]);
+			$("#address").text(names[3]);
+		
+		}
+	});
+	// When the user clicks on div, open the popup
     function myFunction(menuId) {
         var popup = document.getElementById("myPopup-"+menuId);
         popup.classList.toggle("show");
@@ -387,7 +425,6 @@
 			});
 		} else {
 			var cartId = attribute.getAttribute('cart_id');
-			console.log(cartId);
 			$.ajax({
 				type : 'POST',
 				url  : 'remove-to-cart',

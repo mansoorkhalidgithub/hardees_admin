@@ -184,6 +184,10 @@ Route::group([
 });
 
 Route::group(['middleware' => 'auth'], function () {
+	Route::post('search-customer', 'MenuController@searchCustomer')->name('search-customer');
+});
+
+Route::group(['middleware' => 'auth'], function () {
 	Route::post('get-menu-items', 'MenuController@menuItems')->name('get-menu-items');
 });
 

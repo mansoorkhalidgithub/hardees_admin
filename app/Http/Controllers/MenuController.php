@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\User;
+use App\Order;
+use App\Cart;
 use App\MenuCategory;
 use App\MenuItem;
 use App\Restaurant;
@@ -191,16 +194,27 @@ class MenuController extends Controller {
 	
 	public function menuItems(Request $request)
 	{
+		$userId = Auth::user()->id;
+		
+		$cartItems = Cart::where('user_id', $userId)->pluck('item_id');
+		
 		$menuCategoryId = $request->menu_category_id;
 		
 		$itemsByCategory = MenuItem::where('menu_category_id', $menuCategoryId)->get();
 		
+		$checked = '';
+		
 		$html = '';
 		foreach($itemsByCategory as $key => $item) 
 		{
+			if(in_array($item->id, $cartItems->all()))
+			{
+				$checked = 'checked';
+			}
+			
 			$html .= '<div class="col-sm-2">
 				<label class="category">
-					<input type="checkbox" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'"/>
+					<input '. $checked .' type="checkbox" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'"/>
 					<div>
 						<p class="product_label"> '. $item->name .' </p><br>
 						<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'"  class="product_image">
@@ -223,5 +237,27 @@ class MenuController extends Controller {
 		}
 		
 		echo $html;
+	}
+	
+	public function searchCustomer(Request $request)
+	{
+		$output = '';
+        $data = [];
+        if (isset($request["term"])) {
+            $pincode = User::where('phone_number', $_REQUEST['term'])->orwhere('first_name', $_REQUEST['term'])->orwhere('email', $_REQUEST['term'])->where(['user_type' => 'customer'])->get();
+        
+            if (count($pincode) > 0) {
+                foreach ($pincode as $key => $get_pincode) {
+					$orderRecord = Order::where(['user_id' => $get_pincode->id]);
+					
+                    $data[$get_pincode->phone_number] = $get_pincode->phone_number . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . "Burewala";
+                  
+                }
+            } else {
+                echo "Nothing found";
+            }
+        }
+
+        echo json_encode($data);
 	}
 }
