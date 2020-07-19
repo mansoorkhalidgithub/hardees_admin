@@ -9,7 +9,7 @@
         @role('admin')
         <a href="{{ url()->previous() }}" class="d-none d-sm-inline-block btn btn-sm shadow-sm font-weight-bold" style="background-color: #ffc107; color: black">
             <i class="fas fa-arrow-left"></i>
-            Rider List
+            Create User
         </a>
         @endrole
     </div>
