@@ -64,6 +64,7 @@ class RiderApiController extends Controller
     public function riderLogin(Request $request)
     {
         $loggedInRider = User::where('phone_number', $request['phone_number'])->where('user_type', 'rider')->first();
+
         if (!empty($loggedInRider)) :
             if (Hash::check($request['password'], $loggedInRider->password)) {
                 $data = [
@@ -178,6 +179,7 @@ class RiderApiController extends Controller
         // echo $status->name;
         // die;
         $user  = User::find($user_id);
+        $rider = User::find($rider_id);
         $order = Order::with('orderItems.items')
             ->where('id', $order_id)->firstOrFail();
 
@@ -196,7 +198,8 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 'data' => $order
             ];
-            MasterModel::notification('token', $status->description);
+            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
 
@@ -204,7 +207,8 @@ class RiderApiController extends Controller
         if ($status->name == Config::get('constants.STATUS_ACCEPT')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
-            MasterModel::notification('token', $status->description);
+            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
             $eta = 45;
         }
 
@@ -215,7 +219,8 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
-            MasterModel::notification('token', $status->description);
+            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
 
@@ -226,7 +231,8 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
-            MasterModel::notification('token', $status->description);
+            MasterModel::notification($user->device_token, 'Your Order is Pickup');
+            MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
 
@@ -243,7 +249,8 @@ class RiderApiController extends Controller
             OrderAssigned::updateOrCreate($data);
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
-            MasterModel::notification('token', $status->description);
+            MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
         }
 
         // Delivery Complete
@@ -277,7 +284,8 @@ class RiderApiController extends Controller
             $order_assigned->save();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-            MasterModel::notification('token', $status->description);
+            MasterModel::notification($user->device_token, 'Your Order is Delivered Now');
+            MasterModel::notification($rider->device_token, $status->description);
             $total_time = date_diff($end, $start)->format('%H:%i:%s');
         }
 
@@ -296,7 +304,8 @@ class RiderApiController extends Controller
                 ->where('trip_status_id', $order_status->id)->first();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-            MasterModel::notification('token', $status->description);
+            MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
             $total_time = $end->diff($start)->format('%H:%i:%s');
             // $total_time = date_diff($end, $start);
             // $message = $status->description;
@@ -366,7 +375,8 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 // 'detail' => $order
             ];
-            MasterModel::notification('token', $status->description);
+            MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
         $lat1 = $restaurant->latitude;
@@ -391,7 +401,7 @@ class RiderApiController extends Controller
                 'total_amount' => $order->total,
                 'distance' => $order->distance,
                 'pickup' => $restaurant->name,
-                'dropoff' => $user->address,
+                'dropoff' => $order->customer_address,
                 'start_lat' => $restaurant->latitude,
                 'start_lon' => $restaurant->longitude,
                 'end_lat' => $lat2,
@@ -604,6 +614,7 @@ class RiderApiController extends Controller
             ->where('id', $request->order_id)->firstOrFail();
         // dd($order);
         // die;
+        $total_time = $order->updated_at->diff($order->created_at)->format('%H:%i:%s');
         if (!$order) {
             $response = [
                 'status' => 0,
@@ -612,7 +623,11 @@ class RiderApiController extends Controller
             ];
             return response()->json($response);
         }
-
+        $start_lat = $order->restaurant->latitude;
+        $start_lon = $order->restaurant->longitude;
+        $end_lat = $order->latitude;
+        $end_lon = $order->longitude;
+        $distance = MasterModel::distance($start_lat, $start_lon, $end_lat, $end_lon);
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
@@ -620,31 +635,30 @@ class RiderApiController extends Controller
             'data' => [
                 "booking_id" => 2000,
                 "booking_number" => "Hardees002000",
-                "country" => "Pakistan",
-                "state" => "Punjab",
-                "city" => "lahore",
-                "user_id" => 259,
-                "user_email" => "umarjee01@gmail.com",
-                "phone_number" => "3014028286",
-                'name' => "Name",
-                "invoice_number" => "000364",
-                "customer_address" => "",
+                "country" => $order->customer->country,
+                "state" => $order->customer->city,
+                "city" => $order->customer->city,
+                'name' => $order->customer->name,
+                'phone_number' => $order->customer->phone_number,
+                'email' => $order->customer->email,
+                "invoice_number" => $order->id,
                 "total" => $order->total,
                 'items' => $order->orderItems->pluck('items.name'),
-                "start_latitude" => "31.4685611",
-                "start_ongitude" => "74.3180583",
-                "start_point" => "MM Alam Road",
-                "end_atitude" => $order->latitude,
+                "start_latitude" => $order->restaurant->latitude,
+                "start_longitude" => $order->restaurant->longitude,
+                "start_point" => $order->restaurant->name,
+                "end_latitude" => $order->latitude,
                 "end_longitude" => $order->longitude,
-                "end_point" => "Unnamed Road, Ejaz Park Bhatti Colony, Lahore, Punjab 54600, Pakistan",
-                "total_time" => "00:0:6",
-                "distance" => "0 KM",
+                "end_point" => $order->customer_address,
+                "total_time" => $total_time,
+                "distance" => $distance,
                 "delivery_date" => $order->created_at,
                 "booking_date" => $order->created_at,
                 "end_delivery_date" => $order->updated_at,
                 "status" => "TPDD",
                 "trip_status" => "N",
                 "user_rating" => 2,
+                "Payment_type" => $order->ordertype
             ]
 
         ];

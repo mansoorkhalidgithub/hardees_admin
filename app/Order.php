@@ -6,7 +6,8 @@ use App\OrderStatus;
 use Helper;
 use Illuminate\Database\Eloquent\Model;
 
-class Order extends Model {
+class Order extends Model
+{
 	protected $with = ['orderItems'];
 
 	protected $appends = ['order_reference', 'status_html'];
@@ -26,49 +27,59 @@ class Order extends Model {
 		'order_type_id',
 	];
 
-	public function orderItems() {
+	public function orderItems()
+	{
 		return $this->hasMany(OrderItem::class, 'order_id');
 	}
 
-	public function getorderItemsWithNameAttribute() {
+	public function getorderItemsWithNameAttribute()
+	{
 		$data = OrderItem::where('order_id', $this->id)->get();
 		$data->each->append(
 			'Name'
 		);
 		return $data;
 	}
-	public function ordersAccepted() {
+	public function ordersAccepted()
+	{
 
 		return $this->hasOne(OrderStatus::class, 'id', 'status')->where('name', 'Accepted');
 	}
-	public function newOrders() {
+	public function newOrders()
+	{
 		return $this->hasOne(OrderStatus::class, 'id', 'status')->where('name', 'Pending');
 	}
-	public function belongToUser() {
+	public function belongToUser()
+	{
 		return $this->belongsTo(User::class, 'user_id');
 	}
-	public function getOrdertypeAttribute() {
+	public function getOrdertypeAttribute()
+	{
 		$orderStatus = OrderType::find($this->order_type_id);
 		if ($orderStatus) {
 			return $orderStatus->type;
 		}
 	}
-	public function getcustomerDataAttribute() {
+	public function getcustomerDataAttribute()
+	{
 		$user = User::where('id', $this->user_id)->select(['id', 'first_name', 'last_name', 'phone_number'])->first();
 		$user->append(
 			'orderAddress'
 		);
 		return $user;
 	}
-	public function getapproxTimeAttribute() {
+	public function getapproxTimeAttribute()
+	{
 		return 15;
 	}
-	public function getmenueItemNameAttribute() {
+	public function getmenueItemNameAttribute()
+	{
 		$orderitems = OrderItem::where('order_id', $this->id)->select('menu_item_id')->first();
 		$menueItem = MenuItem::where('id', $orderitems->menu_item_id)->select('name')->first();
 		return $menueItem->name;
 	}
-	public function getriderAsignedAttribute() {
+	public function getriderAsignedAttribute()
+	{
 		$OrderAssigned = OrderAssigned::where('order_id', $this->id)->first();
 		$data = (object) [];
 		if ($OrderAssigned) {
@@ -79,28 +90,34 @@ class Order extends Model {
 		}
 		return $data;
 	}
-	public function getbookingNoAttribute() {
+	public function getbookingNoAttribute()
+	{
 		return $this->id;
 	}
-	public function restaurant() {
+	public function restaurant()
+	{
 		return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
 	}
 
-	public function customer() {
+	public function customer()
+	{
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
-	public function getOrderReferenceAttribute() {
+	public function getOrderReferenceAttribute()
+	{
 		return Helper::orderReference($this->id);
 	}
-	public function getorderStatusAttribute() {
+	public function getorderStatusAttribute()
+	{
 		$orderStatus = OrderStatus::where('id', $this->status)->pluck('name');
 
 		$statusName = $orderStatus[0];
 
 		return $statusName;
 	}
-	public function getStatusHtmlAttribute() {
+	public function getStatusHtmlAttribute()
+	{
 		$orderStatus = OrderStatus::where('id', $this->status)->pluck('name');
 
 		$html = '<span class="btn btn-success btn-sm">' . $orderStatus[0] . '<span>';

@@ -49,15 +49,15 @@ class MasterModel extends Model
             $dist = acos($dist);
             $dist = rad2deg($dist);
             $miles = $dist * 60 * 1.1515;
-            return ($miles * 1.609344) . "KM";
+            return (round($miles * 1.609344, 2)) . " KM";
         }
     }
 
     public static function notification($token, $message)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
-        // $token = $token;
-        $token = 'fxmjoRhkQwea2oGRI0EXBc:APA91bFzgUy7x-FR6NvbTl_IZ1YneV8FMYzBeZN3QjCY4usYmz-8K21Qn-v3-DDsF1OwjhmLY07jKKsxpVNpYdJZdGh_ZCg5uVrU6XT8pea9ZzAPnW7cQM1UUCxSrDQKEqXu4EkNlPhm';
+        $token = $token;
+        // $token = 'fxmjoRhkQwea2oGRI0EXBc:APA91bFzgUy7x-FR6NvbTl_IZ1YneV8FMYzBeZN3QjCY4usYmz-8K21Qn-v3-DDsF1OwjhmLY07jKKsxpVNpYdJZdGh_ZCg5uVrU6XT8pea9ZzAPnW7cQM1UUCxSrDQKEqXu4EkNlPhm';
 
         $notification = [
             'body' => $message,
