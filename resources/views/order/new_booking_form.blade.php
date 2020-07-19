@@ -250,46 +250,41 @@
                     <hr>
 
                     <h4 class="h3 mb-0 fontawesomeheading">
-						<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>
+						<!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
 						Select Menu Items
 					</h4>
 						<br>
-                    <div id="collapse1" class="panel-collapse collapse">
+                    <div id="collapse1" class="panel-collapse">
 
                         <p style="margin: 0px 10px">
-							<select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="ct_id" name="Trip[iVehicleTypeId]">
+							<select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
 								@foreach($itemCategories as $key => $category)
-									<option> {{ $category->name }} </option>
+									<option value="{{ $category->id }}"> {{ $category->name }} </option>
                                 @endforeach
                             </select>
                         </p>
 
-                        <div class="row" id="container-{{ $itemCategories[0]->id }}" data-id="category-{{ $itemCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                        <div class="row" id="menu-container" data-id="category-{{ $itemCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
 							@foreach($items as $key => $item)
 								<div class="col-sm-2">
 									<label class="category">
-										<input type="checkbox" name="items[]" value="{{ $item->id }}"/>
+										<input type="checkbox" cart_id="" id="{{ $item->id }}" onchange="addToCart(this)" name="items[]" value="{{ $item->id }}"/>
 										<div>
 											<p class="product_label"> {{ $item->name }} </p><br>
 											<div class="popup" onmouseover="myFunction({{ $item->id }})" onmouseout="myFunctionClose({{ $item->id }})"><img src="{{ env('APP_URL') . $item->image }}"  class="product_image">
 												<span class="popuptext" id="myPopup-{{ $item->id }}">
-													<small> 
-														<p class="p-2"> 
-															{{ $item->ingredients }}
-														</p> 
-														PKR 890
-													</small>
+													<small> <p class="p-2"> {{ $item->ingredients }}</p> PKR {{ $item->price }} </small>
 												</span>
 											</div>
 										</div>
 									</label>
 									<div class="input-group input-number-group add-qty">
 										<div class="input-group-button">
-											<span class="input-number-decrement bg-whitesmoke">-</span>
+											<span onclick="removeQuantity(this.id)" id="{{ $item->id }}" class="input-number-decrement bg-whitesmoke">-</span>
 										</div>
-										<input class="input-number" type="number" value="1" min="0" max="1000">
+										<input class="input-number" type="number" data_id="{{ $item->id}}" id="quantity-{{ $item->id }}" name="quantity" value="1" min="0" max="1000">
 										<div class="input-group-button">
-											<span class="input-number-increment bg-whitesmoke">+</span>
+											<span onclick="addQuantity(this.id)" id="{{ $item->id }}" class="input-number-increment bg-whitesmoke">+</span>
 										</div>
 									</div>
 								</div>
@@ -356,5 +351,82 @@
         var popup_close = document.getElementById("myPopup-"+menuId);
         popup_close.classList.toggle("hide");
     }
+	
+	function menuItems(categoryId)
+	{
+		$.ajax({
+			type : 'POST',
+			url  : 'get-menu-items',
+			data : {"menu_category_id" : categoryId},
+			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			success : function(response) {
+				document.getElementById('menu-container').innerHTML = response;
+			},
+			error : function(error) {
+				console.log(error)
+			}
+		});
+	}
+	
+	function addToCart(attribute) {
+		
+		var quantityElement = document.getElementById("quantity-"+attribute.id).value;
+		
+		if(attribute.checked) {
+			$.ajax({
+				type : 'POST',
+				url  : 'add-to-cart',
+				data : {"item_id" : attribute.value, 'quantity': quantityElement},
+				headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+				success : function(response) {
+					attribute.setAttribute("cart_id", response.data.cart_id);
+				},
+				error : function(error) {
+					console.log(error)
+				}
+			});
+		} else {
+			alert("OK ");
+		}
+	}
+	
+	function addQuantity(value)
+	{
+		var element = document.getElementById("quantity-"+value);
+		var cartId = document.getElementById(element.data_id).attr("cart_id");
+		var newQuantity = +element.value + +1;
+		element.value = newQuantity;
+		$.ajax({
+			type : 'POST',
+			url  : 'add-quantity',
+			data : {"cart_id": cartId,"item_id" : element.data_id},
+			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			success : function(response) {
+				console.log(response.message);
+			},
+			error : function(error) {
+				console.log(error)
+			}
+		});
+	}
+	
+	function removeQuantity(value)
+	{
+		var element = document.getElementById("quantity-"+value);
+		var newQuantity = element.value - 1;
+		element.value = newQuantity;
+		$.ajax({
+			type : 'POST',
+			url  : 'remove-quantity',
+			data : {"item_id" : element.data_id},
+			headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+			success : function(response) {
+				console.log(response.message);
+			},
+			error : function(error) {
+				console.log(error)
+			}
+		});
+	}
 </script> 
 @endsection

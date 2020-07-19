@@ -101,7 +101,7 @@ class OrderApiController extends Controller {
 			'deal_id'  => $request->deal_id,
 			'deal_quantity'  => $request->deal_quantity,
 		];
-		
+		$cartId = "";
 		$cartItem = "";
 		$cartDeal = "";
 		if(isset($request->item_id)) {
@@ -116,20 +116,26 @@ class OrderApiController extends Controller {
 		{
 			$quantity = $cartItem->quantity + $request->quantity;
 			$cartItem->update(['quantity' => $quantity]);
+			$cartId = $cartItem->id;
 		} else if(!empty($cartDeal))
 		{
 			$dealQuantity = $cartDeal->deal_quantity + $request->deal_quantity;
 			$cartDeal->update(['deal_quantity' => $dealQuantity]);
+			$cartId = $cartDeal->id;
 		}
 		else 
 		{
 			$cart = Cart::create($data);
+			$cartId = $cart->id;
 		}
 		
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'success',
+			'data' => [
+				'cart_id' => $cartId
+			]
 		];
 		
 		return response()->json($response);

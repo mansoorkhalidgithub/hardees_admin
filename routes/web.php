@@ -183,6 +183,19 @@ Route::group([
 	Route::get('special-offers', 'DealController@specialOffers')->name('special-offers');
 });
 
+Route::group(['middleware' => 'auth'], function () {
+	Route::post('get-menu-items', 'MenuController@menuItems')->name('get-menu-items');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+	Route::post('add-to-cart', 'Api\OrderApiController@addCart')->name('add-to-cart');
+	Route::post('get-cart', 'Api\OrderApiController@getCart')->name('get-cart');
+	Route::post('add-quantity', 'Api\OrderApiController@addQuantity')->name('add-quantity');
+	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity')->name('remove-quantity');
+	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart')->name('delete-cart');
+	Route::post('checkout', 'Api\OrderApiController@checkout')->name('checkout');
+});
+
 Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

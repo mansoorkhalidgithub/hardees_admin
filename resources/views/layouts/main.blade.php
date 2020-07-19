@@ -65,21 +65,23 @@
                 <!-- Heading -->
                 <div class="sidebar-heading">Admin Dashboard</div>
 
+				<li class="nav-item"><a class="nav-link" href="{{ route('deals') }}">
+                        <i class="fas fa-fw fa-location-arrow"></i> <span> Deals </span></a>
+                </li>
+				
+				
+                <li class="nav-item"><a class="nav-link" href="{{ route('menu') }}">
+                        <i class="fas fa-fw fa-location-arrow"></i> <span> Menu Items </span></a>
+                </li>
+				
                 <li class="nav-item"><a class="nav-link" href="{{ route('menu-categories') }}">
                         <i class="fas fa-fw fa-location-arrow"></i> <span> Menu Categories </span></a>
                 </li>
 
-                <li class="nav-item"><a class="nav-link" href="{{ route('menu') }}">
-                        <i class="fas fa-fw fa-location-arrow"></i> <span> Menu Items </span></a>
-                </li>
-
-                <li class="nav-item"><a class="nav-link" href="{{ route('special-offers') }}">
+				<!--<li class="nav-item"><a class="nav-link" href="#">
                         <i class="fas fa-fw fa-location-arrow"></i> <span> Special Offers </span></a>
-                </li>
+                </li>-->
 
-                <li class="nav-item"><a class="nav-link" href="{{ route('deals') }}">
-                        <i class="fas fa-fw fa-location-arrow"></i> <span> Deals </span></a>
-                </li>
 
                 <hr class="sidebar-divider d-none d-md-block">
 

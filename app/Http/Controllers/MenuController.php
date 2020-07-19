@@ -188,4 +188,40 @@ class MenuController extends Controller {
 		]);
 
 	}
+	
+	public function menuItems(Request $request)
+	{
+		$menuCategoryId = $request->menu_category_id;
+		
+		$itemsByCategory = MenuItem::where('menu_category_id', $menuCategoryId)->get();
+		
+		$html = '';
+		foreach($itemsByCategory as $key => $item) 
+		{
+			$html .= '<div class="col-sm-2">
+				<label class="category">
+					<input type="checkbox" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'"/>
+					<div>
+						<p class="product_label"> '. $item->name .' </p><br>
+						<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'"  class="product_image">
+							<span class="popuptext" id="myPopup-'. $item->id .'">
+								<small> <p class="p-2"> '. $item->ingredients .'</p> PKR '. $item->price .' </small>
+							</span>
+						</div>
+					</div>
+				</label>
+				<div class="input-group input-number-group add-qty">
+					<div class="input-group-button">
+						<span onclick="removeQuantity(this.id)" id="'. $item->id .'" class="input-number-decrement bg-whitesmoke">-</span>
+					</div>
+					<input class="input-number" type="number" data_id="'. $item->id .'" id="quantity-'. $item->id .'" name="quantity" value="1" min="0" max="1000">
+					<div class="input-group-button">
+						<span onclick="addQuantity(this.id)" id="'. $item->id .'" class="input-number-increment bg-whitesmoke">+</span>
+					</div>
+				</div>
+			</div>';
+		}
+		
+		echo $html;
+	}
 }
