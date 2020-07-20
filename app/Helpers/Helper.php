@@ -122,7 +122,7 @@ class Helper
            
         ];
 		
-        Log::info(env('FIREBASE_NOTIFICATION_KEY'));
+        //Log::info(env('FIREBASE_NOTIFICATION_KEY'));
 		
         $headers = [
             "Authorization: key=AAAATu-jqzQ:APA91bG56HzPaO7tGxO84bKzaaVrKloKT6xDFNnPVlQa7HLtLV417SmI-mAKTlZ33uJJmKPO0ZdLjuJQcgaZcDf5oC2GUBkgfai5KYc1wzBT1f6whA6IoR1w9txku1IujcIMd-bwLaZZ",
@@ -149,7 +149,64 @@ class Helper
         }
 
         curl_close($ch);
+		
+		log::info($result);
         
+        return $result;
+
+	}
+	
+	public static function sendNotificationOne($data)
+	{
+		$url = 'https://fcm.googleapis.com/fcm/send';
+   
+        $token = $data['device_token'];
+		
+        $notification = [
+            'title' => 'Hardees Notification',
+            'body' => 'New Order Assigned',
+            'sound' => true,
+        ];
+
+        $fcmNotification = [
+            'to' => $token, //single token
+            'notification' => $notification,
+			'data' => [
+				'order_id' => $data['order_id'],
+				'status' => $data['status'],
+				'message' => $data['message'],
+			]
+           
+        ];
+		
+        //Log::info(env('FIREBASE_NOTIFICATION_KEY'));
+		
+        $headers = [
+            "Authorization: key=AAAATu-jqzQ:APA91bG56HzPaO7tGxO84bKzaaVrKloKT6xDFNnPVlQa7HLtLV417SmI-mAKTlZ33uJJmKPO0ZdLjuJQcgaZcDf5oC2GUBkgfai5KYc1wzBT1f6whA6IoR1w9txku1IujcIMd-bwLaZZ",
+            'Content-Type: application/json',
+        ];
+
+       
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, $url);
+
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+      
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
+
+        $result = curl_exec($ch);
+        if ($result === false) {
+            die('Curl failed: ' . curl_error($ch));
+        }
+
+        curl_close($ch);
+        log::info($result);
         return $result;
 
 	}

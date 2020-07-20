@@ -64,6 +64,7 @@ class AuthApiController extends Controller
 		];
 		
 		$user = User::create($data);
+		$user->assignRole('customer');
 		
 		$response = [
             'status' => 1,

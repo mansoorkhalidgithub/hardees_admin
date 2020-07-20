@@ -239,27 +239,4 @@ class MenuController extends Controller {
 		
 		echo $html;
 	}
-	
-	public function searchCustomer(Request $request)
-	{
-		$output = '';
-        $data = [];
-        if (isset($request["term"])) {
-            $pincode = User::where('phone_number', $_REQUEST['term'])->orwhere('first_name', $_REQUEST['term'])->orwhere('email', $_REQUEST['term'])->where(['user_type' => 'customer'])->get();
-        
-            if (count($pincode) > 0) {
-                foreach ($pincode as $key => $get_pincode) {
-					$orderRecord = Order::where(['user_id' => $get_pincode->id])->first();
-					
-					if(!empty($orderRecord)) {
-						$data[$get_pincode->phone_number] = $get_pincode->first_name . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . $orderRecord->customer_address ;
-					} else {
-						$data[$get_pincode->phone_number] = $get_pincode->first_name . "|" . $get_pincode->last_name . "|" . $get_pincode->phone_number . "|" . " " ;
-					}
-                }
-            } 
-        }
-
-        echo json_encode($data);
-	}
 }

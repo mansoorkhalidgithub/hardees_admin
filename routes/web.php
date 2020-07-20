@@ -184,7 +184,9 @@ Route::group([
 });
 
 Route::group(['middleware' => 'auth'], function () {
-	Route::post('search-customer', 'MenuController@searchCustomer')->name('search-customer');
+	Route::post('search-customer', 'OrderController@searchCustomer')->name('search-customer');
+	Route::post('nearest-restuarant', 'OrderController@nearestRestaurant')->name('nearest-restuarant');
+	Route::post('save-order', 'OrderController@save')->name('save-order');
 });
 
 Route::group(['middleware' => 'auth'], function () {

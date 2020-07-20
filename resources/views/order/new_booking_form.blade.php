@@ -331,25 +331,10 @@
                         </div>
 
                         <hr>
-
-                        <p>
-                            <select class="form-control textInput abcdefgh" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px" id="ct_id" name="Trip[iVehicleTypeId]">
-
-                                <option selected="true" disabled="disabled">Select your City for Delivery</option>
-                                <option>Delivery Lahore</option>
-                                <option>Delivery Multan</option>
-                                <option>Delivery Gujranwala</option>
-                                <option>Delivery Rawalpindi</option>
-                                <option>Delivery Islamabad</option>
-                                <option>Delivery Karachi</option>
-                                <option>Delivery Peshawar</option>
-
-
-                            </select>
-                        </p>
+						
                         <div class="row">
                             <div class="col-sm-12 m-b-2">
-                                <input id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+                                <input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
                                 <input type="hidden" name="latitude" id="latitude">
                                 <input type="hidden" name="longitude" id="longitude">
                                 <input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
@@ -358,25 +343,17 @@
                             <div class="col-sm-12">
 
                                 <div id="hardees_branches">
-                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="HardeesBranches[id]">
+                                    <select required readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id">
                                         <option>Select Branch</option>
-                                        <option>MM Alam</option>
-                                        <option>Mall Road</option>
-                                        <option>Giga Mall</option>
-                                        <option>F 11/4 Islamabad</option>
-                                        <option>Gulberg</option>
-                                        <option>Packages Mall</option>
-                                        <option>DHA</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="col-sm-12">
 
-                                <div id="hardees_branches">
-                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="Hardees_Riders">
+                                <div id="hardees_rider">
+                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="user_id">
                                         <option>Riders</option>
-
                                     </select>
                                 </div>
                             </div>
@@ -393,6 +370,7 @@
 
     </div>
 </div>
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
@@ -575,14 +553,32 @@
 
         autocomplete.addListener('place_changed', function() {
             var place = autocomplete.getPlace();
-
-            $('#latitude').val(place.geometry['location'].lat());
-            $('#longitude').val(place.geometry['location'].lng());
-            //$('#location').val(place.name);
+			var latitude = place.geometry['location'].lat();
+			var longitude = place.geometry['location'].lng();
+            $('#latitude').val(latitude);
+            $('#longitude').val(longitude);
             $('#location_search_filter').val(1);
+			
+			nearestRestaurant(latitude, longitude);
+			
         });
-
-
+    }
+	
+	function nearestRestaurant(lat, lng) {
+		
+        $.ajax({
+            url: 'nearest-restuarant',
+            type: 'POST',
+            data: { latitude: lat, longitude: lng },
+			headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            success: function(response) {
+				$("#hardees_branches").html(response.data.nearestRestaurants);
+				$("#hardees_rider").html(response.data.restaurantRiders);
+            },
+            error: function(error) {
+                console.log(error);
+            }
+        });
     }
 </script>
 @endsection
