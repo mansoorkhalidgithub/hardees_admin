@@ -73,7 +73,7 @@ class MasterModel extends Model
         ];
         // dd(env('FIREBASE_NOTIFICATION_KEY'));
         $headers = [
-            "Authorization: key=" . env('FIREBASE_NOTIFICATION_KEY'),
+            "Authorization: key=AAAATu-jqzQ:APA91bG56HzPaO7tGxO84bKzaaVrKloKT6xDFNnPVlQa7HLtLV417SmI-mAKTlZ33uJJmKPO0ZdLjuJQcgaZcDf5oC2GUBkgfai5KYc1wzBT1f6whA6IoR1w9txku1IujcIMd-bwLaZZ",
             'Content-Type: application/json',
         ];
 

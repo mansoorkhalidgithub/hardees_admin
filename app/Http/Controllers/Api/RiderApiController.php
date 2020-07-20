@@ -401,6 +401,8 @@ class RiderApiController extends Controller
                 "state" => $order->customer->city,
                 "city" => $order->customer->city,
                 'name' => $order->customer->name,
+                'user_id' => $user_id,
+                'profile_img' => asset($order->customer->profile_picture),
                 'phone_number' => $order->customer->phone_number,
                 'email' => $order->customer->email,
                 "invoice_number" => $order->id,
@@ -640,6 +642,7 @@ class RiderApiController extends Controller
         $start_lon = $order->restaurant->longitude;
         $end_lat = $order->latitude;
         $end_lon = $order->longitude;
+        // $profile_img = 
         $distance = MasterModel::distance($start_lat, $start_lon, $end_lat, $end_lon);
         $response = [
             'status' => 1,
@@ -651,6 +654,8 @@ class RiderApiController extends Controller
                 "country" => $order->customer->country,
                 "state" => $order->customer->city,
                 "city" => $order->customer->city,
+                'user_id' => $order->customer->id,
+                'profile_img' => asset($order->customer->profile_picture),
                 'name' => $order->customer->name,
                 'phone_number' => $order->customer->phone_number,
                 'email' => $order->customer->email,
