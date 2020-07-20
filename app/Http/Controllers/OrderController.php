@@ -212,8 +212,8 @@ class OrderController extends Controller
 		];
 		
 		$notification = Helper::sendNotification($riderNotificationData);
-		
-		$notificationOne = Helper::sendNotificationOne($restaurantNotificationData);
+		sleep(3);
+		$notificationOne = Helper::sendNotification($restaurantNotificationData);
 		
 		/*********** Notifications ************/
 		
