@@ -288,7 +288,7 @@
 
                     <h4 class="h3 mb-0 fontawesomeheading">
                         <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
-                        Select Menu Items
+                        Select Single Items
                     </h4>
                     <br>
                     <div id="collapse1" class="panel-collapse">
@@ -329,38 +329,129 @@
                             </div>
                             @endforeach
                         </div>
-
-                        <hr>
-						
-                        <div class="row">
-                            <div class="col-sm-12 m-b-2">
-                                <input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
-                                <input type="hidden" name="latitude" id="latitude">
-                                <input type="hidden" name="longitude" id="longitude">
-                                <input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
-                            </div>
-
-                            <div class="col-sm-12">
-
-                                <div id="hardees_branches">
-                                    <select required readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id">
-                                        <option>Select Branch</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div class="col-sm-12">
-
-                                <div id="hardees_rider">
-                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">
-                                        <option>Riders</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <hr>
                     </div>
+						
+					<hr>
+					<h4 class="h3 mb-0 fontawesomeheading">
+                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
+                        Select Deals
+                    </h4>
+                    <br>
+                    <div id="collapse1" class="panel-collapse">
 
+                        <p style="margin: 0px 10px">
+                            <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
+                                @foreach($dealCategories as $key => $dealCategory)
+                                <option value="{{ $dealCategory->id }}"> {{ $dealCategory->name }} </option>
+                                @endforeach
+                            </select>
+                        </p>
+
+                        <div class="row" id="deal-container" data-id="category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                            @foreach($deals as $key => $deal)
+                            <div class="col-sm-2">
+                                <label class="category">
+                                    <input type="checkbox" cart_id="" id="{{ $deal->id }}" onchange="addToCart(this)" name="deals[]" value="{{ $deal->id }}" />
+                                     <div>
+                                        <p class="product_label"> {{ $deal->title }} </p><br>
+                                        <div class="popup"><img src="{{ env('APP_URL') . $deal->image }}" class="product_image">
+                                            <span class="popuptext" id="myPopup-{{ $deal->id }}">
+                                                <small>
+                                                    <p class="p-2"> </p> PKR {{ $deal->payable_price }}
+                                                </small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="input-group input-number-group add-qty">
+                                    <div class="input-group-button">
+                                        <span onclick="removeQuantity(this.id)" id="{{ $deal->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+                                    </div>
+                                    <input class="input-number" type="number" data_id="{{ $deal->id}}" id="quantity-{{ $deal->id }}" name="quantity" value="1" min="0" max="1000">
+                                    <div class="input-group-button">
+                                        <span onclick="addQuantity(this.id)" id="{{ $deal->id }}" class="input-number-increment bg-whitesmoke">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+					<hr>
+
+                    <h4 class="h3 mb-0 fontawesomeheading">
+                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
+                        Select Add-ons
+                    </h4>
+                    <br>
+                    <div id="collapse1" class="panel-collapse">
+
+                        <!--<p style="margin: 0px 10px">
+                            <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
+                                @foreach($dealCategories as $key => $dealCategory)
+                                <option value="{{ $dealCategory->id }}"> {{ $dealCategory->name }} </option>
+                                @endforeach
+                            </select>
+                        </p>-->
+
+                        <div class="row" id="deal-container" data-id="category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                            @foreach($addons as $key => $addon)
+                            <div class="col-sm-2">
+                                <label class="category">
+                                    <input type="checkbox" cart_id="" id="{{ $addon->id }}" onchange="addToCart(this)" name="addons[]" value="{{ $addon->id }}" />
+                                     <div>
+                                        <p class="product_label"> {{ $addon->name }} </p><br>
+                                        <div class="popup"><img src="{{ env('APP_URL') . $addon->image }}" class="product_image">
+                                            <span class="popuptext" id="myPopup-{{ $addon->id }}">
+                                                <small>
+                                                    <p class="p-2"> </p> PKR 30
+                                                </small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="input-group input-number-group add-qty">
+                                    <div class="input-group-button">
+                                        <span onclick="removeQuantity(this.id)" id="{{ $addon->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+                                    </div>
+                                    <input class="input-number" type="number" data_id="{{ $addon->id}}" id="quantity-{{ $addon->id }}" name="quantity" value="1" min="0" max="1000">
+                                    <div class="input-group-button">
+                                        <span onclick="addQuantity(this.id)" id="{{ $addon->id }}" class="input-number-increment bg-whitesmoke">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+					<hr>
+					
+					<div class="row">
+						<div class="col-sm-12 m-b-2">
+							<input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+							<input type="hidden" name="latitude" id="latitude">
+							<input type="hidden" name="longitude" id="longitude">
+							<input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
+						</div>
+
+						<div class="col-sm-12">
+
+							<div id="hardees_branches">
+								<select required readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id">
+									<option>Select Branch</option>
+								</select>
+							</div>
+						</div>
+
+						<div class="col-sm-12">
+
+							<div id="hardees_rider">
+								<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">
+									<option>Riders</option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<hr>
+                   
                 </fieldset>
                 <div class="card-footer text-right">
                     <button id="" name="" class="btn" type="submit" style="background-color: #F6BF2D; color: black; font-weight: bold">Submit</button>

@@ -27,7 +27,8 @@ class DatabaseSeeder extends Seeder
             DealSeeder::class,
             CountriesTableSeeder::class,
             StatesTableSeeder::class,
-            CitiesTableSeeder::class
+            CitiesTableSeeder::class,
+			AddonSeeder::class
         ]);
         factory(DealItem::class, 30)->create();
     }

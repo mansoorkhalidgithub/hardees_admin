@@ -3,7 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\User;
+use App\Deal;
+use App\Addon;
 use App\MenuItem;
+use App\DealCategory;
 use App\MenuCategory;
 use Illuminate\Http\Request;
 
@@ -18,8 +21,11 @@ class BookingController extends Controller
     {
 		$itemCategories = MenuCategory::all();
 		$items = MenuItem::where('menu_category_id', $itemCategories[0]->id)->get();
+		$dealCategories = DealCategory::where('status', 1)->get();
+		$deals = Deal::where('deal_category_id', $dealCategories[0]->id)->where('status', 1)->get();
+		$addons = Addon::all();
 		
-        return view('order.new_booking_form', compact('itemCategories', 'items'));
+        return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addons'));
     }
 	
 	public function save(Request $request)
