@@ -11,6 +11,6 @@ class Slider extends MasterModel
         'description',
         'status',
         'created_by',
-        'slider_img'
+        'image'
     ];
 } 

@@ -118,6 +118,7 @@ class RestaurantApiController extends Controller {
 		return response()->json($response);
 	}
 	public function login(Request $request) {
+		
 		$loggedInUser = User::where('email', $request['email'])->first();
 		$userRole = $loggedInUser->roles->pluck('name');
 
@@ -130,31 +131,34 @@ class RestaurantApiController extends Controller {
 		}
 		if (!empty($loggedInUser)):
 			if (Hash::check($request['password'], $loggedInUser->password)) {
-				// $loggedInUser = Auth::user();
+				
+				$userData = [
+					'device_type' => $request->device_type,
+					'device_name' => $request->device_name,
+					'device_token' => $request->device_token,
+					'app_version' => $request->app_version,
+					'device_id' => $request->device_id,
+				];
+				
+				User::where('id', $loggedInUser->id)->update($userData);
+				
 				$tokenResult = $loggedInUser->createToken('restaurant');
 				$token = $tokenResult->accessToken;
-				// $token->expires_at = Carbon::now()->addDays(1);
 				$userRole = $loggedInUser->roles->pluck('name');
 				$customer = [
 					'name' => $loggedInUser->first_name . $loggedInUser->last_name ? $loggedInUser->last_name : '',
 					'email' => $loggedInUser->email,
 					'contact_number' => $loggedInUser->phone_number,
-					// 'logo' => $loggedInUser->logo,
-					// 'thumbnail' => $loggedInUser->thumbnail,
 					'role' => $userRole[0],
 				];
 
 				$response = [
 					'status' => 1,
 					'method' => $request->route()->getActionMethod(),
-					'message' => 'Customer logged in successfully !',
+					'message' => 'Restaurant user logged in successfully !',
 					'access_token' => $token,
 					'token_type' => 'Bearer',
-					// 'customer_id' => $loggedInUser->customer_id,
 					'customer_profile' => $customer,
-					// 'expires_at' => Carbon::parse(
-					// 	$tokenResult->token->expires_at
-					// )->toDateTimeString(),
 				];
 
 				return response()->json($response);

@@ -9,6 +9,7 @@ use App\Cart;
 use App\User;
 use App\Order;
 use App\MenuItem;
+use App\OrderAssigned;
 use App\OrderItem;
 use App\Restaurant;
 use App\OrderStatus;
@@ -63,7 +64,7 @@ class OrderController extends Controller
 		$restaurantHtml .= '</select>';
 		
 		$restaurantRiders = User::role('rider')->where('restaurant_id', $nearestRestaurants[0]->id)->get();
-		$riderHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="user_id">';
+		$riderHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">';
 		foreach($restaurantRiders as $key => $rider) {
 			$riderHtml .= '<option value="' . $rider->id . '">'. $rider->name .'</option>';
 		}
@@ -136,6 +137,11 @@ class OrderController extends Controller
 		$longitude = $request->longitude;
 		$dropLocation = $request->drop_off_location;
 		
+		$restaurantId = $request->restaurant_id;
+		$riderId = $request->rider_id;
+		
+		//echo $riderId;exit;
+		
 		$customerData = [
 			'first_name' => $first_name,
 			'last_name' => $last_name,
@@ -155,7 +161,7 @@ class OrderController extends Controller
 			$customer->assignRole('customer');
 		}
 		
-		$restaurantId = $request->restaurant_id;
+		
 		
 		$orderData = [
 			'user_id' => $userId,
@@ -195,14 +201,42 @@ class OrderController extends Controller
 		
 		Cart::destroy($cartIds);
 		
-		/*********** Notifications ************/
+		/*********** Order Assign ************/
+		
+		$assignData = [
+			'order_id' => $orderId,
+			'rider_id' => $riderId,
+			'trip_status_id' => 1,
+		];
+		
+		$modelAssign = new OrderAssigned;
+		
+		/*********** Order Assign ************/
+		
+		$order = Order::with('orderItems')->where('id', $orderId)->first();
+		
+		return view('order/summary', compact('order', 'riderId'));
+		
+	}
+	
+	public function notification(Request $request)
+	{
+		$orderId = $request->order_id;
+		$restaurantId = $request->restaurant_id;
+		$riderId = $request->rider_id;
+		
+		$rider = User::where('id', $riderId)->first();
 		
 		$riderNotificationData = [
 			"order_id" => $orderId,
-			"device_token" => "eZ2bJWCIQIS_CBTkKQ9OuO:APA91bHitZRfcrNuNCNz-FPmGPabcJzRsY7fWExt_oFqcT95HemI4pDoblAqtfdcEja1J3h7LmUyHhqlgn4r-3HmyM29qhPOOwg3MsND1KjxjDM_3hTKX0JM2xSBworidLCSTbd87hyT",
+			"device_token" => $rider->device_token,
 			"status" => "TR",
 			"message" => "New Order Assigned"
 		];
+		
+		$notification = Helper::sendNotification($riderNotificationData);
+		
+		sleep(3);
 		
 		$restaurantNotificationData = [
 			"order_id" => $orderId,
@@ -211,14 +245,16 @@ class OrderController extends Controller
 			"message" => "New Order Arrived"
 		];
 		
-		$notification = Helper::sendNotification($riderNotificationData);
-		sleep(3);
 		$notificationOne = Helper::sendNotification($restaurantNotificationData);
 		
-		/*********** Notifications ************/
+		$responseData = [
+			'code' => 1,
+			'message' => "Notifications sent successfully.",
+			'riderNotification' => json_decode($notification),
+			'restaurantNotification' => json_decode($notification),
+		];
 		
-		return redirect('new-orders');
-		
+		echo json_encode($responseData);
 	}
 	
 }

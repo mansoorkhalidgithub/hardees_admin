@@ -352,7 +352,7 @@
                             <div class="col-sm-12">
 
                                 <div id="hardees_rider">
-                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="user_id">
+                                    <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">
                                         <option>Riders</option>
                                     </select>
                                 </div>

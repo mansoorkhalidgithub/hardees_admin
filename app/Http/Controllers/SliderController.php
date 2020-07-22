@@ -56,7 +56,7 @@ class SliderController extends Controller
 
             $sliderPath = 'uploads/slider/' . $input['imagename'];
 
-            $data['slider_img'] = $sliderPath;
+            $data['image'] = $sliderPath;
         }
         $appslider = Slider::create($data);
 
@@ -120,7 +120,7 @@ class SliderController extends Controller
 
             $sliderPath = 'uploads/slider/' . $input['imagename'];
 
-            $data['slider_img'] = $sliderPath;
+            $data['image'] = $sliderPath;
         }
         $slider->update($data);
 
