@@ -332,6 +332,7 @@
                     </div>
 						
 					<hr>
+					
 					<h4 class="h3 mb-0 fontawesomeheading">
                         <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
                         Select Deals

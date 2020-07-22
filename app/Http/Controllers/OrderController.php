@@ -225,6 +225,8 @@ class OrderController extends Controller
 		$restaurantId = $request->restaurant_id;
 		$riderId = $request->rider_id;
 		
+		$restaurantUsers = User::role('user')->where('restaurant_id', $restaurantId)->get();
+		
 		$rider = User::where('id', $riderId)->first();
 		
 		$riderNotificationData = [
@@ -238,20 +240,23 @@ class OrderController extends Controller
 		
 		sleep(3);
 		
-		$restaurantNotificationData = [
-			"order_id" => $orderId,
-			"device_token" => "fmqmiZZhQ_izqJbxHl8WfY:APA91bEWcF1c1UcFI8mlDT2WS8FJ80ZzelKQRvWQAN5lJ_OxUL1ya0cUFmmXDMUqYME5vfCzKEtoxaAXj4DeHIZvXtDMbfv3S4O9vkRdtDBRTGP2EiadTNioaa6zH_TWA0fVS_5juknH",
-			"status" => 1,
-			"message" => "New Order Arrived"
-		];
+		foreach($restaurantUsers as $user) {
+			$restaurantNotificationData = [
+				"order_id" => $orderId,
+				"device_token" => $user->device_token,
+				"status" => 1,
+				"message" => "New Order Arrived"
+			];
 		
-		$notificationOne = Helper::sendNotification($restaurantNotificationData);
+			$notificationOne = Helper::sendNotification($restaurantNotificationData);
+		}
 		
 		$responseData = [
 			'code' => 1,
 			'message' => "Notifications sent successfully.",
 			'riderNotification' => json_decode($notification),
 			'restaurantNotification' => json_decode($notification),
+			'restaurantUsers' => count($restaurantUsers)
 		];
 		
 		echo json_encode($responseData);

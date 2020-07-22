@@ -107,7 +107,7 @@ class Helper
 		
         $notification = [
             'title' => 'Hardees Notification',
-            'body' => 'New Order Assigned',
+            'body' => $data['message'],
             'sound' => true,
         ];
 
