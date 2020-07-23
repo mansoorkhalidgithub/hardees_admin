@@ -630,7 +630,7 @@
 	
 	function addDealToCart(attribute) {
 
-        var quantityElement = document.getElementById("quantity-" + attribute.id).value;
+        var quantityElement = document.getElementById("deal-quantity-" + attribute.id).value;
 
         if (attribute.checked) {
             $.ajax({
