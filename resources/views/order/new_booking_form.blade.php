@@ -348,11 +348,11 @@
                             </select>
                         </p>
 
-                        <div class="row" id="deal-container" data-id="category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                        <div class="row" id="deal-container" data-id="deal-category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
                             @foreach($deals as $key => $deal)
                             <div class="col-sm-2">
                                 <label class="category">
-                                    <input type="checkbox" cart_id="" id="{{ $deal->id }}" onchange="addToCart(this)" name="deals[]" value="{{ $deal->id }}" />
+                                    <input type="checkbox" cart_deal_id="" id="{{ $deal->id }}" onchange="addDealToCart(this)" name="deals[]" value="{{ $deal->id }}" />
                                      <div>
                                         <p class="product_label"> {{ $deal->title }} </p><br>
                                         <div class="popup"><img src="{{ env('APP_URL') . $deal->image }}" class="product_image">
@@ -366,11 +366,11 @@
                                 </label>
                                 <div class="input-group input-number-group add-qty">
                                     <div class="input-group-button">
-                                        <span onclick="removeQuantity(this.id)" id="{{ $deal->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+                                        <span onclick="removeDealQuantity(this.id)" id="{{ $deal->id }}" class="input-number-decrement bg-whitesmoke">-</span>
                                     </div>
-                                    <input class="input-number" type="number" data_id="{{ $deal->id}}" id="quantity-{{ $deal->id }}" name="quantity" value="1" min="0" max="1000">
+                                    <input class="input-number" type="number" data_id="{{ $deal->id}}" id="deal-quantity-{{ $deal->id }}" name="quantity" value="1" min="0" max="1000">
                                     <div class="input-group-button">
-                                        <span onclick="addQuantity(this.id)" id="{{ $deal->id }}" class="input-number-increment bg-whitesmoke">+</span>
+                                        <span onclick="addDealQuantity(this.id)" id="{{ $deal->id }}" class="input-number-increment bg-whitesmoke">+</span>
                                     </div>
                                 </div>
                             </div>
@@ -615,6 +615,99 @@
             data: {
                 "cart_id": cartId,
                 "item_id": itemId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    }
+	
+	function addDealToCart(attribute) {
+
+        var quantityElement = document.getElementById("quantity-" + attribute.id).value;
+
+        if (attribute.checked) {
+            $.ajax({
+                type: 'POST',
+                url: 'add-to-cart',
+                data: {
+                    "deal_id": attribute.value,
+                    'deal_quantity': quantityElement
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    attribute.setAttribute("cart_deal_id", response.data.cart_id);
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        } else {
+            var cartId = attribute.getAttribute('cart_deal_id');
+            $.ajax({
+                type: 'POST',
+                url: 'remove-to-cart',
+                data: {
+                    "cart_id": cartId
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('message');
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        }
+    }
+	
+	 function addDealQuantity(value) {
+        var element = document.getElementById("deal-quantity-" + value);
+        var itemId = element.getAttribute('data_id');
+        var cartId = document.getElementById(itemId).getAttribute("cart_id");
+        var newQuantity = +element.value + +1;
+        element.value = newQuantity;
+        $.ajax({
+            type: 'POST',
+            url: 'add-quantity',
+            data: {
+                "cart_id": cartId,
+                "deal_id": itemId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    }
+
+    function removeDealQuantity(value) {
+        var element = document.getElementById("deal-quantity-" + value);
+        var itemId = element.getAttribute('data_id');
+        var cartId = document.getElementById(itemId).getAttribute("cart_id");
+        var newQuantity = element.value - 1;
+        element.value = newQuantity;
+        $.ajax({
+            type: 'POST',
+            url: 'remove-quantity',
+            data: {
+                "cart_id": cartId,
+                "deal_id": itemId
             },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

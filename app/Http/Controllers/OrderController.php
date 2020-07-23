@@ -116,19 +116,6 @@ class OrderController extends Controller
 	
 	public function save(Request $request)
 	{
-		$model = new User;
-		$modelOrder = new Order;
-		$modelOrderItem = new OrderItem;
-		
-		$userId = Auth::user()->id;
-		$cart = Cart::where('user_id', '=', $userId)
-			->where('status', '=', 1)->get();
-		$cart->each->append(
-			'total'
-		);
-		
-		$total = $cart->sum('total');
-		
 		$first_name = $request->first_name;
 		$last_name = $request->last_name;
 		$phone = $request->phone;
@@ -140,7 +127,9 @@ class OrderController extends Controller
 		$restaurantId = $request->restaurant_id;
 		$riderId = $request->rider_id;
 		
-		//echo $riderId;exit;
+		$model = new User;
+		$modelOrder = new Order;
+		$modelOrderItem = new OrderItem;
 		
 		$customerData = [
 			'first_name' => $first_name,
@@ -161,10 +150,19 @@ class OrderController extends Controller
 			$customer->assignRole('customer');
 		}
 		
+		$userId = Auth::user()->id;
 		
+		$cart = Cart::where('user_id', '=', $userId)
+			->where('status', '=', 1)->get();
+		
+		$cart->each->append(
+			'total'
+		);
+		
+		$total = $cart->sum('total');
 		
 		$orderData = [
-			'user_id' => $userId,
+			'user_id' => $customer->id,
 			'restaurant_id' => $restaurantId,
 			'latitude' => $latitude,
 			'longitude' => $longitude,
@@ -178,23 +176,24 @@ class OrderController extends Controller
 		$newOrder = Order::create($orderData);
 		$orderId = $newOrder->id;
 		
-		$cartItems = Cart::where('user_id', $userId)->where('item_id', '!=', null)->pluck('item_id');
-		
-		$menuItems = MenuItem::whereIn('id', $cartItems)->get();
+		foreach ($cart as $key => $cartRecord) {
 
-		foreach ($menuItems as $key => $item) {
-			$itemId = $item->id;
-			$itemPrice = $item->price;
-			$itemQunatity = $item->quantity;
+			if($cartRecord->item_id) {
+				$item = MenuItem::where('id', $cartRecord->item_id)->first();
+				$itemId = $item->id;
+				$itemPrice = $item->price;
+				$itemQunatity = $cartRecord->quantity;
+				
+				$orderItem = [
+					'order_id' => $orderId,
+					'menu_item_id' => $itemId,
+					'item_price' => $itemPrice,
+					'item_quantity' => $itemQunatity,
+				];
 
-			$orderItem = [
-				'order_id' => $orderId,
-				'menu_item_id' => $itemId,
-				'item_price' => $itemPrice,
-				'item_quantity' => $itemQunatity,
-			];
-
-			OrderItem::create($orderItem);
+				OrderItem::create($orderItem);
+			}
+			
 		}
 		
 		$cartIds = $cart->pluck('id');
@@ -203,13 +202,19 @@ class OrderController extends Controller
 		
 		/*********** Order Assign ************/
 		
-		$assignData = [
-			'order_id' => $orderId,
-			'rider_id' => $riderId,
-			'trip_status_id' => 1,
-		];
+		if($riderId)
+		{
+			$assignData = [
+				'order_id' => $orderId,
+				'rider_id' => $riderId,
+				'trip_status_id' => 1,
+			];
+			
+			$modelAssign = new OrderAssigned;
+			
+			$modelAssign->create($assignData);
+		}
 		
-		$modelAssign = new OrderAssigned;
 		
 		/*********** Order Assign ************/
 		

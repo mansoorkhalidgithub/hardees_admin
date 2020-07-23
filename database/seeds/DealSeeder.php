@@ -15,9 +15,9 @@ class DealSeeder extends Seeder
     public function run()
     {
         DealCategory::create(['name' => 'Regular Deals', 'status' => 1]);
-        DealCategory::create(['name' => 'Special Deals']);
+        DealCategory::create(['name' => 'Special Deals', 'status' => 1]);
 		DealCategory::create(['name' => 'Ramadan Deals']);
-		DealCategory::create(['name' => 'Eid Ul Fitr Deals']);
+		DealCategory::create(['name' => 'Eid Deals', 'status' => 1]);
 		
 		Deal::create([
             'deal_category_id' => 1,

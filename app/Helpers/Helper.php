@@ -156,5 +156,10 @@ class Helper
 
 	}
 	
-	
+	public static function assignedStatus($orderId)
+	{
+		$orderAssignedRecord = OrderAssign::where('order_id', $orderId)->count();
+		
+		return $orderAssignedRecord;
+	}
 }
