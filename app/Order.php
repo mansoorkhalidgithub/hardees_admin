@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
-	protected $with = ['orderItems'];
+	// protected $with = ['orderItems'];
 
 	protected $appends = ['order_reference', 'status_html'];
 
@@ -31,7 +31,14 @@ class Order extends Model
 	{
 		return $this->hasMany(OrderItem::class, 'order_id');
 	}
-
+	// By Qadeer
+	public function getItemsAttribute()
+	{
+		$menu_item_ids = OrderItem::where('order_id', $this->id)->pluck('menu_item_id');
+		$menu_items = MenuItem::whereIn('id', $menu_item_ids->all())->pluck('name');
+		return $menu_items;
+	}
+	// End By Qadeer
 	public function getorderItemsWithNameAttribute()
 	{
 		$data = OrderItem::where('order_id', $this->id)->get();
@@ -104,6 +111,12 @@ class Order extends Model
 		return $this->hasOne(User::class, 'id', 'user_id');
 	}
 
+	public function orderAssigned()
+	{
+		return $this->hasOne(OrderAssigned::class, 'id', 'order_id')
+			->where('trip_status_id', '=', 5);
+	}
+
 	public function getOrderReferenceAttribute()
 	{
 		return Helper::orderReference($this->id);
@@ -118,10 +131,30 @@ class Order extends Model
 	}
 	public function getStatusHtmlAttribute()
 	{
-		$orderStatus = OrderStatus::where('id', $this->status)->pluck('name');
+		if ($this->status) {
+			$orderStatus = OrderStatus::where('id', $this->status)->first();
+			if ($orderStatus)
+				$html = '<span class="btn btn-success btn-sm">' . $orderStatus->name . '<span>';
+			else
+				$html = '<span class="btn btn-success btn-sm">' . 'No Status Found' . '<span>';
+			// return $html;
+		} else {
+			$html = '<span class="btn btn-success btn-sm">' . 'No Status Found' . '<span>';
 
-		$html = '<span class="btn btn-success btn-sm">' . $orderStatus[0] . '<span>';
-
+			// return $html;
+		}
 		return $html;
 	}
+	// By Qadeer
+	public function getDistanceAttribute()
+	{
+		$restaurant = Restaurant::find($this->restaurant_id);
+		return MasterModel::distance($restaurant->latitude, $restaurant->longitude, $this->latitude, $this->longitude);
+	}
+	public function getTimeAttribute()
+	{
+		return date_diff($this->created_at, $this->updated_at)->format('%H:%i:%s');
+	}
+
+	// End By Qadeer
 }

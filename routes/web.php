@@ -127,25 +127,6 @@ Route::group([
 Route::group([
 	'middleware' => 'auth',
 ], function () {
-	Route::get('restaurant_user', 'RestaurantUserController@index')->name('restaurant_user.index');
-	Route::get('add-restaurant_user', 'RestaurantUserController@create')->name('restaurant_user.create');
-	Route::get('edit-restaurant_user/{id}', 'RestaurantUserController@edit')->name('restaurant_user.edit');
-	Route::post('update-restaurant_user', 'RestaurantUserController@update')->name('restaurant_user.update');
-	Route::post('save-restaurant_user', 'RestaurantUserController@store')->name('restaurant_user.store');
-	Route::get('show-restaurant_user/{id}', 'RestaurantUserController@show')->name('restaurant_user.show');
-	Route::post('destroy-restaurant_user', 'RestaurantUserController@destroy')->name('restaurant_user.destroy');
-	// Route::post('info', 'RestaurantUserController@info')->name('rider.info');
-	// Route::get('/delivery_boy_management', 'RestaurantUserController@delivery_boy_management')->name('rider.management');
-	// Route::get('rider/status/{id}', 'RestaurantUserController@status')->name('rider.status');
-	// Route::get('rider/eStatus/{id}', 'RestaurantUserController@eStatus')->name('rider.eStatus');
-	// Route::post('getCities', 'RestaurantUserController@getCities')->name('getCities');
-	// Route::post('getBranches', 'RestaurantUserController@getBranches')->name('rider.branch');
-	// Route::post('getStates', 'RiderController@getStates')->name('rider.states');
-});
-
-Route::group([
-	'middleware' => 'auth',
-], function () {
 	Route::get('sliders', 'SliderController@index')->name('slider.index');
 	Route::get('add-slider', 'SliderController@create')->name('slider.create');
 	Route::get('edit-slider/{id}', 'SliderController@edit')->name('slider.edit');
@@ -286,3 +267,4 @@ Route::group([
 	Route::get('add-restaurants-user', 'RestaurantController@createUser')->name('restaurant.create-user');
 	Route::post('store-restaurant-user', 'RestaurantController@storeRestaurantUser')->name('store-restaurant-user');
 });
+Route::get('jsonobj', 'HomeController@jsonObj')->name('json');

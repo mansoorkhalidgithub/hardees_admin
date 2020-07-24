@@ -11,6 +11,7 @@ use App\Restaurant;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Http\Requests\RiderRequest;
+use App\RiderStatus;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Config;
@@ -26,7 +27,13 @@ class RiderController extends Controller
      */
     public function index()
     {
-        $model = User::role('rider')->get();
+        $model = User::role('rider')->with('getRiderStatus')->get();
+        // $model->each->append('Online');
+        // foreach ($model as $model1) {
+        //     $data = $model1->getRiderStatus;
+        // }
+        // print_r($data->online_status);
+        // exit;
         return view('rider.index', compact('model'));
     }
 
@@ -91,6 +98,13 @@ class RiderController extends Controller
         // die;
         $rider = User::create($data);
         $rider->assignRole('rider');
+        $rider_status = [
+            'rider_id' => $rider->id,
+            'online_status' => 'online',
+            'trip_status' => 'free',
+            'status' => 1
+        ];
+        RiderStatus::create($rider_status);
         Session::flash('success', 'New User created successfully');
         return Redirect::route('rider.index');
     }

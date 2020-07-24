@@ -8,14 +8,16 @@ use App\Order;
 use App\Review;
 use Carbon\Carbon;
 use App\Restaurant;
+use App\TripStatus;
 use App\MasterModel;
 use App\ReviewDetail;
 use App\OrderAssigned;
 use App\Helpers\Helper;
 use App\RiderEarningSummary;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\TripStatus;
+use App\RiderStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -161,7 +163,7 @@ class RiderApiController extends Controller
             // 'order_number' => 'required',
             'user_id' => 'required',
             'status' => 'required',
-            'rider_id' => 'required'
+            // 'rider_id' => 'required'
         ]);
         if ($validator->fails()) {
             $response = [
@@ -173,13 +175,15 @@ class RiderApiController extends Controller
             return response()->json($response);
         }
         $user_id = $request->user_id;
-        $rider_id = $request->rider_id;
         $order_id = $request->order_id;
+        $get_order_status = OrderAssigned::where('order_id', '=', $order_id)->first();
+        $rider_id = $get_order_status->rider_id;
+        $rider = User::find($rider_id);
         $status = TripStatus::where('name', '=', $request->status)->first();
         // echo $status->name;
         // die;
         $user  = User::find($user_id);
-        $rider = User::find($rider_id);
+        //$rider = User::find($rider_id);
         $order = Order::with('orderItems.items')
             ->where('id', $order_id)->firstOrFail();
 
@@ -188,7 +192,7 @@ class RiderApiController extends Controller
         if ($status->name == Config::get('constants.STATUS_REJECT')) {
             $data = [
                 'order_id' => $request->order_id,
-                'rider_id' => $request->rider_id,
+                'rider_id' => $rider_id,
                 'trip_status_id' => $status->id
             ];
             $order = OrderAssigned::create($data);
@@ -207,6 +211,7 @@ class RiderApiController extends Controller
         if ($status->name == Config::get('constants.STATUS_ACCEPT')) {
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
+            $rider = OrderAssigned::where('order_id', '=', $order_id)->where('trip_status_id', '=', 1)->first();
             // MasterModel::notification($user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             $eta = 45;
@@ -246,6 +251,8 @@ class RiderApiController extends Controller
                 'rider_id' => $rider_id,
                 'trip_status_id' => $status->id
             ];
+            $get_order_status->trip_status_id = $status->id;
+            $get_order_status->save();
             OrderAssigned::updateOrCreate($data);
             $lat2 = $order->latitude;
             $lon2 = $order->longitude;
@@ -321,14 +328,14 @@ class RiderApiController extends Controller
         // Review By Rider 
         if ($status->name == Config::get('constants.STATUS_REVIEW')) {
             $data = [
-                'user_id' => $request->rider_id,
+                'user_id' => $user_id,
                 'order_id' => $request->order_id,
                 'note' => $request->note,
                 'rating' => $request->rating,
-                'amount' => $request->amount
+                // 'amount' => $request->amount
             ];
             $review = Review::updateOrCreate($data);
-            if ($request->has('signatures')) {
+            /* if ($request->has('signatures')) {
                 $image = $request->file('signatures');
                 $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
 
@@ -368,15 +375,26 @@ class RiderApiController extends Controller
                     ];
                     ReviewDetail::updateOrCreate($signature);
                 }
-            }
+            } */
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
                 // 'detail' => $order
             ];
-            MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
+            return response()->json($response);
+        }
+        if ($status->name == Config::get('constants.STATUS_REJECTED_AFTER_ACCEPT')) {
+            $get_order_status->trip_status_id = $status->id;
+            $get_order_status->save();
+            $response = [
+                'status' => 1,
+                'method' => $request->route()->getActionMethod(),
+                'message' => $status->description,
+                // 'detail' => $order
+            ];
             return response()->json($response);
         }
         $lat1 = $restaurant->latitude;
@@ -395,8 +413,8 @@ class RiderApiController extends Controller
             'message' => $status->description,
 
             'data' => [
-                "booking_id" => 2000,
-                "booking_number" => "Hardees002000",
+                "booking_id" => $order->id,
+                "booking_number" => "Hardees00000" . $order->id,
                 "country" => $order->customer->country,
                 "state" => $order->customer->city,
                 "city" => $order->customer->city,
@@ -560,7 +578,7 @@ class RiderApiController extends Controller
 
     public function riderDetail(Request $request)
     {
-        $loggedInRider = User::where('device_id', '=', $request->device_id)->first();
+        $loggedInRider = User::role('rider')->where('device_id', '=', $request->device_id)->first();
         $loggedInRider->append(
             'name'
         );
@@ -573,7 +591,7 @@ class RiderApiController extends Controller
             return response()->json($response);
         }
         $status = ($loggedInRider->status == 1 ?  "Active" : "InActive");
-        $trip_status = ($loggedInRider->status == 1 ?  "Yes" : "No");
+        $trip_status = ($loggedInRider->getRiderStatus->trip_status == 'free' ? 'Free' : 'On Trip');
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
@@ -638,6 +656,11 @@ class RiderApiController extends Controller
             ];
             return response()->json($response);
         }
+        $trip_status = OrderAssigned::where('order_id', $request->order_id)
+            ->where('trip_status_id', '!=', 9)
+            ->where('trip_status_id', '!=', 8)
+            ->first();
+
         $start_lat = $order->restaurant->latitude;
         $start_lon = $order->restaurant->longitude;
         $end_lat = $order->latitude;
@@ -649,8 +672,8 @@ class RiderApiController extends Controller
             'method' => $request->route()->getActionMethod(),
             'message' => "Order Detail",
             'data' => [
-                "booking_id" => 2000,
-                "booking_number" => "Hardees002000",
+                "booking_id" => $order->id,
+                "booking_number" => "Hardees00000" . $order->id,
                 "country" => $order->customer->country,
                 "state" => $order->customer->city,
                 "city" => $order->customer->city,
@@ -670,9 +693,13 @@ class RiderApiController extends Controller
                 "end_point" => $order->customer_address,
                 "total_time" => $total_time,
                 "distance" => $distance,
-                "delivery_date" => $order->created_at,
-                "booking_date" => $order->created_at,
-                "end_delivery_date" => $order->updated_at,
+                // Carbon\Carbon::parse($input)->format($format1);
+                "delivery_date" => Carbon::parse($order->created_at)->format('Y-m-d'),
+                "delivery_time" => Carbon::parse($order->created_at)->format('H:i:s'),
+                "booking_date" => Carbon::parse($order->created_at)->format('Y-m-d'),
+                "booking_time" => Carbon::parse($order->created_at)->format('H:i:s'),
+                "end_delivery_date" => Carbon::parse($order->updated_at)->format('Y-m-d'),
+                "end_delivery_time" => Carbon::parse($order->updated_at)->format('H:i:s'),
                 "status" => "TPDD",
                 "trip_status" => "N",
                 "user_rating" => 2,
@@ -686,5 +713,62 @@ class RiderApiController extends Controller
     public function updateProfile(Request $request)
     {
         return 'Update Profile';
+    }
+
+    public function ordersHistory(Request $request)
+    {
+        $today = Carbon::today();
+        $todayStart = $today->copy()->startOfDay();
+        $todayEnd = $today->copy()->endOfDay();
+        // current day Rider order
+        // Rider Total Order Id
+        $get_rider_today = OrderAssigned::where('rider_id', '=', $request->rider_id)
+            ->where('trip_status_id', '5')
+            ->whereBetween('created_at', [$todayStart, $todayEnd])
+            ->pluck('order_id');
+        $today_orders = Order::whereIn('id', $get_rider_today)->get();
+        $today_orders->each->append('items', 'distance', 'time');
+        $get_rider_all = OrderAssigned::where('rider_id', '=', $request->rider_id)
+            ->where('trip_status_id', '5')
+            ->pluck('order_id');
+        // dd($get_rider_all->all());
+        $orders = Order::whereIn('id', $get_rider_all)->get();
+        $orders->each->append('items', 'distance', 'time');
+        // print_r($orders);
+        // exit;
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "Order History",
+            'data' => [
+                'today' => [
+                    "myearning" => "₨100",
+                    "spendtime" => "0h 0m",
+                    "completedtrip" => $today_orders->count(),
+                    "memberdata" => $today_orders,
+                ],
+                'all_orders' => [
+                    "myearning" => "₨100",
+                    "spendtime" => "0h 0m",
+                    "completedtrip" => $orders->count(),
+                    "memberdata" => $orders
+                ]
+            ]
+        ];
+        return response()->json($response);
+    }
+
+    public function riderStatus(Request $request)
+    {
+        $rider_status = RiderStatus::where('rider_id', '=', $request->rider_id)
+            ->where('status', '=', 1)->first();
+        $rider_status->online_status = $request->status;
+        $rider_status->save();
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "You Are " . $rider_status->online_status,
+        ];
+        return response()->json($response);
     }
 }

@@ -130,7 +130,7 @@ use App\Helpers\Helper;
         <!-- Card Body -->
         <div class="card-body">
           <div class="chart-area">
-            <canvas id="myAreaChart"></canvas>
+            <div style="height: 280px; width: 100%;" id="myAreaChart"></div>
           </div>
         </div>
       </div>
@@ -409,14 +409,14 @@ use App\Helpers\Helper;
           "_token": "{{ csrf_token() }}",
         },
         success: function(data) {
-          console.log(data.data[0])
+          // console.log(data.data[0])
           completeOrder
           $('#completeOrder').text('Complete Orders (' + data.data[0] + ')');
           $('#progress').text(data.data[1]);
           $('#total').text(data.totalOrders);
           $('#totalEarning').text('Rs : ' + data.totalEarning);
           $('#complete').text(data.completeOrders + ' %');
-          $('#completeOrderbar').width(15);
+          $('#completeOrderbar').width(100);
           $('#live_menu_data').html(data.html)
           order_summary.data.datasets[0].data = data.data;
           order_summary.update();
@@ -431,6 +431,46 @@ use App\Helpers\Helper;
     setInterval(() => {
       updateChart();
     }, 10000);
+    var updateDailySale = function() {
+      var dataPoints = [];
+
+      var options = {
+        // animationEnabled: true,
+        theme: "light",
+        axisX: {
+          valueFormatString: "DD",
+        },
+        axisY: {
+          title: "RS",
+          titleFontSize: 24,
+          includeZero: false
+        },
+        data: [{
+          type: "spline",
+          dataPoints: dataPoints
+        }]
+      };
+
+      function addData(data) {
+        // console.log(data)
+        for (var i = 0; i < data.length; i++) {
+          dataPoints.push({
+            x: new Date(data[i].day),
+            y: data[i].total
+          });
+        }
+        $("#myAreaChart").CanvasJSChart(options);
+      }
+      $.getJSON("http://127.0.0.1:8000/jsonobj", addData)
+    }
+    updateDailySale();
+    setInterval(() => {
+
+      updateDailySale();
+    }, 10000);
 
   });
 </script>
+
+<script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
+<script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>

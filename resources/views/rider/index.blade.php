@@ -82,14 +82,17 @@
  						</a>
  					</td>
  					<td>
- 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{ ($rider->eStatus===10) ? 'btn-success' : 'btn-danger' }}" style="color: white;width:6rem">
- 							@if($rider->eStatus === 10) Online @elseif($rider->eStatus === 9) Offline @endif
+ 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{ ($rider->getRiderStatus->status_online == 'online') ? 'btn-success' : 'btn-danger' }}" style="color: white;width:6rem">
+ 							{{($rider->getRiderStatus->online_status == 'online') ? 'Online' : 'Offline'}}
+
  						</a>
  					</td>
  					<td>
  						<form action="" method="post">
  							@csrf @method('POST')
- 							<button class="btn" style="background-color:  white; color: red" type="submit">On Trip</button>
+ 							<button class="btn" style="background-color:  white; color: red" type="submit">
+ 								{{($rider->getRiderStatus->trip_status == 'free') ? 'Free' : 'On Trip'}}
+ 							</button>
  						</form>
  					</td>
  					<td><button class="btn" style="background-color:  white; color: black;" type="submit">History</button></td>

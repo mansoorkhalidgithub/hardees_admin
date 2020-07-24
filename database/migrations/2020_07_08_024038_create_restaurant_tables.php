@@ -20,8 +20,8 @@ class CreateRestaurantTables extends Migration
             $table->string('status')->default(1);
             $table->timestamps();
         });
-		
-		Schema::create('payment_methods', function (Blueprint $table) {
+
+        Schema::create('payment_methods', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name')->unique();
             $table->string('status')->default(1);
@@ -48,6 +48,9 @@ class CreateRestaurantTables extends Migration
             $table->double('delivery_charges', 8, 2)->default(0);
             $table->double('delivery_charges_km', 8, 2)->default(0);
             $table->integer('delivery_time')->nullable();
+            $table->string('device_type', 100)->nullable();
+            $table->string('device_name', 100)->nullable();
+            $table->text('device_token')->nullable();
             $table->string('logo')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('contact_number')->nullable();

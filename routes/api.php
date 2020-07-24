@@ -94,6 +94,10 @@ Route::post('update-profile', 'Api\RiderApiController@updateProfile');
 
 Route::post('delivery-detail', 'Api\RiderApiController@deliveryDetail');
 
+Route::post('order-history', 'Api\RiderApiController@ordersHistory');
+
+Route::post('rider-status', 'Api\RiderApiController@riderStatus');
+
 // Rider Api Ending Point By Qadeer
 
 // Rider Api Ending Point By Qadeer

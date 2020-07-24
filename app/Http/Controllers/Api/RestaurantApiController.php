@@ -11,8 +11,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
 
-class RestaurantApiController extends Controller {
-	public function recentYesterdayOrders(Request $request) {
+class RestaurantApiController extends Controller
+{
+	public function recentYesterdayOrders(Request $request)
+	{
 		$restaurant_id = Auth::user()->restaurant_id;
 		$dt = Carbon::yesterday();
 		$startDate = $dt->copy()->startOfDay();
@@ -41,7 +43,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function recentTodayOrders(Request $request) {
+	public function recentTodayOrders(Request $request)
+	{
 		$restaurant_id = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->toDateString();
 		$endDate = Carbon::now()->toDateTimeString();
@@ -69,7 +72,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function recentAllOrders(Request $request) {
+	public function recentAllOrders(Request $request)
+	{
 		$restaurant_id = Auth::user()->restaurant_id;
 		$model = Order::where('restaurant_id', $restaurant_id)->get();
 		$model->each->append(
@@ -95,7 +99,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function orderAccepted(Request $request) {
+	public function orderAccepted(Request $request)
+	{
 		$dataUpdate = Order::where('id', $request->order_id)->first();
 		$dataUpdate->status = Config::get('constants.order_accepted');
 		$dataUpdate->save();
@@ -106,7 +111,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function orderReadyForPickup(Request $request) {
+	public function orderReadyForPickup(Request $request)
+	{
 		$dataUpdate = Order::where('id', $request->order_id)->first();
 		$dataUpdate->status = Config::get('constants.order_ready');
 		$dataUpdate->save();
@@ -117,8 +123,9 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function login(Request $request) {
-		
+	public function login(Request $request)
+	{
+
 		$loggedInUser = User::where('email', $request['email'])->first();
 		$userRole = $loggedInUser->roles->pluck('name');
 
@@ -129,9 +136,9 @@ class RestaurantApiController extends Controller {
 				'message' => 'Access denied',
 			];
 		}
-		if (!empty($loggedInUser)):
+		if (!empty($loggedInUser)) :
 			if (Hash::check($request['password'], $loggedInUser->password)) {
-				
+
 				$userData = [
 					'device_type' => $request->device_type,
 					'device_name' => $request->device_name,
@@ -139,9 +146,9 @@ class RestaurantApiController extends Controller {
 					'app_version' => $request->app_version,
 					'device_id' => $request->device_id,
 				];
-				
+
 				User::where('id', $loggedInUser->id)->update($userData);
-				
+
 				$tokenResult = $loggedInUser->createToken('restaurant');
 				$token = $tokenResult->accessToken;
 				$userRole = $loggedInUser->roles->pluck('name');
@@ -174,7 +181,8 @@ class RestaurantApiController extends Controller {
 
 		return response()->json($response);
 	}
-	public function dashboardByToday(Request $request) {
+	public function dashboardByToday(Request $request)
+	{
 		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->toDateString();
 		$endDate = Carbon::now()->toDateTimeString();
@@ -207,19 +215,23 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function getSum($status, $restaurant_id, $date) {
+	public function getSum($status, $restaurant_id, $date)
+	{
 		$total = Order::where('status', $status)->where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->sum('total');
 		return $total;
 	}
-	public function getTotalCount($restaurant_id, $date) {
+	public function getTotalCount($restaurant_id, $date)
+	{
 		$total = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->count();
 		return $total;
 	}
-	public function getCount($status, $restaurant_id, $date) {
+	public function getCount($status, $restaurant_id, $date)
+	{
 		$total = Order::where('status', $status)->where('restaurant_id', $restaurant_id)->whereBetween('created_at', $date)->count();
 		return $total;
 	}
-	public function dashboardByWeek(Request $request) {
+	public function dashboardByWeek(Request $request)
+	{
 		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->startOfWeek()->format('Y-m-d H:i');
 		$endDate = Carbon::now()->toDateTimeString();
@@ -252,7 +264,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function dashboardByMonth(Request $request) {
+	public function dashboardByMonth(Request $request)
+	{
 		$userRestaurantId = Auth::user()->restaurant_id;
 		$startDate = Carbon::now()->startOfMonth()->format('Y-m-d H:i');
 		$endDate = Carbon::now()->toDateTimeString();
@@ -285,7 +298,8 @@ class RestaurantApiController extends Controller {
 		];
 		return response()->json($response);
 	}
-	public function orderProcessing(Request $request) {
+	public function orderProcessing(Request $request)
+	{
 		$restaurant_id = 1;
 		$accptedOrders = Order::has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
 		if ($accptedOrders->isNotEmpty()) {

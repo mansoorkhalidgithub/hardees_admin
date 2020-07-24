@@ -17,7 +17,7 @@ class CreateReviewsTable extends Migration
             $table->bigIncrements('id');
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('order_id');
-            $table->unsignedBigInteger('amount');
+            $table->unsignedBigInteger('amount')->nullable();
             $table->string('note')->nullable();
             $table->tinyInteger('rating')->nullable();
             $table->timestamps();

@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
 use App\Order;
 use App\OrderItem;
+use Carbon\Carbon;
+use App\Helpers\Helper;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -345,5 +346,24 @@ class HomeController extends Controller
 	public function update_city()
 	{
 		return view('City/update_city');
+	}
+
+
+	public function jsonObj()
+	{
+		$startMonth = Carbon::now()->startOfMonth();
+		$endMonth = Carbon::now()->endOfMonth();
+		// die;
+		return DB::table('orders')
+			->where('status', '=', 10)
+			->select(
+				DB::Raw('DATE(created_at) day'),
+				DB::raw('sum(total) as total'),
+			)
+			->groupBy('day')->orderBy('created_at', 'DESC')
+			->get();
+
+		return Order::select('total', 'created_at')->whereBetween('created_at', [$startMonth, $endMonth])
+			->orderBy('created_at', 'desc')->first();
 	}
 }

@@ -2,12 +2,14 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
+use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class User extends Authenticatable {
+class User extends Authenticatable
+{
 	use HasApiTokens, HasRoles, Notifiable;
 
 	/**
@@ -68,25 +70,31 @@ class User extends Authenticatable {
 		'email_verified_at' => 'datetime',
 	];
 
-	public function getNameAttribute() {
+	public function getNameAttribute()
+	{
 		return $this->first_name . " " . $this->last_name;
 	}
 
-	public function getPoints() {
+	public function getPoints()
+	{
 		return 1500;
 	}
 
-	public function getRestaurant() {
+	public function getRestaurant()
+	{
 		return $this->hasOne(Restaurant::class, 'id', 'restaurant_id');
 	}
-	public function getorderAddressAttribute() {
+	public function getorderAddressAttribute()
+	{
 		$data = Order::where('user_id', $this->id)->select('customer_address')->first();
 		return $data->customer_address;
 	}
-	public function getRatingAttribute() {
-		return 5;
+	public function getRatingAttribute()
+	{
+		return Review::where('user_id', $this->id)->avg('rating', 2);
 	}
-	public function createdBY() {
+	public function createdBY()
+	{
 		return $this->hasOne(Auth::class, 'id', 'created_by');
 	}
 
@@ -103,5 +111,16 @@ class User extends Authenticatable {
 	public function city()
 	{
 		return $this->hasOne(City::class, 'id', 'city_id');
+	}
+
+	public function getRiderStatus()
+	{
+		return $this->hasOne(RiderStatus::class, 'rider_id', 'id')
+			->where('status', '=', 1);
+	}
+
+	public function getOrderCountAttribute()
+	{
+		return Order::where('user_id', $this->id)->where('status', 10)->count();
 	}
 }
