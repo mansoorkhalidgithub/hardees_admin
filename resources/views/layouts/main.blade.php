@@ -117,7 +117,7 @@
                     </a>
                 </li>
 
-                <li class="nav-item"><a class="nav-link" href="{{ route('user_list') }}"> <i class="fas fa-fw fa-users"></i> <span>Customer</span></a></li>
+                <li class="nav-item"><a class="nav-link" href="{{ route('customers') }}"> <i class="fas fa-fw fa-users"></i> <span>Customer</span></a></li>
 
                 <li class="nav-item"><a class="nav-link" href="{{ route('zone_list') }}"> <i class="fas fa-fw fa-motorcycle"></i> <span>Zones</span></a></li>
                 <!-- Divider -->
