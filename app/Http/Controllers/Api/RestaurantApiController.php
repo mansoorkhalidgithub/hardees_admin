@@ -300,8 +300,9 @@ class RestaurantApiController extends Controller
 	}
 	public function orderProcessing(Request $request)
 	{
-		$restaurant_id = 1;
-		$accptedOrders = Order::has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
+		// $restaurant_id = 1;
+		$restaurant_id = auth()->user()->restaurant_id;
+		$accptedOrders = Order::with('orderItems')->has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
 		if ($accptedOrders->isNotEmpty()) {
 			$accptedOrders->each->append(
 				['bookingNo', 'ordertype', 'approxTime', 'riderAsigned', 'customerData']
@@ -311,7 +312,7 @@ class RestaurantApiController extends Controller
 			// );
 		}
 
-		$newOrders = Order::has('newOrders')->where('restaurant_id', $restaurant_id)->get();
+		$newOrders = Order::with('orderItems')->has('newOrders')->where('restaurant_id', $restaurant_id)->get();
 		if ($newOrders->isNotEmpty()) {
 			$newOrders->each->append(
 				['bookingNo', 'ordertype', 'approxTime', 'customerData']

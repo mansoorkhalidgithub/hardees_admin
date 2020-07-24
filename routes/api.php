@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
 	Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
 	Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');
-	Route::get('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
+	Route::post('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
 	Route::post('restaurant/order-accepted', 'Api\RestaurantApiController@orderAccepted');
 	Route::get('restaurant/recent-allorders', 'Api\RestaurantApiController@recentAllOrders');
 	Route::get('restaurant/recent-todayorders', 'Api\RestaurantApiController@recentTodayOrders');

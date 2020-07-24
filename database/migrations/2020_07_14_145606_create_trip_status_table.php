@@ -77,7 +77,7 @@ class CreateTripStatusTable extends Migration
 
         DB::table('trip_status')->insert([
             [
-                'name' => 'TRA',
+                'name' => 'TRRDAA',
                 'description' => 'Trip Request Rejected By Driver After Accept',
             ],
         ]);

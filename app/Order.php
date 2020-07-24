@@ -156,5 +156,16 @@ class Order extends Model
 		return date_diff($this->created_at, $this->updated_at)->format('%H:%i:%s');
 	}
 
+
+	public function getRatingAttribute()
+	{
+		return Review::where('user_id', $this->user_id)->pluck('rating')->first();
+	}
+
+	public function getCustomernameAttribute()
+	{
+		$user = User::where('id', $this->user_id)->first();
+		return $user->first_name . " " . $user->last_name;
+	}
 	// End By Qadeer
 }

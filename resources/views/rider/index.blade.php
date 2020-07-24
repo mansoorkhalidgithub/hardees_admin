@@ -78,11 +78,11 @@
  					<td>Approved</td>
  					<td>
  						<a href="{{ route('rider.status', $rider->id) }}" class="btn {{ ($rider->status === 1) ? 'btn-success' : 'btn-danger' }}" style=" color: white;width:6rem">
- 							@if($rider->status === 0) Activate @elseif($rider->status === 1) Deactivate @endif
+ 							{{($rider->status == 1) ? 'Active' : 'Deactive'}}
  						</a>
  					</td>
  					<td>
- 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{ ($rider->getRiderStatus->status_online == 'online') ? 'btn-success' : 'btn-danger' }}" style="color: white;width:6rem">
+ 						<a href="#" class="btn {{($rider->getRiderStatus->online_status == 'online') ? 'btn-success' : 'btn-danger'}}" style="color: white;width:6rem">
  							{{($rider->getRiderStatus->online_status == 'online') ? 'Online' : 'Offline'}}
 
  						</a>
@@ -126,6 +126,9 @@
  	$(document).ready(function() {
  		$.noConflict();
  		var table = $('#rider_list').DataTable();
+ 		setTimeout(function() {
+ 			window.location = window.location
+ 		}, 30000);
  	});
  </script>
 
