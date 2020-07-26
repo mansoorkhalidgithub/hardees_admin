@@ -168,7 +168,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('search-customer', 'OrderController@searchCustomer')->name('search-customer');
 	Route::post('nearest-restuarant', 'OrderController@nearestRestaurant')->name('nearest-restuarant');
 	Route::post('save-order', 'OrderController@save')->name('save-order');
-	Route::post('order-summary', 'OrderController@summary')->name('order-summary');
+	Route::get('order-summary', 'OrderController@summary')->name('order-summary');
 	Route::post('send-notification', 'OrderController@notification')->name('send-notification');
 });
 

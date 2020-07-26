@@ -156,6 +156,30 @@ class Helper
 
 	}
 	
+	public static function sendMessage($data)
+	{
+		$number = $data['number'];
+		$message = $data['message'];
+		try{
+			$url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=Business&To=' . $number . '&Message='.$message;
+			
+			$ch = curl_init();
+
+			curl_setopt($ch, CURLOPT_URL, $url);
+
+			$result = curl_exec($ch);
+			if ($result === false) {
+				die('Curl failed: ' . curl_error($ch));
+			}
+
+			curl_close($ch);
+		} catch(Exception $e) {
+			$result = $e->getMessage();
+		}
+		
+		return $result;
+	}
+	
 	public static function assignedStatus($orderId)
 	{
 		$orderAssignedRecord = OrderAssign::where('order_id', $orderId)->count();

@@ -352,7 +352,7 @@
                             @foreach($deals as $key => $deal)
                             <div class="col-sm-2">
                                 <label class="category">
-                                    <input type="checkbox" cart_deal_id="" id="{{ $deal->id }}" onchange="addDealToCart(this)" name="deals[]" value="{{ $deal->id }}" />
+                                    <input type="checkbox" cart_deal_id="" class="deal-{{ $deal->id }}" id="{{ $deal->id }}" onchange="addDealToCart(this)" name="deals[]" value="{{ $deal->id }}" />
                                      <div>
                                         <p class="product_label"> {{ $deal->title }} </p><br>
                                         <div class="popup"><img src="{{ env('APP_URL') . $deal->image }}" class="product_image">
@@ -386,40 +386,43 @@
                     <br>
                     <div id="collapse1" class="panel-collapse">
 
-                        <!--<p style="margin: 0px 10px">
+                        <p style="margin: 0px 10px">
                             <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
-                                @foreach($dealCategories as $key => $dealCategory)
-                                <option value="{{ $dealCategory->id }}"> {{ $dealCategory->name }} </option>
+                                <option value=""> All </option>
+								@foreach($addonCategories as $key => $addonCategory)
+									<option value="{{ $addonCategory->id }}"> {{ $addonCategory->name }} </option>
                                 @endforeach
                             </select>
-                        </p>-->
+                        </p>
 
-                        <div class="row" id="deal-container" data-id="category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                        <div class="row" id="addon-container" data-id="addon-0" style="margin: 10px 10px 10px 30px">
                             @foreach($addons as $key => $addon)
-                            <div class="col-sm-2">
-                                <label class="category">
-                                    <input type="checkbox" cart_id="" id="{{ $addon->id }}" onchange="addToCart(this)" name="addons[]" value="{{ $addon->id }}" />
-                                     <div>
-                                        <p class="product_label"> {{ $addon->name }} </p><br>
-                                        <div class="popup"><img src="{{ env('APP_URL') . $addon->image }}" class="product_image">
-                                            <span class="popuptext" id="myPopup-{{ $addon->id }}">
-                                                <small>
-                                                    <p class="p-2"> </p> PKR 30
-                                                </small>
-                                            </span>
-                                        </div>
-                                    </div>
-                                </label>
-                                <div class="input-group input-number-group add-qty">
-                                    <div class="input-group-button">
-                                        <span onclick="removeQuantity(this.id)" id="{{ $addon->id }}" class="input-number-decrement bg-whitesmoke">-</span>
-                                    </div>
-                                    <input class="input-number" type="number" data_id="{{ $addon->id}}" id="quantity-{{ $addon->id }}" name="quantity" value="1" min="0" max="1000">
-                                    <div class="input-group-button">
-                                        <span onclick="addQuantity(this.id)" id="{{ $addon->id }}" class="input-number-increment bg-whitesmoke">+</span>
-                                    </div>
-                                </div>
-                            </div>
+								@foreach($addon->addonTypes as $key => $type)
+									<div class="col-sm-2">
+										<label class="category">
+											<input type="checkbox" addon_cart_id="" class="addon-{{ $addon->id }}" id="{{ $addon->id }}" onchange="addAddonToCart(this)" name="addons[]" value="{{ $addon->id }}" addon_type_id="{{ $type->id }}" />
+											 <div>
+												<p class="product_label"> {{ $addon->name }} ( {{ $type->size }} ) </p><br>
+												<div class="popup"><img src="{{ env('APP_URL') . $addon->image }}" class="product_image">
+													<span class="popuptext" id="myPopup-{{ $addon->id }}">
+														<small>
+															<p class="p-2"> </p> PKR {{ $type->price }}
+														</small>
+													</span>
+												</div>
+											</div>
+										</label>
+										<div class="input-group input-number-group add-qty">
+											<div class="input-group-button">
+												<span onclick="removeAddonQuantity(this.id)" id="{{ $addon->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+											</div>
+											<input class="input-number" type="number" data_id="{{ $addon->id}}" id="addon-quantity-{{ $addon->id }}" name="quantity" value="1" min="0" max="1000">
+											<div class="input-group-button">
+												<span onclick="addAddonQuantity(this.id)" id="{{ $addon->id }}" class="input-number-increment bg-whitesmoke">+</span>
+											</div>
+										</div>
+									</div>
+								@endforeach
                             @endforeach
                         </div>
                     </div>
@@ -501,7 +504,7 @@
             $("#first_name").val(names[0]);
             $("#last_name").val(names[1]);
             $("#phone").val(names[2]);
-            $("#address").text(names[3]);
+            $("#address").val(names[3]);
 
         }
     });
@@ -671,10 +674,10 @@
         }
     }
 	
-	 function addDealQuantity(value) {
+	function addDealQuantity(value) {
         var element = document.getElementById("deal-quantity-" + value);
         var itemId = element.getAttribute('data_id');
-        var cartId = document.getElementById(itemId).getAttribute("cart_id");
+        var cartId = $(".deal-"+itemId).attr("cart_deal_id");
         var newQuantity = +element.value + +1;
         element.value = newQuantity;
         $.ajax({
@@ -699,7 +702,7 @@
     function removeDealQuantity(value) {
         var element = document.getElementById("deal-quantity-" + value);
         var itemId = element.getAttribute('data_id');
-        var cartId = document.getElementById(itemId).getAttribute("cart_id");
+		var cartId = $(".deal-"+itemId).attr("cart_deal_id");
         var newQuantity = element.value - 1;
         element.value = newQuantity;
         $.ajax({
@@ -708,6 +711,100 @@
             data: {
                 "cart_id": cartId,
                 "deal_id": itemId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    }
+	
+	function addAddonToCart(attribute)
+	{
+		var quantityElement = document.getElementById("addon-quantity-" + attribute.id).value;
+		var typeId = attribute.getAttribute('addon_type_id');
+        if (attribute.checked) {
+            $.ajax({
+                type: 'POST',
+                url: 'add-to-cart',
+                data: {
+                    "addon_id": attribute.value,
+                    'addon_quantity': quantityElement,
+                    'addon_type_id': typeId
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    attribute.setAttribute("addon_cart_id", response.data.cart_id);
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        } else {
+            var cartId = attribute.getAttribute('addon_cart_id');
+            $.ajax({
+                type: 'POST',
+                url: 'remove-to-cart',
+                data: {
+                    "cart_id": cartId
+                },
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                },
+                success: function(response) {
+                    console.log('message');
+                },
+                error: function(error) {
+                    console.log(error)
+                }
+            });
+        }
+	}
+	
+	function addAddonQuantity(value) {
+        var element = document.getElementById("addon-quantity-" + value);
+        var itemId = element.getAttribute('data_id');
+        var cartId = $(".addon-"+itemId).attr("addon_cart_id");
+        var newQuantity = +element.value + +1;
+        element.value = newQuantity;
+        $.ajax({
+            type: 'POST',
+            url: 'add-quantity',
+            data: {
+                "cart_id": cartId,
+                "addon_id": itemId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            success: function(response) {
+                console.log(response.message);
+            },
+            error: function(error) {
+                console.log(error)
+            }
+        });
+    }
+
+    function removeAddonQuantity(value) {
+        var element = document.getElementById("addon-quantity-" + value);
+        var itemId = element.getAttribute('data_id');
+        var cartId = $(".addon-"+itemId).attr("addon_cart_id");
+        var newQuantity = element.value - 1;
+        element.value = newQuantity;
+        $.ajax({
+            type: 'POST',
+            url: 'remove-quantity',
+            data: {
+                "cart_id": cartId,
+                "addon_id": itemId
             },
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')

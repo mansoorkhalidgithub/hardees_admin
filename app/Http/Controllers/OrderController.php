@@ -7,12 +7,17 @@ use Auth;
 use Helper;
 use App\Cart;
 use App\User;
+use App\Deal;
 use App\Order;
+use App\Addon;
 use App\MenuItem;
-use App\OrderAssigned;
+use App\AddonType;
 use App\OrderItem;
+use App\OrderDeal;
+use App\OrderAddon;
 use App\Restaurant;
 use App\OrderStatus;
+use App\OrderAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -159,6 +164,10 @@ class OrderController extends Controller
 			'total'
 		);
 		
+		$cartItems = Cart::select('item_id', 'quantity')->where('item_id', '!=', null)->get();
+		$cartDeals = Cart::select('deal_id', 'deal_quantity')->where('deal_id', '!=', null)->get();
+		$cartAddons = Cart::select('addon_id', 'addon_quantity', 'addon_type_id')->where('addon_id', '!=', null)->get();
+		
 		$total = $cart->sum('total');
 		
 		$orderData = [
@@ -176,13 +185,12 @@ class OrderController extends Controller
 		$newOrder = Order::create($orderData);
 		$orderId = $newOrder->id;
 		
-		foreach ($cart as $key => $cartRecord) {
-
-			if($cartRecord->item_id) {
-				$item = MenuItem::where('id', $cartRecord->item_id)->first();
+		foreach($cartItems as $key => $cartItem) {
+			if($cartItem->item_id) {
+				$item = MenuItem::where('id', $cartItem->item_id)->first();
 				$itemId = $item->id;
 				$itemPrice = $item->price;
-				$itemQunatity = $cartRecord->quantity;
+				$itemQunatity = $cartItem->quantity;
 				
 				$orderItem = [
 					'order_id' => $orderId,
@@ -193,7 +201,43 @@ class OrderController extends Controller
 
 				OrderItem::create($orderItem);
 			}
+		}
+		
+		foreach($cartDeals as $key => $cartDeal) {
+			if($cartDeal->deal_id) {
+				$deal = Deal::where('id', $cartDeal->deal_id)->first();
+				$dealId = $deal->id;
+				$dealPrice = $deal->price;
+				$dealQunatity = $cartDeal->deal_quantity;
+				
+				$orderDeal = [
+					'order_id' => $orderId,
+					'deal_id' => $dealId,
+					'deal_quantity' => $dealQunatity,
+				];
+
+				OrderDeal::create($orderDeal);
+			}
+		}
+		
+		foreach($cartAddons as $key => $cartAddon) {
+			if($cartAddon->addon_id) {
+				$addon = Addon::where('id', $cartAddon->addon_id)->first();
+				$addonId = $addon->id;
+				$addonQunatity = $cartAddon->addon_quantity;
+				$addonTypeId = $cartAddon->addon_type_id;
 			
+				$addonType = AddonType::where('id', $addonTypeId)->first();
+				
+				$orderAddon = [
+					'order_id' => $orderId,
+					'addon_id' => $addonId,
+					'price' => $addonType->price,
+					'addon_quantity' => $addonQunatity,
+				];
+
+				OrderAddon::create($orderAddon);
+			}
 		}
 		
 		$cartIds = $cart->pluck('id');
@@ -220,8 +264,27 @@ class OrderController extends Controller
 		
 		$order = Order::with('orderItems')->where('id', $orderId)->first();
 		
-		return view('order/summary', compact('order', 'riderId'));
+		return redirect()->route('order-summary',  ['order_id' => encrypt($order->id), 'rider_id' => encrypt($riderId)]);
 		
+	}
+	
+	public function summary(Request $request)
+	{
+		$rider = [];
+		$customer = [];
+		$orderId = decrypt($request->order_id);
+		
+		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
+		
+		if($order->user_id) {
+			$customer = User::where('id', $order->user_id)->first();
+		}
+		if($request->rider_id) {
+			$riderId = decrypt($request->rider_id);
+			$rider = User::where('id', $riderId)->first();
+		}
+		
+		return view('order/summary', compact('order', 'rider', 'customer'));
 	}
 	
 	public function notification(Request $request)
@@ -230,21 +293,40 @@ class OrderController extends Controller
 		$restaurantId = $request->restaurant_id;
 		$riderId = $request->rider_id;
 		
+		$order = Order::where('id', $orderId)->first();
+		
+		$number = $order->customer->phone_number;
+		$name = $order->customer->first_name;
+		$orderReference = Helper::orderReference($orderId);
+		
+		$message = "Mr/Miss,%20". $name . "%20your%20order%20". $orderReference . "%20has%20been%20placed.%20Thank%20you";
+		
+		$messageData = [
+			'number' => $number,
+			'name' => $name,
+			'order' => $orderReference,
+			'message' => $message,
+		];
+		
 		$restaurantUsers = User::role('user')->where('restaurant_id', $restaurantId)->get();
 		
 		$rider = User::where('id', $riderId)->first();
 		
-		$riderNotificationData = [
-			"order_id" => $orderId,
-			"device_token" => $rider->device_token,
-			"status" => "TR",
-			"message" => "New Order Assigned"
-		];
-		
-		$notification = Helper::sendNotification($riderNotificationData);
+		$notification = "";
+		if(!empty($rider) && $rider->device_token) {
+			$riderNotificationData = [
+				"order_id" => $orderId,
+				"device_token" => $rider->device_token,
+				"status" => "TR",
+				"message" => "New Order Assigned"
+			];
+			
+			$notification = Helper::sendNotification($riderNotificationData);
+		}
 		
 		sleep(3);
 		
+		$notificationOne = "";
 		foreach($restaurantUsers as $user) {
 			$restaurantNotificationData = [
 				"order_id" => $orderId,
@@ -256,12 +338,15 @@ class OrderController extends Controller
 			$notificationOne = Helper::sendNotification($restaurantNotificationData);
 		}
 		
+		$responseMessage = Helper::sendMessage($messageData);
+		
 		$responseData = [
 			'code' => 1,
 			'message' => "Notifications sent successfully.",
 			'riderNotification' => json_decode($notification),
-			'restaurantNotification' => json_decode($notification),
-			'restaurantUsers' => count($restaurantUsers)
+			'restaurantNotification' => json_decode($notificationOne),
+			'restaurantUsers' => count($restaurantUsers),
+			'responseMessage' => $responseMessage
 		];
 		
 		echo json_encode($responseData);

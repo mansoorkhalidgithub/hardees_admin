@@ -8,6 +8,7 @@ use App\Addon;
 use App\MenuItem;
 use App\DealCategory;
 use App\MenuCategory;
+use App\AddonCategory;
 use Illuminate\Http\Request;
 
 class BookingController extends Controller
@@ -23,9 +24,10 @@ class BookingController extends Controller
 		$items = MenuItem::where('menu_category_id', $itemCategories[0]->id)->get();
 		$dealCategories = DealCategory::where('status', 1)->get();
 		$deals = Deal::where('deal_category_id', $dealCategories[0]->id)->where('status', 1)->get();
+		$addonCategories = AddonCategory::all();
 		$addons = Addon::all();
 		
-        return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addons'));
+        return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addonCategories', 'addons'));
     }
 	
 	public function save(Request $request)

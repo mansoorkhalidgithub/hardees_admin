@@ -31,14 +31,17 @@ class Order extends Model
 	{
 		return $this->hasMany(OrderItem::class, 'order_id');
 	}
-	// By Qadeer
-	public function getItemsAttribute()
+
+	public function orderDeals()
 	{
-		$menu_item_ids = OrderItem::where('order_id', $this->id)->pluck('menu_item_id');
-		$menu_items = MenuItem::whereIn('id', $menu_item_ids->all())->pluck('name');
-		return $menu_items;
+		return $this->hasMany(OrderDeal::class, 'order_id');
 	}
-	// End By Qadeer
+
+	public function orderAddons()
+	{
+		return $this->hasMany(OrderAddon::class, 'order_id');
+	}
+
 	public function getorderItemsWithNameAttribute()
 	{
 		$data = OrderItem::where('order_id', $this->id)->get();

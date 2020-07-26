@@ -100,7 +100,11 @@ class OrderApiController extends Controller {
 			'quantity'  => $request->quantity,
 			'deal_id'  => $request->deal_id,
 			'deal_quantity'  => $request->deal_quantity,
+			'addon_id'  => $request->addon_id,
+			'addon_quantity'  => $request->addon_quantity,
+			'addon_type_id'  => $request->addon_type_id,
 		];
+		
 		$cartId = "";
 		$cartItem = "";
 		$cartDeal = "";
@@ -112,19 +116,24 @@ class OrderApiController extends Controller {
 			$cartDeal = Cart::where(['user_id' => $userId, 'deal_id' => $request->deal_id])->first();
 		}
 		
+		if(isset($request->addon_id)) {
+			$cartAddon = Cart::where(['user_id' => $userId, 'addon_id' => $request->addon_id])->first();
+		}
+		
 		if(!empty($cartItem)) 
 		{
 			$quantity = $cartItem->quantity + $request->quantity;
 			$cartItem->update(['quantity' => $quantity]);
 			$cartId = $cartItem->id;
-		} else if(!empty($cartDeal))
-		{
+		} else if(!empty($cartDeal)) {
 			$dealQuantity = $cartDeal->deal_quantity + $request->deal_quantity;
 			$cartDeal->update(['deal_quantity' => $dealQuantity]);
 			$cartId = $cartDeal->id;
-		}
-		else 
-		{
+		} else if(!empty($cartAddon)) {
+			$addonQuantity = $cartAddon->addon_quantity + $request->addon_quantity;
+			$cartAddon->update(['addon_quantity' => $addonQuantity]);
+			$cartId = $cartAddon->id;
+		} else {
 			$cart = Cart::create($data);
 			$cartId = $cart->id;
 		}
@@ -185,6 +194,11 @@ class OrderApiController extends Controller {
 				$newQuantity = $cart->deal_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
 			}	
+			if(isset($request->addon_id)) {
+				$version = 4;
+				$newQuantity = $cart->addon_quantity + 1;
+				Cart::where('id', $request->cart_id)->update(['addon_quantity' => $newQuantity]);
+			}
 		}
 		
 		$response = [
@@ -209,6 +223,10 @@ class OrderApiController extends Controller {
 		if(isset($request->deal_id) && $cart->deal_quantity > 0) {
 			$newQuantity = $cart->deal_quantity - 1;
 			Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
+		}
+		if(isset($request->addon_id) && $cart->addon_quantity > 0) {
+			$newQuantity = $cart->addon_quantity - 1;
+			Cart::where('id', $request->cart_id)->update(['addon_quantity' => $newQuantity]);
 		}
 		
 		$response = [

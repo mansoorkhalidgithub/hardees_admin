@@ -4,9 +4,11 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class AddonType extends Model
+class OrderAddon extends Model
 {
-    public $timestamps = false;
+	public $timestamps = false;
+	
+    protected $fillable = ['order_id', 'addon_id', 'price', 'addon_quantity'];
 	
 	public function addon()
 	{

@@ -11,7 +11,15 @@ class Cart extends Model
     protected $table = 'cart';
 	
     protected $fillable = [
-        'item_id', 'user_id', 'status', 'quantity', 'deal_id', 'deal_quantity'
+        'item_id', 
+		'user_id', 
+		'status', 
+		'quantity', 
+		'deal_id', 
+		'deal_quantity',
+		'addon_id',
+		'addon_quantity',
+		'addon_type_id',
     ];
 	
 	public function item()
@@ -38,6 +46,12 @@ class Cart extends Model
 			$deal = Deal::find($this->deal_id);
 			$dealTotal = $deal->payable_price * $this->deal_quantity;
 			$total = $total + $dealTotal;
+		}
+		
+		if($this->addon_id) {
+			$addon = AddonType::where('id', $this->addon_type_id)->where('addon_id', $this->addon_id)->first();
+			$totalPrice = $addon->price * $this->addon_quantity;
+			$total = $total + $totalPrice;
 		}
 		
         return $total;

@@ -334,57 +334,72 @@ p {
 												<td> {{ $item->item_price }} </td>
 												<td> {{ $item->item_quantity }} </td>
 											</tr>
-										@endforeach							
+										@endforeach	
+										@foreach($order->orderDeals as $keyOne => $deal)
+											<tr>
+												<th scope="row"> {{  $key_ = ++$keyOne + $key }} </th>
+												<td> {{ $deal->deal->title }} </td>
+												<td> {{ $deal->deal->payable_price }} </td>
+												<td> {{ $deal->deal_quantity }} </td>
+											</tr>
+										@endforeach	
+										@foreach($order->orderAddons as $keyTwo => $addon)
+											<tr>
+												<th scope="row"> {{ ++$keyTwo + $key_ }} </th>
+												<td> {{ $addon->addon->name }} </td>
+												<td> {{ $addon->price }} </td>
+												<td> {{ $addon->addon_quantity }} </td>
+											</tr>
+										@endforeach	
 									</tbody>
 
 								</table>
 							</div>
 							<div class="row">
-							  <div class="col-sm-7">
-										<div class="cart_totals">
-											<table cellspacing="0">
-												<tr>
-													<th>Subtotal</th>
-													<td data-title="Subtotal">
-														<span>
-															<span>PKR </span> {{ $order->sub_total }}
-														</span>
-													</td>
-												</tr>
-												<tr>
-													<th>Estimated Time:</th>
-													<td data-title="Subtotal">
+								<div class="col-sm-7">
+									<div class="cart_totals">
+										<table cellspacing="0">
+											<tr>
+												<th>Subtotal</th>
+												<td data-title="Subtotal">
+													<span>
+														<span>PKR </span> {{ $order->sub_total }}
+													</span>
+												</td>
+											</tr>
+											<tr>
+												<th>Estimated Time:</th>
+												<td data-title="Subtotal">
 
-														<span>10 - 15 mins</span>
-													</td>
-												</tr>
-												<tr>
-													<th>Service Tax</th>
-													<td data-title="Subtotal">
-														<span>
-															<span>PKR </span> 0
-														</span>
-													</td>
-												</tr>
-												<tr class="order-total border-0">
-													<th>Total</th>
-													<td data-title="Total">
-														<span>
-															<span>PKR </span> {{ $order->total }}
-														</span>
-													</td>
-												</tr>
-											</table>
-										</div>
-										<p><textarea placeholder="Note for Rider..." class="form-control" rows="4" style="border-radius: 0px" oninput="this.className = ''" name="rider_note"></textarea></p>
-										</div>
-							  <div class="col-sm-5">
-								  <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d435521.40794971527!2d74.05419759728487!3d31.48263522521835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23abe6ccc7e2462!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1592141196058!5m2!1sen!2s" width="500" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-							  </div>
-							</div>
-								
+													<span>10 - 15 mins</span>
+												</td>
+											</tr>
+											<tr>
+												<th>Service Tax</th>
+												<td data-title="Subtotal">
+													<span>
+														<span>PKR </span> 0
+													</span>
+												</td>
+											</tr>
+											<tr class="order-total border-0">
+												<th>Total</th>
+												<td data-title="Total">
+													<span>
+														<span>PKR </span> {{ $order->total }}
+													</span>
+												</td>
+											</tr>
+										</table>
+									</div>
+									<p><textarea placeholder="Note for Rider..." class="form-control" rows="3" style="border-radius: 0px" oninput="this.className = ''" name="rider_note"></textarea></p>
+								</div>
+								<div class="col-sm-5">
+									<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d435521.40794971527!2d74.05419759728487!3d31.48263522521835!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39190483e58107d9%3A0xc23abe6ccc7e2462!2sLahore%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1592141196058!5m2!1sen!2s" width="450" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+								</div>
+							</div>	
 						</div> 
-						<button type="button" id="submit-btn" onclick="sendNotification({{ $order->id }}, {{ $order->restaurant_id }}, {{ $riderId }})" class="btn btn-primary btn-lg" /> Submit </button>
+						<button type="button" id="submit-btn" onclick="sendNotification({{ $order->id }}, {{ $order->restaurant_id }}, {{ ($rider) ? $rider->id : '' }})" class="btn btn-primary btn-lg" /> Submit </button>
 					</fieldset>
                     
                 </form>

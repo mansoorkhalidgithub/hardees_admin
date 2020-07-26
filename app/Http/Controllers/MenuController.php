@@ -196,45 +196,76 @@ class MenuController extends Controller {
 	{
 		$userId = Auth::user()->id;
 		
-		$cartItems = Cart::where('user_id', $userId)->pluck('item_id');
+		$cartItems = Cart::where('user_id', $userId)->get();
 		
+		$cartItems = $cartItems->pluck('item_id');
+	
 		$menuCategoryId = $request->menu_category_id;
 		
 		$itemsByCategory = MenuItem::where('menu_category_id', $menuCategoryId)->get();
 		
-		
-		
 		$html = '';
 		foreach($itemsByCategory as $key => $item) 
 		{
+			$cart = Cart::where('user_id', $userId)->where('item_id', $item->id)->whereIn('item_id', $cartItems->all())->first();
+			$cartId = 0;
+			$quantity = 0;
+			if(!empty($cart))
+			{
+				$cartId = $cart->id;
+				$quantity =   $cart->quantity;
+			}
 			$checked = '';
 			if(in_array($item->id, $cartItems->all(), true))
-			{
+			{			
 				$checked = 'checked';
 			}
-			
 			$html .= '<div class="col-sm-2">
-				<label class="category">
-					<input '. $checked .' type="checkbox" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'"/>
-					<div>
-						<p class="product_label"> '. $item->name .' </p><br>
-						<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'"  class="product_image">
-							<span class="popuptext" id="myPopup-'. $item->id .'">
-								<small> <p class="p-2"> '. $item->ingredients .'</p> PKR '. $item->price .' </small>
-							</span>
-						</div>
-					</div>
-				</label>
-				<div class="input-group input-number-group add-qty">
-					<div class="input-group-button">
-						<span onclick="removeQuantity(this.id)" id="'. $item->id .'" class="input-number-decrement bg-whitesmoke">-</span>
-					</div>
-					<input class="input-number" type="number" data_id="'. $item->id .'" id="quantity-'. $item->id .'" name="quantity" value="1" min="0" max="1000">
-					<div class="input-group-button">
-						<span onclick="addQuantity(this.id)" id="'. $item->id .'" class="input-number-increment bg-whitesmoke">+</span>
-					</div>
-				</div>
-			</div>';
+							<label class="category">
+								<input '. $checked .' type="checkbox" cart_id="'. $cartId .'" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'" />
+								<div>
+									<p class="product_label"> '. $item->name .' </p><br>
+									<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'" class="product_image">
+										<span class="popuptext" id="myPopup-'. $item->id .'">
+											<small>
+												<p class="p-2"> '. $item->ingredients .'</p> PKR '. $item->price .'
+											</small>
+										</span>
+									</div>
+								</div>
+							</label>
+							<div class="input-group input-number-group add-qty">
+								<div class="input-group-button">
+									<span onclick="removeQuantity(this.id)" id="'. $item->id .'" class="input-number-decrement bg-whitesmoke">-</span>
+								</div>
+								<input class="input-number" type="number" data_id="'. $item->id.'" id="quantity-'. $item->id .'" name="quantity" value="' . $quantity . '" min="0" max="1000">
+								<div class="input-group-button">
+									<span onclick="addQuantity(this.id)" id="'. $item->id .'" class="input-number-increment bg-whitesmoke">+</span>
+								</div>
+							</div>
+						</div>';
+			// $html .= '<div class="col-sm-2">
+				// <label class="category">
+					// <input '. $checked .' type="checkbox" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'"/>
+					// <div>
+						// <p class="product_label"> '. $item->name .' </p><br>
+						// <div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'"  class="product_image">
+							// <span class="popuptext" id="myPopup-'. $item->id .'">
+								// <small> <p class="p-2"> '. $item->ingredients .'</p> PKR '. $item->price .' </small>
+							// </span>
+						// </div>
+					// </div>
+				// </label>
+				// <div class="input-group input-number-group add-qty">
+					// <div class="input-group-button">
+						// <span onclick="removeQuantity(this.id)" id="'. $item->id .'" class="input-number-decrement bg-whitesmoke">-</span>
+					// </div>
+					// <input class="input-number" type="number" data_id="'. $item->id .'" id="quantity-'. $item->id .'" name="quantity" value="1" min="0" max="1000">
+					// <div class="input-group-button">
+						// <span onclick="addQuantity(this.id)" id="'. $item->id .'" class="input-number-increment bg-whitesmoke">+</span>
+					// </div>
+				// </div>
+			// </div>';
 		}
 		
 		echo $html;
