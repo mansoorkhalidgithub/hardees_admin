@@ -12,9 +12,11 @@
      <div class="d-sm-flex align-items-center justify-content-between mb-4">
          <h3 style="color: black; font-family: serif; font-weight: bold">{{$model->first_name}} {{$model->last_name}} :</h3>
 
-         <a href="{{ route('rider.status', $model->id) }}" class="btn {{ ($model->status === 1) ? 'btn-success' : 'btn-danger' }}" style=" color: white;width:6rem">
-             @if($model->status === 1) Active @elseif($model->status === 0) In Active @endif
-         </a>
+         <td>
+             <a href="{{ route('rider.status', $model->id) }}" class="btn {{ ($model->status === 1) ? 'btn-success' : 'btn-danger' }}" style=" color: white;width:6rem">
+                 {{($model->status == 1) ? 'Active' : 'Deactive'}}
+             </a>
+         </td>
 
      </div>
      <hr>
@@ -78,10 +80,25 @@
                          <td>1</td>
                      </tr>
                      <tr>
+                         <td>Vehicle Number:</td>
+                         <td>
+                             @if(!empty($model->vehicle->vehicle_number))
+                             {{ $model->vehicle->vehicle_number }}
+                             @else
+                             Not set
+                             @endif
+                         </td>
+                     </tr>
+                     <tr>
                          <td>Online Status:</td>
                          <td>
-                             @if($model->eStatus === 10) Yes @elseif($model->eStatus === 9) No @endif
-                         </td>
+                             {{($model->getRiderStatus->online_status == 'online') ? 'Online' : 'Offline'}} </td>
+                     </tr>
+
+                     <tr>
+                         <td>Trip Status:</td>
+                         <td>
+                             {{($model->getRiderStatus->trip_status == 'free') ? 'Free' : 'On Trip'}} </td>
                      </tr>
                      <tr>
                          <td>Created Date:</td>
@@ -101,15 +118,15 @@
                  <tbody>
                      <tr>
                          <td>Device Type:</td>
-                         <td>IOS</td>
+                         <td>{{$model->device_type}}</td>
                      </tr>
                      <tr>
                          <td>Device Name:</td>
-                         <td>iPhone 6s</td>
+                         <td>{{$model->device_name}}</td>
                      </tr>
                      <tr>
                          <td>Device ID:</td>
-                         <td>354F0795-4DD7-4C7A-8A10-B7D70CFBC503</td>
+                         <td>{{$model->device_id}}</td>
                      </tr>
                      <tr>
                          <td>Login with:</td>
@@ -117,11 +134,7 @@
                      </tr>
                      <tr>
                          <td>APP Version:</td>
-                         <td>2</td>
-                     </tr>
-                     <tr>
-                         <td>Authentication Key:</td>
-                         <td>a65113043fb89476a2f26c8ef730e9cc</td>
+                         <td>{{$model->app_version}}</td>
                      </tr>
 
                  </tbody>

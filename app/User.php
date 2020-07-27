@@ -113,6 +113,11 @@ class User extends Authenticatable
 		return $this->hasOne(City::class, 'id', 'city_id');
 	}
 
+	public function vehicle()
+	{
+		return $this->hasOne(RiderDetail::class, 'rider_id', 'id');
+	}
+
 	public function getRiderStatus()
 	{
 		return $this->hasOne(RiderStatus::class, 'rider_id', 'id')

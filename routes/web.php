@@ -22,15 +22,14 @@ Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('dashboard');
 
-Route::get('/clear', function() {
+Route::get('/clear', function () {
 
-   Artisan::call('cache:clear');
-   Artisan::call('config:clear');
-   Artisan::call('config:cache');
-   Artisan::call('view:clear');
+	Artisan::call('cache:clear');
+	Artisan::call('config:clear');
+	Artisan::call('config:cache');
+	Artisan::call('view:clear');
 
-   return "Cleared!";
-
+	return "Cleared!";
 });
 
 Route::group([
@@ -63,7 +62,6 @@ Route::group([
 	Route::get('order-status', 'OrderController@orderStatus')->name('order-status');
 	Route::get('view-order', 'OrderController@view')->name('view-order');
 	Route::get('edit-order', 'OrderController@edit')->name('edit-order');
-
 });
 
 Route::group([
@@ -105,7 +103,13 @@ Route::group([
 	Route::get('city', 'CityController@index')->name('city.index');
 	Route::get('city/status/{id}', 'CityController@status')->name('city.status');
 });
+Route::group([
+	'middleware' => 'auth',
+], function () {
+	Route::get('/booking_show', 'HomeController@booking_show')->name('booking_show');
 
+	Route::get('/delivery_log/{id}', 'HomeController@delivery_log')->name('delivery_log');
+});
 Route::group([
 	'middleware' => 'auth',
 ], function () {
@@ -133,6 +137,7 @@ Route::group([
 	Route::get('/delivery_boy_management', 'RiderController@delivery_boy_management')->name('rider.management');
 	Route::get('rider/status/{id}', 'RiderController@status')->name('rider.status');
 	Route::get('rider/eStatus/{id}', 'RiderController@eStatus')->name('rider.eStatus');
+	Route::get('rider/trip_status/{id}', 'RiderController@tripStatus')->name('rider.tripstatus');
 	Route::post('getCities', 'RiderController@getCities')->name('getCities');
 	Route::post('getBranches', 'RiderController@getBranches')->name('rider.branch');
 	Route::post('getStates', 'RiderController@getStates')->name('rider.states');
@@ -208,8 +213,6 @@ Route::get('/home', 'HomeController@index')->name('home');
 
 //Route::get('/booking', 'HomeController@booking')->name('booking');
 
-Route::get('/booking_show', 'HomeController@booking_show')->name('booking_show');
-
 Route::get('/restaurant_show', 'HomeController@restaurant_show')->name('restaurant_show');
 
 Route::get('/ride_statement', 'HomeController@ride_statement')->name('ride_statement');
@@ -224,7 +227,6 @@ Route::get('/view_restaurant', 'HomeController@view_restaurant')->name('view_res
 
 Route::get('/update_restaurant', 'HomeController@update_restaurant')->name('update_restaurant');
 
-Route::get('/delivery_log', 'HomeController@delivery_log')->name('delivery_log');
 
 Route::get('/update_delivery', 'HomeController@update_delivery')->name('update_delivery');
 

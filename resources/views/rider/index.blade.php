@@ -73,7 +73,13 @@
  					<td>Delivery Peshawar Pakistan</td>
  					<td> {{ $rider->phone_number }} </td>
  					<td> {{ $rider->email }} </td>
- 					<td>LA6315</td>
+ 					<td>
+ 						@if(!empty($rider->vehicle->vehicle_number))
+ 						{{ $rider->vehicle->vehicle_number }}
+ 						@else
+ 						Not set
+ 						@endif
+ 					</td>
  					<td>1</td>
  					<td>Approved</td>
  					<td>
@@ -82,20 +88,21 @@
  						</a>
  					</td>
  					<td>
- 						<a href="#" class="btn {{($rider->getRiderStatus->online_status == 'online') ? 'btn-success' : 'btn-danger'}}" style="color: white;width:6rem">
+ 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{($rider->getRiderStatus->online_status == 'online') ? 'btn-success' : 'btn-danger'}}" style="color: white;width:6rem">
  							{{($rider->getRiderStatus->online_status == 'online') ? 'Online' : 'Offline'}}
 
  						</a>
  					</td>
  					<td>
- 						<form action="" method="post">
- 							@csrf @method('POST')
+ 						<form action="{{ route('rider.tripstatus', $rider->id) }}" method="post">
+ 							@csrf @method('GET')
  							<button class="btn" style="background-color:  white; color: red" type="submit">
  								{{($rider->getRiderStatus->trip_status == 'free') ? 'Free' : 'On Trip'}}
  							</button>
  						</form>
  					</td>
- 					<td><button class="btn" style="background-color:  white; color: black;" type="submit">History</button></td>
+ 					<td><button class=" btn" style="background-color:  white; color: black;" type="submit">History</button>
+ 					</td>
  					<td><button class="btn" style="background-color:  #dc3545; color: white" type="submit">Dr Rs 14</button></td>
 
  					<td>
@@ -128,7 +135,7 @@
  		var table = $('#rider_list').DataTable();
  		setTimeout(function() {
  			window.location = window.location
- 		}, 30000);
+ 		}, 120000);
  	});
  </script>
 

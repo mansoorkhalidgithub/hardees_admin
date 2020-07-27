@@ -116,8 +116,7 @@ class Order extends Model
 
 	public function orderAssigned()
 	{
-		return $this->hasOne(OrderAssigned::class, 'id', 'order_id')
-			->where('trip_status_id', '=', 5);
+		return $this->hasOne(OrderAssigned::class, 'order_id', 'id');
 	}
 
 	public function getOrderReferenceAttribute()
@@ -169,6 +168,19 @@ class Order extends Model
 	{
 		$user = User::where('id', $this->user_id)->first();
 		return $user->first_name . " " . $user->last_name;
+	}
+
+	public function getItemsAttribute()
+	{
+		$menu_item_ids = OrderItem::where('order_id', $this->id)->pluck('menu_item_id');
+		$menu_items = MenuItem::whereIn('id', $menu_item_ids->all())->pluck('name');
+		return $menu_items;
+	}
+
+	public function paymentType()
+	{
+
+		return $this->hasOne(PaymentMethod::class, 'id', 'payment_method_id');
 	}
 	// End By Qadeer
 }

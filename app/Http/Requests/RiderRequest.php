@@ -25,8 +25,8 @@ class RiderRequest extends FormRequest
     public function rules()
     {
         $rules =  [
-            // 'phone_number' => 'required|numeric',
-            'profile' => 'mimes:jpeg,jpg,png|max:1000',
+            // 'vehicle_number' => 'required|unique:rider_detail',
+            // 'profile' => 'mimes:jpeg,jpg,png|max:1000',
             'state_id' => 'required|numeric',
             'city_id' => 'required|numeric',
             'restaurant_id' => 'required|numeric',
@@ -38,16 +38,25 @@ class RiderRequest extends FormRequest
             $rules += ['confirm_password' => 'required_with:password|same:password|min:6'];
             $rules += ['email' => 'required|unique:users|max:255'];
             $rules += ['phone_number' => 'required|numeric|unique:users'];
-			$rules += [
-				'phone_number' => Rule::unique('users')->where(function ($query) {
-					$query->where(['phone_number' => $this->phone_number, 'user_type' => 'rider']);
-				}),
-			];
+            $rules += [
+                'phone_number' => Rule::unique('users')->where(function ($query) {
+                    $query->where(['phone_number' => $this->phone_number, 'user_type' => 'rider']);
+                }),
+            ];
+            $rules += [
+                'vehicle_number' => Rule::unique('rider_detail')->where(function ($query) {
+                    $query->where(['rider_id' => $this->rider_id, 'vehicle_number' => $this->vehicle_number]);
+                }),
+            ];
             // $rules += ['role' => 'required|max:15'];
         } elseif ($this->route()->getActionMethod() == 'update') {
             $rules += ['email' => Rule::unique('users')->ignore($this->id)];
             $rules += ['phone_number' => Rule::unique('users')->ignore($this->id)];
-            // $rules += ['phone_number' => 'required|numeric|unique:users|max:255'];
+            $rules += [
+                'vehicle_number' => Rule::unique('rider_detail')->where(function ($query) {
+                    $query->where(['rider_id' => $this->rider_id, 'vehicle_number' => $this->vehicle_number]);
+                }),
+            ];
         }
         // dd($rules);
         return $rules;

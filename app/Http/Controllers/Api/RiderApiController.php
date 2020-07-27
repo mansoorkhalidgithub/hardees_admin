@@ -26,6 +26,9 @@ use Illuminate\Support\Facades\Validator;
 
 class RiderApiController extends Controller
 {
+    public function __construct()
+    {
+    }
 
     public function riderRegister(Request $request)
     {
@@ -202,7 +205,7 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 'data' => $order
             ];
-            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
@@ -218,8 +221,8 @@ class RiderApiController extends Controller
                 ->first();
             $rider_status->trip_status = 'ontrip';
             $rider_status->save();
-            $rider = OrderAssigned::where('order_id', '=', $order_id)->where('trip_status_id', '=', 1)->first();
-            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            // $rider = OrderAssigned::where('order_id', '=', $order_id)->where('trip_status_id', '=', 1)->first();
+            // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             $eta = 45;
         }
@@ -231,7 +234,9 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
-            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            $get_order_status->trip_status_id = $status->id;
+            $get_order_status->save();
+            // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
@@ -268,7 +273,7 @@ class RiderApiController extends Controller
                 MasterModel::notification($rider->device_token, $status->description);
             } else {
                 $response = [
-                    'status' => 1,
+                    'status' => 0,
                     'method' => $request->route()->getActionMethod(),
                     'message' => 'Order is Not Prepared Yet',
                 ];
@@ -406,7 +411,7 @@ class RiderApiController extends Controller
                 'message' => $status->description,
                 // 'detail' => $order
             ];
-            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
@@ -438,6 +443,7 @@ class RiderApiController extends Controller
                 : ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY') ? $total_time // elseif
                     : round(10 * $distance))); // else
         $order['distance'] = $distance;
+        $trip_status = ($rider->getRiderStatus->trip_status == 'free' ? 'N' : 'Y');
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
@@ -468,9 +474,9 @@ class RiderApiController extends Controller
                 "delivery_date" => $order->created_at,
                 "booking_date" => $order->created_at,
                 "end_delivery_date" => $order->updated_at,
-                'ETA' => $eta . "Mins",
+                'ETA' => $eta . " Mins",
                 "status" => "TPDD",
-                "trip_status" => "N",
+                "trip_status" => $trip_status,
                 "user_rating" => 2,
                 "Payment_type" => $order->ordertype
             ]
@@ -743,7 +749,12 @@ class RiderApiController extends Controller
     }
     public function updateProfile(Request $request)
     {
-        return 'Update Profile';
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "Profile Is Updated",
+        ];
+        return response()->json($response);
     }
 
     public function ordersHistory(Request $request)
@@ -802,6 +813,16 @@ class RiderApiController extends Controller
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
             'message' => "You Are " . $rider_status->online_status,
+        ];
+        return response()->json($response);
+    }
+
+    public function logout(Request $request)
+    {
+        $response = [
+            'status' => 1,
+            'method' => $request->route()->getActionMethod(),
+            'message' => "You Are Logout",
         ];
         return response()->json($response);
     }

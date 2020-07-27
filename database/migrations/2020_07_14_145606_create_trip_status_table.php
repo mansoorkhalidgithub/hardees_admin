@@ -17,7 +17,6 @@ class CreateTripStatusTable extends Migration
             $table->bigIncrements('id');
             $table->string('name');
             $table->string('description');
-            $table->timestamps();
         });
 
         DB::table('trip_status')->insert([

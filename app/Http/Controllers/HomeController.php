@@ -112,7 +112,10 @@ class HomeController extends Controller
 
 	public function booking_show()
 	{
-		return view('Delivery/trips');
+		$orders = Order::with('orderAssigned.rider')->get();
+		$orders->each->append('time', 'items', 'orderStatus');
+		// dd($orders);
+		return view('Delivery.trips', compact('orders'));
 	}
 
 	public function restaurant_show()
@@ -140,9 +143,11 @@ class HomeController extends Controller
 		return view('rider/delivery_statements');
 	}
 
-	public function delivery_log()
+	public function delivery_log($id)
 	{
-		return view('Delivery/delivery_log');
+		$order = Order::find($id);
+		$order->append('rating');
+		return view('Delivery/delivery_log', compact('order'));
 	}
 
 	public function update_delivery()

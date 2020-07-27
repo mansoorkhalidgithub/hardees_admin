@@ -11,6 +11,7 @@ use App\Restaurant;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Http\Requests\RiderRequest;
+use App\RiderDetail;
 use App\RiderStatus;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -55,7 +56,9 @@ class RiderController extends Controller
      */
     public function store(RiderRequest $request)
     {
+        // dd($request->all());
         $data = [];
+        $profilePath = '';
         $parts = explode("@", $request['email']);
         $t = explode(" ", $request['title']);
         $ridername = $parts[0];
@@ -80,7 +83,7 @@ class RiderController extends Controller
             'last_name' => $request->last_name,
             'username' => $ridername,
             'email' => $request->email,
-            // 'created_by' => auth()->user()->id,
+            'address' => $request->address,
             'restaurant_id' => $request->restaurant_id,
             'state_id' => $request->state_id,
             'city_id' => $request->city_id,
@@ -104,8 +107,13 @@ class RiderController extends Controller
             'trip_status' => 'free',
             'status' => 1
         ];
+        $rider_detail = [
+            'rider_id' => $rider->id,
+            'vehicle_number' => $request->vehicle_number,
+        ];
+        RiderDetail::create($rider_detail);
         RiderStatus::create($rider_status);
-        Session::flash('success', 'New User created successfully');
+        Session::flash('success', 'New Rider created successfully');
         return Redirect::route('rider.index');
     }
 
@@ -168,6 +176,12 @@ class RiderController extends Controller
         }
         // dd($data);
         $rider->update($data);
+        $rider_detailupdate = [
+            'rider_id' => $rider->id,
+            'vehicle_number' => $request->vehicle_number,
+        ];
+        $rider_detail = RiderDetail::where('rider_id', $rider->id)->first();
+        $rider_detail->update($rider_detailupdate);
         return Redirect::route('rider.index');
     }
 
@@ -347,9 +361,20 @@ class RiderController extends Controller
 
     public function eStatus($id)
     {
-        $rider = $this->findModel($id);
-        $st = $rider->eStatus === Config::get('constants.STATUS_ONLINE') ? Config::get('constants.STATUS_OFFLINE') : Config::get('constants.STATUS_ONLINE');
-        $rider->eStatus = $st;
+        $rider = RiderStatus::where('rider_id', $id)
+            ->where('status', 1)->first();
+        $st = ($rider->online_status == 'online' ? 'offline' : 'online');
+        $rider->online_status = $st;
+        $rider->save();
+        return redirect()->back();
+    }
+
+    public function tripStatus($id)
+    {
+        $rider = RiderStatus::where('rider_id', $id)
+            ->where('status', 1)->first();
+        $st = ($rider->trip_status == 'ontrip' ? 'free' : 'ontrip');
+        $rider->trip_status = $st;
         $rider->save();
         return redirect()->back();
     }

@@ -24,7 +24,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
 	Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
 	Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');
-	Route::post('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
+	Route::get('restaurant/orderprocessing', 'Api\RestaurantApiController@orderProcessing');
 	Route::post('restaurant/order-accepted', 'Api\RestaurantApiController@orderAccepted');
 	Route::get('restaurant/recent-allorders', 'Api\RestaurantApiController@recentAllOrders');
 	Route::get('restaurant/recent-todayorders', 'Api\RestaurantApiController@recentTodayOrders');
@@ -98,8 +98,9 @@ Route::post('order-history', 'Api\RiderApiController@ordersHistory');
 
 Route::post('rider-status', 'Api\RiderApiController@riderStatus');
 
-// Rider Api Ending Point By Qadeer
+Route::post('rider-logout', 'Api\RiderApiController@logout');
 
 // Rider Api Ending Point By Qadeer
+
 
 Route::post('test-notification', 'Api\OrderApiController@notification');

@@ -79,11 +79,9 @@
           <div class="row">
             <div class="col-sm-6">
               <div class="form-group">
-                <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="status">ONLINE/OFFLINE</label>
-                <select id="status" name="eStatus" style="border-radius: 0px" class="form-control">
-                  <option value="10" {{ $model->eStatus === 10 ? 'selected' : '' }}>Online</option>
-                  <option value="9" {{ $model->eStatus === 9 ? 'selected' : '' }}>Offline</option>
-                </select>
+                <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="status">Vehicle Number</label>
+                <input type="text" value="{{$model->vehicle->vehicle_number}}" name="vehicle_number" style="border-radius: 0px" class="form-control">
+
               </div>
             </div>
             <div class="col-sm-6">
@@ -165,15 +163,7 @@
             <div class="col-sm-12">
               <div class="form-group">
                 <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="address">ADDRESS</label>
-                <input id="address" name="address" style="border-radius: 0px" class="form-control" readonly="" required="" type="text">
-
-
-              </div>
-            </div>
-            <div class="col-sm-12">
-              <div class="form-group">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6806.007666440382!2d74.31320992509033!3d31.469080725546153!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x391906aa20f282d1%3A0x1f670ea0693b1114!2sTele%20Tower!5e0!3m2!1sen!2s!4v1592383763663!5m2!1sen!2s" width="100%" height="300" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
-
+                <input id="address" value="{{$model->address}}" name="address" style="border-radius: 0px" class="form-control" required="" type="text">
               </div>
             </div>
 
@@ -193,7 +183,7 @@
 </div>
 @endsection
 <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
-
+<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
 <script>
   $(document).ready(function() {
     $("#branch").change(function() {
@@ -241,6 +231,22 @@
       readURL(this);
     });
   });
+
+  function initialize() {
+
+    var options = {
+      componentRestrictions: {
+        country: "pk"
+      }
+    };
+
+    var input = document.getElementById('address');
+    var autocomplete = new google.maps.places.Autocomplete(input, options);
+
+    autocomplete.addListener('place_changed', function() {
+      var place = autocomplete.getPlace()
+    });
+  };
 
   function readURL(input) {
     if (input.files && input.files[0]) {
