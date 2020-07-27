@@ -14,21 +14,26 @@ use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Session;
 use Intervention\Image\Facades\Image;
 
-class RestaurantController extends Controller {
-	public function __construct() {
+class RestaurantController extends Controller
+{
+	public function __construct()
+	{
 	}
 
-	public function index() {
+	public function index()
+	{
 		$model = Restaurant::all();
 
 		return view('restaurant/index', compact('model'));
 	}
 
-	public function add() {
+	public function add()
+	{
 		return view('restaurant/create');
 	}
 
-	public function store(RestaurantRequest $request) {
+	public function store(RestaurantRequest $request)
+	{
 		$data = $request->all();
 		$data['created_by'] = Auth::user()->id;
 		$data['tags'] = serialize($request->tags);
@@ -83,16 +88,19 @@ class RestaurantController extends Controller {
 		return redirect('restaurants');
 	}
 
-	public function edit($restaurant) {
+	public function edit($restaurant)
+	{
 		$model = $this->findModel($restaurant);
 		return view('restaurant.edit', compact('model'));
 	}
 
-	public function show($id) {
+	public function show($id)
+	{
 		$model = $this->findModel($id);
 		return view('restaurant.show', compact('model'));
 	}
-	public function update(RestaurantRequest $request) {
+	public function update(RestaurantRequest $request)
+	{
 		$restaurant = $this->findModel($request->id);
 		// dd($restaurant);
 		// die;
@@ -154,16 +162,19 @@ class RestaurantController extends Controller {
 		return redirect('restaurants');
 	}
 
-	public function destroy(Request $request) {
+	public function destroy(Request $request)
+	{
 		$restaurant = $this->findModel($request->id);
 		$restaurant->delete();
 		return redirect()->route('restaurants');
 	}
-	protected function findModel($id) {
+	protected function findModel($id)
+	{
 		return Restaurant::find($id);
 	}
 
-	public function status($id) {
+	public function status($id)
+	{
 		$restaurant = $this->findModel($id);
 		$st = $restaurant->status === 1 ? 0 : 1;
 		$restaurant->status = $st;
@@ -171,14 +182,17 @@ class RestaurantController extends Controller {
 		return redirect()->back();
 	}
 	/*********************************** restaurant user ************************************/
-	public function getrestaurantUser() {
+	public function getrestaurantUser()
+	{
 		$model = User::role('user')->get();
 		return view('restaurant/user', compact('model'));
 	}
-	public function createUser() {
+	public function createUser()
+	{
 		return view('restaurant/create-user');
 	}
-	public function storeRestaurantUser(Request $request) {
+	public function storeRestaurantUser(Request $request)
+	{
 		$this->validateRestaurantUserData($request);
 		$data = [];
 		$parts = explode("@", $request['email']);
@@ -224,7 +238,8 @@ class RestaurantController extends Controller {
 		$restaurantUser->assignRole('user');
 		return Redirect::route('restaurant.user')->with('message', 'New User created successfully');
 	}
-	private function validateRestaurantUserData($request) {
+	private function validateRestaurantUserData($request)
+	{
 		$this->validate($request, [
 			'email' => 'required|unique:users,email',
 			'first_name' => 'required',
@@ -245,6 +260,5 @@ class RestaurantController extends Controller {
 			// 	'restaurant_id.numeric' => 'Please Select Restaurants Branch',
 			// ]
 		);
-
 	}
 }

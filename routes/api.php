@@ -79,27 +79,27 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::post('rider-register', 'Api\RiderApiController@riderRegister');
 
 Route::post('rider-login', 'Api\RiderApiController@riderLogin');
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('tripmanage', 'Api\RiderApiController@tripManage');
 
-Route::post('tripmanage', 'Api\RiderApiController@tripManage');
+	Route::post('request-rejected', 'Api\RiderApiController@requestRejected');
 
-Route::post('request-rejected', 'Api\RiderApiController@requestRejected');
+	Route::post('store-review', 'Api\RiderApiController@storeReview');
 
-Route::post('store-review', 'Api\RiderApiController@storeReview');
+	Route::post('earning-detail', 'Api\RiderApiController@earningDetail');
 
-Route::post('earning-detail', 'Api\RiderApiController@earningDetail');
+	Route::post('rider-detail', 'Api\RiderApiController@riderDetail');
 
-Route::post('rider-detail', 'Api\RiderApiController@riderDetail');
+	Route::post('update-profile', 'Api\RiderApiController@updateProfile');
 
-Route::post('update-profile', 'Api\RiderApiController@updateProfile');
+	Route::post('delivery-detail', 'Api\RiderApiController@deliveryDetail');
 
-Route::post('delivery-detail', 'Api\RiderApiController@deliveryDetail');
+	Route::post('order-history', 'Api\RiderApiController@ordersHistory');
 
-Route::post('order-history', 'Api\RiderApiController@ordersHistory');
+	Route::post('rider-status', 'Api\RiderApiController@riderStatus');
 
-Route::post('rider-status', 'Api\RiderApiController@riderStatus');
-
-Route::post('rider-logout', 'Api\RiderApiController@logout');
-
+	Route::post('rider-logout', 'Api\RiderApiController@logout');
+});
 // Rider Api Ending Point By Qadeer
 
 

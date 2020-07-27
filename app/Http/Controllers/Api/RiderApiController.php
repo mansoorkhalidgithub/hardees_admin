@@ -82,7 +82,11 @@ class RiderApiController extends Controller
                     "latitude" => $request->latitude,
                 ];
                 $loggedInRider->update($data);
-
+                $rider_status = RiderStatus::where('rider_id', $loggedInRider->id)
+                    ->where('status', 1)->first();
+                $st = ($rider_status->online_status = 'offline' ? 'online' : 'online');
+                $rider_status->online_status = $st;
+                $rider_status->save();
                 $role = $loggedInRider->roles->pluck('name');
                 $tokenResult = $loggedInRider->createToken('rider');
                 $token = $tokenResult->token;
@@ -109,10 +113,10 @@ class RiderApiController extends Controller
                             "status" => $status,
                             "trip_status" => $trip_status,
                             "notification_status" => "Yes",
+                            'role' => $role,
                         ],
                         'dataDevices' => [
                             "device_type" => $loggedInRider->device_type,
-                            'role' => $role,
                             "device_name" => $loggedInRider->device_name,
                             "device_id" => $loggedInRider->device_id,
                             "device_token" => $loggedInRider->device_token,
@@ -126,15 +130,7 @@ class RiderApiController extends Controller
                             // "eVisible" => "Y"
                         ],
                         'dataVehicle' => [
-                            "id" => 262,
-                            "plate_number" => "leu-112",
-                            "made_by" => "Suzuki",
-                            "model" => "125",
-                            "color" => "RED",
-                            "image" => asset('images/ic_gallery.jpg'),
-                            "model_year" => "2017",
-                            "vehicle_type_id" => 52,
-                            "title" => "Delivery Lahore"
+                            "plate_number" => $loggedInRider->vehicle->vehicle_number,
                         ]
                     ]
                 ];
@@ -142,7 +138,6 @@ class RiderApiController extends Controller
                 return response()->json($response);
             }
         endif;
-
 
         $response = [
             'status' => 0,
@@ -159,6 +154,8 @@ class RiderApiController extends Controller
      */
     public function tripManage(Request $request)
     {
+        $rider_id = Auth::user()->id;
+        // die;
         $total_time = '';
         $eta = '';
         $validator = Validator::make($request->all(), [
@@ -179,8 +176,8 @@ class RiderApiController extends Controller
         }
         $user_id = $request->user_id;
         $order_id = $request->order_id;
-        $get_order_status = OrderAssigned::where('order_id', '=', $order_id)->first();
-        $rider_id = $get_order_status->rider_id;
+        $get_order_status = OrderAssigned::where('order_id', '=', $order_id)
+            ->where('rider_id', $rider_id)->first();
         $rider = User::find($rider_id);
         $status = TripStatus::where('name', '=', $request->status)->first();
         // echo $status->name;
@@ -819,6 +816,12 @@ class RiderApiController extends Controller
 
     public function logout(Request $request)
     {
+        $rider_id = Auth::user()->id;
+        $request->user()->token()->revoke();
+        $rider_status = RiderStatus::where('rider_id', $rider_id)
+            ->where('online_status', 'online')->where('status', 1)->first();
+        $rider_status->online_status = 'offline';
+        $rider_status->save();
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),

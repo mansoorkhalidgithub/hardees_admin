@@ -53,7 +53,7 @@ class MasterModel extends Model
         }
     }
 
-    public static function notification($type = '', $token, $message)
+    public static function notification($token, $message)
     {
         $url = 'https://fcm.googleapis.com/fcm/send';
         $token = $token;

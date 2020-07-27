@@ -103,7 +103,7 @@ class RiderController extends Controller
         $rider->assignRole('rider');
         $rider_status = [
             'rider_id' => $rider->id,
-            'online_status' => 'online',
+            'online_status' => 'offline',
             'trip_status' => 'free',
             'status' => 1
         ];
