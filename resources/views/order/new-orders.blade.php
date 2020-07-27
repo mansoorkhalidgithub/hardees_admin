@@ -37,8 +37,8 @@
 							<td> {{ $order->order_reference }} </td>
 							<td> {!! $order->status_html !!} </td>
 							<td>
-								<a href="edit-menu/{{$order->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
-								<a href="show-menu-item/{{$order->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-eye"></a></i>
+								<a href="{{ route('edit-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
+								<a href="{{ route('view-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-eye"></a></i>
 							</td>
 						</tr>
 					@endforeach

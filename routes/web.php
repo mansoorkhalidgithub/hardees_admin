@@ -22,6 +22,17 @@ Auth::routes();
 
 // Route::get('/home', 'HomeController@index')->name('dashboard');
 
+Route::get('/clear', function() {
+
+   Artisan::call('cache:clear');
+   Artisan::call('config:clear');
+   Artisan::call('config:cache');
+   Artisan::call('view:clear');
+
+   return "Cleared!";
+
+});
+
 Route::group([
 	'middleware' => 'auth',
 ], function () {
@@ -50,6 +61,9 @@ Route::group([
 	Route::get('booking', 'BookingController@index')->name('booking');
 	Route::post('getCustomer', 'BookingController@getCustomer')->name('customer.info');
 	Route::get('order-status', 'OrderController@orderStatus')->name('order-status');
+	Route::get('view-order', 'OrderController@view')->name('view-order');
+	Route::get('edit-order', 'OrderController@edit')->name('edit-order');
+
 });
 
 Route::group([

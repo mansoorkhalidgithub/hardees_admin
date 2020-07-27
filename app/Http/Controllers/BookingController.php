@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use Auth;
+use App\Cart;
 use App\User;
 use App\Deal;
 use App\Addon;
@@ -20,6 +22,14 @@ class BookingController extends Controller
      */
     public function index()
     {
+		$userId = Auth::user()->id;
+		
+		$cart = Cart::where('user_id', $userId)->get();
+		
+		$cartIds = $cart->pluck('id');
+		
+		Cart::destroy($cartIds);
+		
 		$itemCategories = MenuCategory::all();
 		$items = MenuItem::where('menu_category_id', $itemCategories[0]->id)->get();
 		$dealCategories = DealCategory::where('status', 1)->get();

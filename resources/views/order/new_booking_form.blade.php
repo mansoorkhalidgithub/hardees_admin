@@ -238,7 +238,7 @@
             <h1 class="h3 mb-0 fontawesomeheading">NEW BOOKING</h1>
         </div>
         <div class="card-body">
-            <form action="save-order" method="post">
+            <form id="booking-form" action="save-order" method="post">
                 @csrf
                 <fieldset>
                     <h4 class="h3 mb-0 fontawesomeheading">Customer Info</h4><br>
@@ -340,13 +340,13 @@
                     <br>
                     <div id="collapse1" class="panel-collapse">
 
-                        <p style="margin: 0px 10px">
+                        <!--<p style="margin: 0px 10px">
                             <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
                                 @foreach($dealCategories as $key => $dealCategory)
                                 <option value="{{ $dealCategory->id }}"> {{ $dealCategory->name }} </option>
                                 @endforeach
                             </select>
-                        </p>
+                        </p>-->
 
                         <div class="row" id="deal-container" data-id="deal-category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
                             @foreach($deals as $key => $deal)
@@ -386,21 +386,21 @@
                     <br>
                     <div id="collapse1" class="panel-collapse">
 
-                        <p style="margin: 0px 10px">
+                        <!--<p style="margin: 0px 10px">
                             <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
                                 <option value=""> All </option>
 								@foreach($addonCategories as $key => $addonCategory)
 									<option value="{{ $addonCategory->id }}"> {{ $addonCategory->name }} </option>
                                 @endforeach
                             </select>
-                        </p>
+                        </p>-->
 
                         <div class="row" id="addon-container" data-id="addon-0" style="margin: 10px 10px 10px 30px">
                             @foreach($addons as $key => $addon)
 								@foreach($addon->addonTypes as $key => $type)
 									<div class="col-sm-2">
 										<label class="category">
-											<input type="checkbox" addon_cart_id="" class="addon-{{ $addon->id }}" id="{{ $addon->id }}" onchange="addAddonToCart(this)" name="addons[]" value="{{ $addon->id }}" addon_type_id="{{ $type->id }}" />
+											<input type="checkbox" addon_cart_id="" class="addon-type-{{ $type->id }}" id="{{ $addon->id }}" onchange="addAddonToCart(this)" name="addons[]" value="{{ $addon->id }}" addon_type_id="{{ $type->id }}" />
 											 <div>
 												<p class="product_label"> {{ $addon->name }} ( {{ $type->size }} ) </p><br>
 												<div class="popup"><img src="{{ env('APP_URL') . $addon->image }}" class="product_image">
@@ -414,11 +414,11 @@
 										</label>
 										<div class="input-group input-number-group add-qty">
 											<div class="input-group-button">
-												<span onclick="removeAddonQuantity(this.id)" id="{{ $addon->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+												<span onclick="removeAddonQuantity(this.id)" id="{{ $type->id }}" class="input-number-decrement bg-whitesmoke">-</span>
 											</div>
-											<input class="input-number" type="number" data_id="{{ $addon->id}}" id="addon-quantity-{{ $addon->id }}" name="quantity" value="1" min="0" max="1000">
+											<input class="input-number" type="number" data_id="{{ $addon->id}}" type_id="{{ $type->id}}" id="addon-type-quantity-{{ $type->id }}" name="quantity" value="1" min="0" max="1000">
 											<div class="input-group-button">
-												<span onclick="addAddonQuantity(this.id)" id="{{ $addon->id }}" class="input-number-increment bg-whitesmoke">+</span>
+												<span onclick="addAddonQuantity(this.id)" id="{{ $type->id }}" class="input-number-increment bg-whitesmoke">+</span>
 											</div>
 										</div>
 									</div>
@@ -439,7 +439,7 @@
 						<div class="col-sm-12">
 
 							<div id="hardees_branches">
-								<select required readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id">
+								<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id" required>
 									<option>Select Branch</option>
 								</select>
 							</div>
@@ -471,8 +471,27 @@
 <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
 <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.4.0/js/bootstrap4-toggle.min.js"></script>
 <script type="text/javascript" src="//maps.googleapis.com/maps/api/js?key=AIzaSyBl-jpsktXKHLD7rFQo9NT3Hfgm16b27C0&libraries=places"></script>
+<link href="//cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@3/dark.css" rel="stylesheet">
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
 
 <script>
+	$("#booking-form").submit(function(e) {
+		e.preventDefault();
+		
+		var totalItems = $(this).find('input[name="items[]"]:checked').length;
+		var totalDeal = $(this).find('input[name="deals[]"]:checked').length;
+		var totalAddons = $(this).find('input[name="addons[]"]:checked').length;
+		
+		if(totalItems > 0 || totalDeal > 0 || totalAddons > 0) {
+			$(this).submit()
+		} else {
+			Swal.fire(
+			  'Alert!',
+			  'Please select item, deal or addon!',
+			  'error'
+			)
+		}
+	});
     $("#searchbox").autocomplete({
         source: function(request, response) {
             $.ajax({
@@ -541,7 +560,7 @@
     function addToCart(attribute) {
 
         var quantityElement = document.getElementById("quantity-" + attribute.id).value;
-
+		
         if (attribute.checked) {
             $.ajax({
                 type: 'POST',
@@ -610,7 +629,10 @@
         var element = document.getElementById("quantity-" + value);
         var itemId = element.getAttribute('data_id');
         var cartId = document.getElementById(itemId).getAttribute("cart_id");
-        var newQuantity = element.value - 1;
+		var newQuantity = element.value - 1;
+		if(newQuantity < 0) {
+			newQuantity = 0
+		}
         element.value = newQuantity;
         $.ajax({
             type: 'POST',
@@ -634,7 +656,7 @@
 	function addDealToCart(attribute) {
 
         var quantityElement = document.getElementById("deal-quantity-" + attribute.id).value;
-
+		
         if (attribute.checked) {
             $.ajax({
                 type: 'POST',
@@ -704,6 +726,9 @@
         var itemId = element.getAttribute('data_id');
 		var cartId = $(".deal-"+itemId).attr("cart_deal_id");
         var newQuantity = element.value - 1;
+		if(newQuantity < 0) {
+			newQuantity = 0
+		}
         element.value = newQuantity;
         $.ajax({
             type: 'POST',
@@ -726,7 +751,8 @@
 	
 	function addAddonToCart(attribute)
 	{
-		var quantityElement = document.getElementById("addon-quantity-" + attribute.id).value;
+		var quantityElement = document.getElementById("addon-type-quantity-" + attribute.id).value;
+		
 		var typeId = attribute.getAttribute('addon_type_id');
         if (attribute.checked) {
             $.ajax({
@@ -769,9 +795,10 @@
 	}
 	
 	function addAddonQuantity(value) {
-        var element = document.getElementById("addon-quantity-" + value);
+        var element = document.getElementById("addon-type-quantity-" + value);
         var itemId = element.getAttribute('data_id');
-        var cartId = $(".addon-"+itemId).attr("addon_cart_id");
+        var typeId = element.getAttribute('type_id');
+        var cartId = $(".addon-type-"+typeId).attr("addon_cart_id");
         var newQuantity = +element.value + +1;
         element.value = newQuantity;
         $.ajax({
@@ -794,10 +821,14 @@
     }
 
     function removeAddonQuantity(value) {
-        var element = document.getElementById("addon-quantity-" + value);
+        var element = document.getElementById("addon-type-quantity-" + value);
         var itemId = element.getAttribute('data_id');
-        var cartId = $(".addon-"+itemId).attr("addon_cart_id");
+        var typeId = element.getAttribute('type_id');
+        var cartId = $(".addon-type-"+typeId).attr("addon_cart_id");
         var newQuantity = element.value - 1;
+		if(newQuantity < 0) {
+			newQuantity = 0
+		}
         element.value = newQuantity;
         $.ajax({
             type: 'POST',
@@ -863,4 +894,5 @@
         });
     }
 </script>
+
 @endsection

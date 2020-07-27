@@ -409,7 +409,7 @@ p {
 								</div>
 							</div>	
 						</div> 
-						<button type="button" id="submit-btn" onclick="sendNotification({{ $order->id }}, {{ $order->restaurant_id }}, {{ ($rider) ? $rider->id : '' }})" class="btn btn-primary btn-lg" /> Submit </button>
+						<!--<button type="button" id="submit-btn" onclick="sendNotification({{ $order->id }}, {{ $order->restaurant_id }}, {{ ($rider) ? $rider->id : '' }})" class="btn btn-primary btn-lg" /> Submit </button>-->
 					</fieldset>
                     
                 </form>

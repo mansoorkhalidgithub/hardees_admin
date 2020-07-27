@@ -35,6 +35,41 @@ class OrderController extends Controller
 		return view('order/index', compact('model'));
 	}
 	
+	public function edit(Request $request)
+	{
+		$orderId = $request->id;
+		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
+		
+		if($order->user_id) {
+			$customer = User::where('id', $order->user_id)->first();
+		}
+		if($request->rider_id) {
+			$riderId = decrypt($request->rider_id);
+			$rider = User::where('id', $riderId)->first();
+		}
+		
+		return view('order/edit', compact('order', 'rider', 'customer'));
+	}
+	
+	public function view(Request $request)
+	{
+		$rider = [];
+		$customer = [];
+		$orderId =  $request->id;
+		
+		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
+		
+		if($order->user_id) {
+			$customer = User::where('id', $order->user_id)->first();
+		}
+		if($request->rider_id) {
+			$riderId = decrypt($request->rider_id);
+			$rider = User::where('id', $riderId)->first();
+		}
+		
+		return view('order/view', compact('order', 'rider', 'customer'));
+	}
+	
 	public function newOrders()
 	{
 		$model = Order::where(['status' => 1])->get();
@@ -58,22 +93,31 @@ class OrderController extends Controller
 			+ sin(radians(" .$request->latitude . "))
 			* sin(radians(restaurants.latitude))) AS nearest"))
 			->where(['status' => 1])
+			->having('nearest', '<', 10)
 			->orderBy("nearest", 'asc')
 			//->limit(1)
 			->get();
-			
-		$restaurantHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id">';
-		foreach($nearestRestaurants as $key => $restaurant) {
-			$restaurantHtml .= '<option value="' . $restaurant->id . '">'. $restaurant->name .'</option>';
-		}
-		$restaurantHtml .= '</select>';
 		
-		$restaurantRiders = User::role('rider')->where('restaurant_id', $nearestRestaurants[0]->id)->get();
-		$riderHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">';
-		foreach($restaurantRiders as $key => $rider) {
-			$riderHtml .= '<option value="' . $rider->id . '">'. $rider->name .'</option>';
+		if(count($nearestRestaurants) > 0) {
+			$restaurantHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="restaurant_id" required>';
+			foreach($nearestRestaurants as $key => $restaurant) {
+				$restaurantHtml .= '<option value="' . $restaurant->id . '">'. $restaurant->name .'</option>';
+			}
+			$restaurantHtml .= '</select>';
+			
+			$restaurantRiders = User::role('rider')->where('restaurant_id', $nearestRestaurants[0]->id)->get();
+			
+			$riderHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">';
+			foreach($restaurantRiders as $key => $rider) {
+				if($rider->getRiderStatus->trip_status == 'free') {
+					$riderHtml .= '<option value="' . $rider->id . '">'. $rider->name .'</option>';	
+				}
+			}
+			$riderHtml .= '</select>';
+		} else {
+			$restaurantHtml = '<select style="margin-bottom: 10px; border-radius: 0px" required class="form-control"><option value=""> Select Branch </option></select>';
+			$riderHtml = '<select style="margin-bottom: 10px; border-radius: 0px" required class="form-control"><option value=""> Select Rider </option></select>';;
 		}
-		$riderHtml .= '</select>';
 		
 		$response = [
             'status' => 1,
@@ -292,8 +336,14 @@ class OrderController extends Controller
 		$orderId = $request->order_id;
 		$restaurantId = $request->restaurant_id;
 		$riderId = $request->rider_id;
+		$deductionAmount = $request->deduction_amount;
 		
 		$order = Order::where('id', $orderId)->first();
+		
+		if($deductionAmount) {
+			$newTotal = $order->total - $deductionAmount;
+			$order->update(['total' => $newTotal]);
+		}
 		
 		$number = $order->customer->phone_number;
 		$name = $order->customer->first_name;

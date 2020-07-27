@@ -117,7 +117,7 @@ class OrderApiController extends Controller {
 		}
 		
 		if(isset($request->addon_id)) {
-			$cartAddon = Cart::where(['user_id' => $userId, 'addon_id' => $request->addon_id])->first();
+			$cartAddon = Cart::where(['user_id' => $userId, 'addon_id' => $request->addon_id, 'addon_type_id' => $request->addon_type_id])->first();
 		}
 		
 		if(!empty($cartItem)) 
@@ -183,19 +183,16 @@ class OrderApiController extends Controller {
 		$newQuantity = 0;
 		if(!empty($cart))
 		{
-			$version = 2;
 			if(isset($request->item_id)) {
 				$version = 3;
 				$newQuantity = $cart->quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
 			}
 			if(isset($request->deal_id)) {
-				$version = 4;
 				$newQuantity = $cart->deal_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
 			}	
 			if(isset($request->addon_id)) {
-				$version = 4;
 				$newQuantity = $cart->addon_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['addon_quantity' => $newQuantity]);
 			}
@@ -205,7 +202,6 @@ class OrderApiController extends Controller {
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Quantity updated successfully',
-			//'version' => $version,
 		];
 		
 		return response()->json($response);	
@@ -379,12 +375,12 @@ class OrderApiController extends Controller {
 			"message" => "New Order Assigned"
 		];
 		
-		// $restaurantNotificationData = [
-			// "order_id" => $orderId,
-			// "device_token" => $deviceTokens,
-			// "status" => 1,
-			// "message" => "New Order"
-		// ];
+		$restaurantNotificationData = [
+			"order_id" => $orderId,
+			"device_token" => $deviceTokens,
+			"status" => 1,
+			"message" => "New Order"
+		];
 		
 		$notification = Helper::sendNotification($riderNotificationData);
 		
