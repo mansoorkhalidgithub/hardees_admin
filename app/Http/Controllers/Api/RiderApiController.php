@@ -154,8 +154,6 @@ class RiderApiController extends Controller
      */
     public function tripManage(Request $request)
     {
-        $rider_id = Auth::user()->id;
-        // die;
         $total_time = '';
         $eta = '';
         $validator = Validator::make($request->all(), [
@@ -176,8 +174,8 @@ class RiderApiController extends Controller
         }
         $user_id = $request->user_id;
         $order_id = $request->order_id;
-        $get_order_status = OrderAssigned::where('order_id', '=', $order_id)
-            ->where('rider_id', $rider_id)->first();
+        $get_order_status = OrderAssigned::where('order_id', '=', $order_id)->first();
+        $rider_id = $get_order_status->rider_id;
         $rider = User::find($rider_id);
         $status = TripStatus::where('name', '=', $request->status)->first();
         // echo $status->name;
@@ -816,9 +814,7 @@ class RiderApiController extends Controller
 
     public function logout(Request $request)
     {
-        $rider_id = Auth::user()->id;
-        $request->user()->token()->revoke();
-        $rider_status = RiderStatus::where('rider_id', $rider_id)
+        $rider_status = RiderStatus::where('rider_id', $request->rider_id)
             ->where('online_status', 'online')->where('status', 1)->first();
         $rider_status->online_status = 'offline';
         $rider_status->save();

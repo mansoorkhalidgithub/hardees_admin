@@ -65,10 +65,9 @@ class RestaurantUserController extends Controller
 
             $profilePath = 'uploads/profile/' . $input['imagename'];
 
-            // $data['profile_picture'] = $profilePath;
+            $data['profile_picture'] = $profilePath;
         }
         $data = [
-            'profile_picture' => $profilePath,
             'first_name' => $request->first_name,
             'last_name' => $request->last_name,
             'username' => $ridername,

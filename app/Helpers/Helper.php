@@ -98,13 +98,13 @@ class Helper
 
         return $total;
     }
-	
-	public static function sendNotification($data)
-	{
-		$url = 'https://fcm.googleapis.com/fcm/send';
-   
+
+    public static function sendNotification($data)
+    {
+        $url = 'https://fcm.googleapis.com/fcm/send';
+
         $token = $data['device_token'];
-		
+
         $notification = [
             'title' => 'Hardees Notification',
             'body' => $data['message'],
@@ -114,22 +114,22 @@ class Helper
         $fcmNotification = [
             'to' => $token, //single token
             'notification' => $notification,
-			'data' => [
-				'order_id' => $data['order_id'],
-				'status' => $data['status'],
-				'message' => $data['message'],
-			]
-           
+            'data' => [
+                'order_id' => $data['order_id'],
+                'status' => $data['status'],
+                'message' => $data['message'],
+            ]
+
         ];
-		
+
         //Log::info(env('FIREBASE_NOTIFICATION_KEY'));
-		
+
         $headers = [
             "Authorization: key=AAAATu-jqzQ:APA91bG56HzPaO7tGxO84bKzaaVrKloKT6xDFNnPVlQa7HLtLV417SmI-mAKTlZ33uJJmKPO0ZdLjuJQcgaZcDf5oC2GUBkgfai5KYc1wzBT1f6whA6IoR1w9txku1IujcIMd-bwLaZZ",
             'Content-Type: application/json',
         ];
 
-       
+
         $ch = curl_init();
 
         curl_setopt($ch, CURLOPT_URL, $url);
@@ -138,7 +138,7 @@ class Helper
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
 
-      
+
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
 
         curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($fcmNotification));
@@ -149,41 +149,40 @@ class Helper
         }
 
         curl_close($ch);
-		
-		log::info($result);
-        
+
+        log::info($result);
+
         return $result;
+    }
 
-	}
-	
-	public static function sendMessage($data)
-	{
-		$number = $data['number'];
-		$message = $data['message'];
-		try{
-			$url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=Business&To=' . $number . '&Message='.$message;
-			
-			$ch = curl_init();
+    public static function sendMessage($data)
+    {
+        $number = $data['number'];
+        $message = $data['message'];
+        try {
+            $url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=Business&To=' . $number . '&Message=' . $message;
 
-			curl_setopt($ch, CURLOPT_URL, $url);
+            $ch = curl_init();
 
-			$result = curl_exec($ch);
-			if ($result === false) {
-				die('Curl failed: ' . curl_error($ch));
-			}
+            curl_setopt($ch, CURLOPT_URL, $url);
 
-			curl_close($ch);
-		} catch(Exception $e) {
-			$result = $e->getMessage();
-		}
-		
-		return $result;
-	}
-	
-	public static function assignedStatus($orderId)
-	{
-		$orderAssignedRecord = OrderAssign::where('order_id', $orderId)->count();
-		
-		return $orderAssignedRecord;
-	}
+            $result = curl_exec($ch);
+            if ($result === false) {
+                die('Curl failed: ' . curl_error($ch));
+            }
+
+            curl_close($ch);
+        } catch (Exception $e) {
+            $result = $e->getMessage();
+        }
+
+        return $result;
+    }
+
+    public static function assignedStatus($orderId)
+    {
+        $orderAssignedRecord = OrderAssign::where('order_id', $orderId)->count();
+
+        return $orderAssignedRecord;
+    }
 }

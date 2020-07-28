@@ -51,6 +51,9 @@ class CreateRestaurantTables extends Migration
             $table->string('device_type', 100)->nullable();
             $table->string('device_name', 100)->nullable();
             $table->text('device_token')->nullable();
+            $table->integer('city_id')->nullable();
+            $table->integer('state_id')->nullable();
+            $table->integer('country_id')->nullable();
             $table->string('logo')->nullable();
             $table->string('thumbnail')->nullable();
             $table->string('contact_number')->nullable();

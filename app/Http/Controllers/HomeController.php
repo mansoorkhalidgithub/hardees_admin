@@ -30,8 +30,8 @@ class HomeController extends Controller
 		$html = '';
 		$completeOrders = 0;
 		$totalOrders = Order::all()->count();
-		$complete = Order::where('status', 10)->count();
-		$totalEarning = Helper::getDeliveryCount()->where('status', '=', 10)->sum('total');
+		$complete = Order::where('status', 6)->count();
+		$totalEarning = Helper::getDeliveryCount()->where('status', '=', 6)->sum('total');
 		if ($totalOrders > 0) {
 			$completeOrders = $complete / $totalOrders * 100;
 			$completeOrders = round($completeOrders, 0);
@@ -67,8 +67,8 @@ class HomeController extends Controller
 				</div>';
 		}
 
-		$complete = Order::where('status', '=', 10)->count();
-		$inprogress = Order::where('status', 1)->count();
+		$complete = Order::where('status', '=', 6)->count();
+		$inprogress = Order::whereIn('status', [1, 2, 3, 4, 5])->count();
 		$data = [$complete, $inprogress];
 
 		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders'));
