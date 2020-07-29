@@ -154,10 +154,7 @@ class RiderApiController extends Controller
      */
     public function tripManage(Request $request)
     {
-        $rider_id = Auth::user()->id;
-        // die;
         $total_time = '';
-        $message_response = '';
         $eta = '';
         $validator = Validator::make($request->all(), [
             'order_id' => 'required',
@@ -178,15 +175,16 @@ class RiderApiController extends Controller
         $user_id = $request->user_id;
         $order_id = $request->order_id;
         $get_order_status = OrderAssigned::where('order_id', '=', $order_id)
-            ->where('rider_id', $rider_id)
             ->where('status', 1)->first();
+        $rider_id = $get_order_status->rider_id;
         $rider = User::find($rider_id);
         $status = TripStatus::where('name', '=', $request->status)->first();
         // echo $status->name;
         // die;
         $user  = User::find($user_id);
         //$rider = User::find($rider_id);
-        $order = Order::where('id', $order_id)->firstOrFail();
+        $order = Order::with('orderItems.items')
+            ->where('id', $order_id)->firstOrFail();
 
         $restaurant = Restaurant::find($order->restaurant_id);
         // Delivery Rejected
@@ -196,12 +194,12 @@ class RiderApiController extends Controller
                 'rider_id' => $rider_id,
                 'trip_status_id' => $status->id
             ];
-            $order = OrderAssigned::create($data);
+            $order_assigned = OrderAssigned::create($data);
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
-                'data' => $order
+                'data' => $order_assigned
             ];
             // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
@@ -262,22 +260,11 @@ class RiderApiController extends Controller
                     'rider_id' => $rider_id,
                     'trip_status_id' => $status->id
                 ];
-                $order->status = 5;
-                $order->save();
                 $get_order_status->trip_status_id = $status->id;
                 $get_order_status->save();
                 OrderAssigned::updateOrCreate($data);
                 $lat2 = $order->latitude;
                 $lon2 = $order->longitude;
-                /* $message = "Great%20choice%20.%20Your%20order%20is%20on%20its%20way.%20Check%20below%20for%20your%20order%20details.%20Your%20Rider%20Name%20is%20" . Auth::user()->first_name . "%20" . Auth::user()->last_name . "%20And%20Total%20Amount%20is%20" . $order->total . "And%20Mobile%20Number%20is%20" . Auth::user()->phone_number;
-
-                $messageData = [
-                    'number' => Auth::user()->phone_number,
-                    'name' => Auth::user()->name,
-                    'order' => $order->total,
-                    'message' => $message,
-                ];
-                Helper::sendMessage($messageData); */
                 MasterModel::notification($user->device_token, 'Your Order is on the Way');
                 MasterModel::notification($rider->device_token, $status->description);
             } else {
@@ -342,15 +329,6 @@ class RiderApiController extends Controller
                 ->where('trip_status_id', $order_status->id)->first();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-            /* $message = "Thank%20you%20for%20ordering%20food%20at%20Hardees%20,%20enjoy%20your%20meal.";
-
-            $messageData = [
-                'number' => Auth::user()->phone_number,
-                'name' => Auth::user()->name,
-                'order' => $order->total,
-                'message' => $message,
-            ];
-            Helper::sendMessage($messageData); */
             MasterModel::notification($user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             $total_time = $end->diff($start)->format('%H:%i:%s');
@@ -481,8 +459,6 @@ class RiderApiController extends Controller
                 "invoice_number" => $order->id,
                 "total" => $order->total,
                 'items' => $order->orderItems->pluck('items.name'),
-                // 'deals' => $order->orderDeals->pluck('deal.dealItems.name'),
-                // 'addons' => $order->orderAddons->pluck('addon.name'),
                 "start_latitude" => $order->restaurant->latitude,
                 "start_longitude" => $order->restaurant->longitude,
                 "start_point" => $order->restaurant->name,
@@ -839,12 +815,12 @@ class RiderApiController extends Controller
 
     public function logout(Request $request)
     {
-        $rider_id = Auth::user()->id;
-        $request->user()->token()->revoke();
-        $rider_status = RiderStatus::where('rider_id', $rider_id)
+        $rider_status = RiderStatus::where('rider_id', Auth::user()->id)
             ->where('online_status', 'online')->where('status', 1)->first();
         $rider_status->online_status = 'offline';
         $rider_status->save();
+        $user = Auth::user()->token();
+        $user->revoke();
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),

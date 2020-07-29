@@ -406,25 +406,17 @@ class OrderController extends Controller
 	{
 		$orderId = $id;
 		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
-		$rider_id = $order->orderAssigned->rider_id;
-		$change_assigned_status = OrderAssigned::where('rider_id', $rider_id)
-			->where('trip_status_id', '=', 8)->orwhere('trip_status_id', '=', 9)
-			->where('status', 1)->first();
-		$change_assigned_status->status = 0;
-		// $change_assigned_status->save();
-
+		$rider_ids = OrderAssigned::where('order_id', $id)
+			->where('trip_status_id', '=', 8)->pluck('rider_id');
 		if ($order->user_id) {
 			$customer = User::where('id', $order->user_id)->first();
 		}
-		if ($rider_id) {
-			// $riderId = decrypt(2);
-			$riders = User::role('rider')->where('id', '!=', $rider_id)
+		if ($rider_ids) {
+			$riders = User::role('rider')->whereNotIn('id',  $rider_ids)
 				->where('restaurant_id', $order->restaurant_id)->get();
 		}
-		// dd($riders->count());
-		// exit;
 
-		return view('order/resend', compact('order', 'riders', 'customer'));
+		return view('order/resend', compact('order', 'riders'));
 	}
 
 	public function resendOrder(Request $request)

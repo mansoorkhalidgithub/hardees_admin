@@ -345,7 +345,7 @@
                                  <select name="rider" style="border-radius: 0px" class="form-control">
                                      <option selected="" disabled="" hidden="">Choose Rider</option>
                                      @foreach($riders as $key=> $rider)
-                                     @if($rider->getRiderStatus->online_status == 'online')
+                                     @if($rider->getRiderStatus->online_status == 'online' && $rider->getRiderStatus->trip_status == 'free')
                                      <option selected value="{{$rider->id}}">{{$rider->name}}</option>
                                      @endif
                                      @endforeach
