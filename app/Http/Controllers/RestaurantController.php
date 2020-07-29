@@ -38,7 +38,7 @@ class RestaurantController extends Controller
 		$data['created_by'] = Auth::user()->id;
 		$data['tags'] = serialize($request->tags);
 		$data['password'] = Hash::make($request->password);
-
+		$data['delivery_type'] = 'home_delivery';
 		if ($request->has('logo')) {
 			$image = $request->file('logo');
 			$input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
@@ -107,6 +107,7 @@ class RestaurantController extends Controller
 		$data = $request->all();
 		$data['created_by'] = Auth::user()->id;
 		$data['tags'] = serialize($request->tags);
+		$data['delivery_type'] = 'home_delivery';
 		// $data['password'] = Hash::make($request->password);
 
 		if ($request->has('logo')) {

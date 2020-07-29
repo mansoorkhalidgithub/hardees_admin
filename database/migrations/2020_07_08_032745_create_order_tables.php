@@ -70,6 +70,7 @@ class CreateOrderTables extends Migration
             $table->unsignedBigInteger('order_id')->nullable();
             $table->unsignedBigInteger('rider_id')->nullable();
             $table->tinyInteger('trip_status_id');
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
             $table->foreign('order_id')->references('id')->on('orders')->onDelete('cascade');
             $table->foreign('rider_id')->references('id')->on('users')->onDelete('cascade');

@@ -157,11 +157,11 @@
                             <div class="form-group">
                                 <label class="col-md-4" style="color: black; font-size: 12px; font-weight: 700" for="payment_method_id">PAYMENT METHOD</label>
 
-                                <select name="payment_method_id" id="payment_method_id" style="border-radius: 0px" class="form-control">
+                                <select name="payment_methods" id="payment_method_id" style="border-radius: 0px" class="form-control">
                                     <option selected="" disabled="" hidden="">Select Payment Method</option>
 
                                     @foreach(Helper::getPaymentMethods() as $method)
-                                    <option value="{{ $method->id }}" {{ ( $method->id == $model->payment_method_id) ? 'selected' : '' }}> {{ $method->name }}</option>
+                                    <option value="{{ $method->id }}" {{ ( $method->id == $model->payment_methods) ? 'selected' : '' }}> {{ $method->name }}</option>
                                     @endforeach
                                 </select>
 

@@ -193,12 +193,12 @@ class RiderApiController extends Controller
                 'rider_id' => $rider_id,
                 'trip_status_id' => $status->id
             ];
-            $order = OrderAssigned::create($data);
+            $order_assigned = OrderAssigned::create($data);
             $response = [
                 'status' => 1,
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
-                'data' => $order
+                'data' => $order_assigned
             ];
             // MasterModel::notification($user->device_type,$user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
@@ -814,10 +814,12 @@ class RiderApiController extends Controller
 
     public function logout(Request $request)
     {
-        $rider_status = RiderStatus::where('rider_id', $request->rider_id)
+        $rider_status = RiderStatus::where('rider_id', Auth::user()->id)
             ->where('online_status', 'online')->where('status', 1)->first();
         $rider_status->online_status = 'offline';
         $rider_status->save();
+        $user = Auth::user()->token();
+        $user->revoke();
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),

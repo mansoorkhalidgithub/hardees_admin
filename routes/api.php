@@ -100,6 +100,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 	Route::post('rider-logout', 'Api\RiderApiController@logout');
 });
+
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('trip-manage', 'Api\RiderAuthController@tripManage');
+});
 // Rider Api Ending Point By Qadeer
 
 

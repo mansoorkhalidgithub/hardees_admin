@@ -113,7 +113,7 @@ class Helper
 
         $fcmNotification = [
             'to' => $token, //single token
-            'notification' => $notification,
+            // 'notification' => $notification,
             'data' => [
                 'order_id' => $data['order_id'],
                 'status' => $data['status'],

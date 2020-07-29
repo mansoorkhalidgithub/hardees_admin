@@ -188,6 +188,8 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('nearest-restuarant', 'OrderController@nearestRestaurant')->name('nearest-restuarant');
 	Route::post('save-order', 'OrderController@save')->name('save-order');
 	Route::get('order-summary', 'OrderController@summary')->name('order-summary');
+	Route::get('resend/{id}', 'OrderController@resend')->name('resend');
+	Route::post('resend-order', 'OrderController@resendOrder')->name('resend-order');
 	Route::post('send-notification', 'OrderController@notification')->name('send-notification');
 });
 

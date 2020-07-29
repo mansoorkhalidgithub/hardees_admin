@@ -27,8 +27,10 @@
 					<tr style="color:black">
 						<th scope="col">ID</th>
 						<th scope="col"> Order Reference </th>
+						<th scope="col"> Branch Name </th>
 						<th scope="col">Status</th>
 						<th scope="col"> Delivery Status </th>
+						<th scope="col"> Resend </th>
 						<th scope="col">Action</th>
 					</tr>
 				</thead>
@@ -37,9 +39,13 @@
 					<tr>
 						<th scope="row"> {{ ++$key }} </th>
 						<td> {{ $order->order_reference }} </td>
+						<td> {{ $order->restaurant->name }} </td>
 						<td> {!! $order->status_html !!} </td>
 						<td>
 							<span class="btn btn-success btn-sm">{{ $order->orderAssigned->deliveryStatus->description }} </span>
+						</td>
+						<td>
+							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{($order->orderAssigned->trip_status_id == 8 ||$order->orderAssigned->trip_status_id == 9 ) ? '' : 'disabled'}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>
 						</td>
 						<td>
 							<a href="{{ route('edit-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>

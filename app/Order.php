@@ -116,7 +116,8 @@ class Order extends Model
 
 	public function orderAssigned()
 	{
-		return $this->hasOne(OrderAssigned::class, 'order_id', 'id');
+		return $this->hasOne(OrderAssigned::class, 'order_id', 'id')
+			->orderBy('created_at', 'DESC');
 	}
 
 	public function getOrderReferenceAttribute()

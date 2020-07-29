@@ -6,20 +6,21 @@ use Log;
 use Auth;
 use Helper;
 use App\Cart;
-use App\User;
 use App\Deal;
-use App\Order;
+use App\User;
 use App\Addon;
+use App\Order;
 use App\MenuItem;
 use App\AddonType;
-use App\OrderItem;
 use App\OrderDeal;
+use App\OrderItem;
 use App\OrderAddon;
 use App\Restaurant;
 use App\OrderStatus;
 use App\OrderAssigned;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Redirect;
 
 class OrderController extends Controller
 {
@@ -399,5 +400,58 @@ class OrderController extends Controller
 		];
 
 		echo json_encode($responseData);
+	}
+
+	public function resend($id)
+	{
+		$orderId = $id;
+		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
+		$rider_id = $order->orderAssigned->rider_id;
+		$change_assigned_status = OrderAssigned::where('rider_id', $rider_id)
+			->where('trip_status_id', '=', 8)->orwhere('trip_status_id', '=', 9)
+			->where('status', 1)->first();
+		$change_assigned_status->status = 0;
+		// $change_assigned_status->save();
+
+		if ($order->user_id) {
+			$customer = User::where('id', $order->user_id)->first();
+		}
+		if ($rider_id) {
+			// $riderId = decrypt(2);
+			$riders = User::role('rider')->where('id', '!=', $rider_id)
+				->where('restaurant_id', $order->restaurant_id)->get();
+		}
+		// dd($riders->count());
+		// exit;
+
+		return view('order/resend', compact('order', 'riders', 'customer'));
+	}
+
+	public function resendOrder(Request $request)
+	{
+		$ids = OrderAssigned::where('order_id', $request->order_id)->pluck('id');
+		OrderAssigned::whereIn('id', $ids)->update(['status' => 0]);
+		$rider = User::where('id', $request->rider)->first();
+		$data = [
+			'order_id' => $request->order_id,
+			'rider_id' => $rider->id,
+			'trip_status_id' => 1
+		];
+		OrderAssigned::create($data);
+		$notification = "";
+		if (!empty($rider) && $rider->device_token) {
+			$riderNotificationData = [
+				"order_id" => $request->order_id,
+				"device_token" => $rider->device_token,
+				"status" => "TR",
+				"message" => "New Order Assigned"
+			];
+
+			$notification = Helper::sendNotification($riderNotificationData);
+		}
+
+		sleep(3);
+
+		return Redirect::route('orders');
 	}
 }
