@@ -111,7 +111,7 @@ class OrderController extends Controller
 
 			$riderHtml = '<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="rider_id">';
 			foreach ($restaurantRiders as $key => $rider) {
-				if ($rider->getRiderStatus->trip_status == 'free') {
+				if ($rider->getRiderStatus->trip_status == 'free' && $rider->getRiderStatus->online_status == 'online') {
 					$riderHtml .= '<option value="' . $rider->id . '">' . $rider->name . '</option>';
 				}
 			}
