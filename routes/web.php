@@ -14,8 +14,13 @@ use Illuminate\Support\Facades\Route;
 |
  */
 
+
 Route::get('/', function () {
 	return view('welcome');
+});
+
+Route::get('/testing', function () {
+	return view('new_booking_form');
 });
 
 Auth::routes();
@@ -183,6 +188,14 @@ Route::group([
 	Route::get('special-offers', 'DealController@specialOffers')->name('special-offers');
 });
 
+Route::group([
+	'middleware' => 'auth',
+], function () {
+	Route::get('menu-variation', 'VariationController@create')->name('menu-variation');
+	Route::post('save-variation', 'VariationController@save')->name('save-variation');
+	
+});
+
 Route::group(['middleware' => 'auth'], function () {
 	Route::post('search-customer', 'OrderController@searchCustomer')->name('search-customer');
 	Route::post('nearest-restuarant', 'OrderController@nearestRestaurant')->name('nearest-restuarant');
@@ -205,6 +218,14 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity')->name('remove-quantity');
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart')->name('delete-cart');
 	Route::post('checkout', 'Api\OrderApiController@checkout')->name('checkout');
+});
+
+Route::group(['middleware' => 'auth'], function () {
+	Route::post('item-variations', 'VariationController@variations')->name('item-variations');
+	Route::post('variation-items', 'VariationController@items')->name('variation-items');
+	Route::post('add-to-bucket', 'VariationController@addToBucket')->name('add-to-bucket');
+	Route::post('saveOrder', 'OrderController@saveOrder')->name('saveOrder');
+	
 });
 
 Auth::routes();

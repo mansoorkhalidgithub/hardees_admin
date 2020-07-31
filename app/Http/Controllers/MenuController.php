@@ -151,7 +151,7 @@ class MenuController extends Controller {
 		$this->validate($request, [
 			'name' => 'required|max:60|unique:menu_items,name',
 			'menu_category_id' => 'required|numeric',
-			'restaurant_id' => 'required|numeric',
+			//'restaurant_id' => 'required|numeric',
 			'price' => 'required|numeric',
 			'quantity' => 'required|numeric',
 			'discount' => 'required|numeric',
@@ -225,7 +225,7 @@ class MenuController extends Controller {
 								<input '. $checked .' type="checkbox" cart_id="'. $cartId .'" id="'. $item->id .'" onchange="addToCart(this)" name="items[]" value="'. $item->id .'" />
 								<div>
 									<p class="product_label"> '. $item->name .' </p><br>
-									<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . $item->image .'" class="product_image">
+									<div class="popup" onmouseover="myFunction('. $item->id .')" onmouseout="myFunctionClose('. $item->id .')"><img src="'. env('APP_URL') . '/' . $item->image .'" class="product_image">
 										<span class="popuptext" id="myPopup-'. $item->id .'">
 											<small>
 												<p class="p-2"> '. $item->ingredients .'</p> PKR '. $item->price .'

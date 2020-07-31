@@ -30,10 +30,10 @@ class BookingController extends Controller
 		
 		Cart::destroy($cartIds);
 		
-		$itemCategories = MenuCategory::all();
-		$items = MenuItem::where('menu_category_id', $itemCategories[0]->id)->get();
+		$itemCategories = MenuCategory::with('menuItems')->get();
+		$items = MenuItem::all();
 		$dealCategories = DealCategory::where('status', 1)->get();
-		$deals = Deal::where('deal_category_id', $dealCategories[0]->id)->where('status', 1)->get();
+		$deals = Deal::where('status', 1)->get();
 		$addonCategories = AddonCategory::all();
 		$addons = Addon::all();
 		

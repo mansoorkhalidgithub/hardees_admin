@@ -72,16 +72,16 @@ class RestaurantController extends Controller
 		}
 		// dd($data);
 		$restaurant = Restaurant::create($data);
-		if ($restaurant) {
-			foreach ($request->categories as $key => $category) {
-				$res_data = [
-					'restaurant_id' => $restaurant->id,
-					'title' => $category,
-				];
+		// if ($restaurant) {
+			// foreach ($request->categories as $key => $category) {
+				// $res_data = [
+					// 'restaurant_id' => $restaurant->id,
+					// 'title' => $category,
+				// ];
 
-				RestaurantCategories::create($res_data);
-			}
-		}
+				// RestaurantCategories::create($res_data);
+			// }
+		// }
 
 		Session::flash('success', 'New restaurant created successfully');
 

@@ -321,12 +321,30 @@ p {
 										<tr>
 											<th scope="col"> # </th>
 											<th scope="col"> Item </th>
-											<th scope="col"> Price (PKR)</th>
+											<th scope="col"> Variation </th>
+											<th scope="col"> Base (PKR)</th>
+											<th scope="col"> Drink </th>
+											<th scope="col"> Side </th>
+											<th scope="col"> Extra </th>
+											<th scope="col"> Addons </th>
 											<th scope="col"> Qty. </th>
 										
 									  </tr>
 									</thead>
 									<tbody>
+										@foreach($order->orderVariations as $key => $v)
+											<tr>
+												<th scope="row"> {{ ++$key }} </th>
+												<td> {{ $v->itemVariation->memuItem->name }} </td>
+												<td> {{ $v->itemVariation->variation->name }} </td>
+												<td> {{ $v->itemVariation->price }} </td>
+												<td> {{ ($v->drink) ? $v->drink->price : '' }} </td>
+												<td> {{ ($v->side) ?  $v->side->price : '' }} </td>
+												<td> {{ ($v->extra) ? $v->extra->price : '' }} </td>
+												<td> {{ $v->addon ? $v->addon : '' }} </td>
+												<td> {{ $v->quantity }} </td>
+											</tr>
+										@endforeach	
 										@foreach($order->orderItems as $key => $item)
 											<tr>
 												<th scope="row"> {{ ++$key }} </th>
@@ -440,7 +458,7 @@ p {
 					text: "Order placed successfully.",
 					icon: 'success'
 				}).then((result) => {
-					window.location.href = "new-orders";
+					window.location.href = "booking";
 				})
 			},
 			error : function(error) {

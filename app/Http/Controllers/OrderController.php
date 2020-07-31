@@ -10,6 +10,7 @@ use App\Deal;
 use App\User;
 use App\Addon;
 use App\Order;
+use App\Bucket;
 use App\MenuItem;
 use App\AddonType;
 use App\OrderDeal;
@@ -18,6 +19,7 @@ use App\OrderAddon;
 use App\Restaurant;
 use App\OrderStatus;
 use App\OrderAssigned;
+use App\OrderVariation;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -446,4 +448,109 @@ class OrderController extends Controller
 
 		return Redirect::route('orders');
 	}
+	
+	public function saveOrder(Request $request)
+	{
+		$first_name = $request->first_name;
+		$last_name = $request->last_name;
+		$phone = $request->phone;
+		$address = $request->address;
+		$latitude = $request->latitude;
+		$longitude = $request->longitude;
+		$dropLocation = $request->drop_off_location;
+
+		$restaurantId = $request->restaurant_id;
+		$riderId = $request->rider_id;
+
+		$model = new User;
+		$modelOrder = new Order;
+		$modelOrderItem = new OrderItem;
+
+		$customerData = [
+			'first_name' => $first_name,
+			'last_name' => $last_name,
+			'phone_number' => $phone,
+			'user_type' => 'customer',
+			'latitude' => $latitude,
+			'longitude' => $longitude,
+			'address' => $address,
+		];
+
+		$customer = User::role('customer')->where('phone_number', $phone)->first();
+
+		if (!empty($customer)) {
+			$customer->update($customerData);
+		} else {
+			$customer = User::create($customerData);
+			$customer->assignRole('customer');
+		}
+
+		$userId = Auth::user()->id;
+
+		$bucket = Bucket::where('user_id', '=', $userId)
+			->where('status', '=', 1)->get();
+
+		$bucket->each->append(
+			'total'
+		);
+		
+		$total = $bucket->sum('total');
+		
+		$orderData = [
+			'user_id' => $customer->id,
+			'restaurant_id' => $restaurantId,
+			'latitude' => $latitude,
+			'longitude' => $longitude,
+			'customer_address' => $address,
+			'order_type_id' => 1,
+			'payment_method_id' => 1,
+			'sub_total' => $total,
+			'total' => $total,
+		];
+
+		$newOrder = Order::create($orderData);
+		$orderId = $newOrder->id;
+		
+		foreach($bucket as $key => $entry)
+		{
+			$data = [
+				'user_id' => $userId,
+				'item_id' => $entry->item_id,
+				'variation_id' => $entry->variation_id,
+				'drink_id' => $entry->drink_id,
+				'side_id' => $entry->side_id,
+				'extra_id' => $entry->extra_id,
+				'quantity' => $entry->quantity,
+				'addons' => $entry->addons,
+			];
+			
+			OrderVariation::create($data);
+		}
+		
+		$bucketIds = $bucket->pluck('id');
+
+		Bucket::destroy($bucketIds);
+
+		/*********** Order Assign ************/
+
+		if ($riderId) {
+			$assignData = [
+				'order_id' => $orderId,
+				'rider_id' => $riderId,
+				'trip_status_id' => 1,
+			];
+
+			$modelAssign = new OrderAssigned;
+
+			$modelAssign->create($assignData);
+		}
+
+
+		/*********** Order Assign ************/
+
+		$order = Order::with('orderVariations')->where('id', $orderId)->first();
+
+		return redirect()->route('order-summary',  ['order_id' => encrypt($order->id), 'rider_id' => encrypt($riderId)]);
+	}
+
 }

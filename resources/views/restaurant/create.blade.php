@@ -301,7 +301,7 @@
 @endsection
 <script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
 <script src="{{ asset('admin') }}/dist/js/mapInput.js"></script>
-<script src="https://maps.googleapis.com/maps/api/js?key={{ env('GOOGLE_MAPS_API_KEY') }}&libraries=places&callback=initialize" async defer></script>
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBl-jpsktXKHLD7rFQo9NT3Hfgm16b27C0&libraries=places&callback=initialize" async defer></script>
 <script>
     $(document).ready(function() {
         $.noConflict();

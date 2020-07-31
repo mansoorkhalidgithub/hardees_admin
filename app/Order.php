@@ -184,4 +184,9 @@ class Order extends Model
 		return $this->hasOne(PaymentMethod::class, 'id', 'payment_method_id');
 	}
 	// End By Qadeer
+	
+	public function orderVariations()
+	{
+		return $this->hasMany(OrderVariation::class, 'order_id');
+	}
 }

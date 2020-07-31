@@ -2,64 +2,82 @@
 
 @section('content')
 <style>
-    .product_label{
+    .product_label {
         padding: 10px 20px;
         border-radius: 40px;
         background-color: transparent;
-        color:black;
+        color: black;
         font-size: 12px;
     }
-    .product_image{
+
+    .product_image {
         margin-top: -30px;
-        width:100px;
-        height:70px; 
+        width: 100px;
+        height: 70px;
         display: block;
-        margin-left: auto;
-        margin-right: auto;
+
     }
-    .col-sm-2
-    {
+
+    .col-sm-2 {
         margin: auto;
     }
-    .add-qty
-    {
+
+    .add-qty {
         margin-left: 25px;
     }
+
     /*  .popup .product_image{
           display: block;margin-left: auto; margin-right: auto;
       }*/
-    .fontawesomeheading{
-        color: black; font-family: serif; font-weight: bold;
+    .fontawesomeheading {
+        color: black;
+        font-family: serif;
+        font-weight: bold;
     }
+
     .cart_totals {
         font-size: 15px;
         color: #666;
         width: 66.56%;
         margin: auto;
-        margin-bottom: 31px; }
+        margin-bottom: 31px;
+    }
+
     .cart_totals table {
-        width: 100%; }
-    .cart_totals th, .cart_totals td {
+        width: 100%;
+    }
+
+    .cart_totals th,
+    .cart_totals td {
         padding: 11px 0;
         vertical-align: top;
-        text-align: left; }
+        text-align: left;
+    }
+
     .cart_totals th {
         font-family: "Lato-Bold";
         color: #333;
         text-align: left;
-        width: 65.81%; }
+        width: 65.81%;
+    }
+
     .cart_totals th span {
         color: #999;
-        font-size: 14px; }
-    .cart_totals .order-total th, .cart_totals .order-total td {
+        font-size: 14px;
+    }
+
+    .cart_totals .order-total th,
+    .cart_totals .order-total td {
         padding: 12px 0;
         color: #333;
-        font-family: "Lato-Bold"; }
+        font-family: "Lato-Bold";
+    }
+
     .popup {
         position: relative;
         display: inline-block;
         cursor: pointer;
-        margin-left: 20px;
+        margin-left: 24px;
         -webkit-user-select: none;
         -moz-user-select: none;
         -ms-user-select: none;
@@ -67,32 +85,32 @@
     }
 
     /* The actual popup */
-    /*    .popup .popuptext {
-            visibility: hidden;
-            width: 160px;
-            background-color: rgba(0,0,0,0.8);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 8px 0;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            margin-left: -80px;
-        }
-    
-         Popup arrow 
-        .popup .popuptext::after {
-            content: "";
-            position: absolute;
-            top: 100%;
-            left: 50%;
-            margin-left: -5px;
-            border-width: 5px;
-            border-style: solid;
-            border-color: #555 transparent transparent transparent;
-        }*/
+    .popup .popuptext {
+        visibility: hidden;
+        width: 160px;
+        background-color: rgba(0, 0, 0, 0.8);
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 8px 0;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -80px;
+    }
+
+    /* Popup arrow */
+    .popup .popuptext::after {
+        content: "";
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        margin-left: -5px;
+        border-width: 5px;
+        border-style: solid;
+        border-color: #555 transparent transparent transparent;
+    }
 
     /* Toggle this class - hide and show the popup */
     .popup .show {
@@ -103,48 +121,62 @@
 
     /* Add animation (fade in the popup) */
     @-webkit-keyframes fadeIn {
-        from {opacity: 0;} 
-        to {opacity: 1;}
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 
     @keyframes fadeIn {
-        from {opacity: 0;}
-        to {opacity:1 ;}
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
     }
 
-    label.category > input{
+    label.category>input {
         visibility: hidden;
         position: absolute;
     }
-    label.category{
+
+    label.category {
         background-color: #eee;
         border-radius: 15px;
-        height: 140px;
+        height: 150px;
         width: 150px;
     }
-    label.category > a > input {
-        width:250px;
-        height:100px;
-        cursor:pointer;
-        float:left;
-        border:#999 solid 1px;
+
+    label.category>input {
+        width: 250px;
+        height: 100px;
+        cursor: pointer;
+        float: left;
+        border: #999 solid 1px;
     }
-    label.category > a > input:checked + div{
+
+    label.category>input:checked+div {
         background-color: #aeaeae;
         border-radius: 15px;
-        height: 140px;
+
+        height: 150px;
         width: 150px;
     }
 
 
-    .input-number-group {
+    /*  .input-number-group {
         /*  display: -webkit-flex;
           display: -ms-flexbox;
           display: flex;
           -webkit-justify-content: center;
               -ms-flex-pack: center;
-                  justify-content: center;*/
-    }
+                  justify-content: center;
+    }*/
 
     .input-number-group input[type=number]::-webkit-inner-spin-button,
     .input-number-group input[type=number]::-webkit-outer-spin-button {
@@ -191,16 +223,13 @@
         font-weight: 400;
     }
 
-    /*    .input-number-group .input-number-decrement {
-            margin-top: 0.3rem;
-        }
-    
-        .input-number-group .input-number-increment {
-            margin-top: 0.3rem;
-        }*/
+    /*   .input-number-group .input-number-decrement {
+        margin-right: 0.3rem;
+    }
 
-
-
+    .input-number-group .input-number-increment {
+        margin-left: 0.3rem;
+    } */
 </style>
 <div style="margin: 0px 10px 10px 10px; padding: 10px">
 
@@ -209,7 +238,7 @@
             <h1 class="h3 mb-0 fontawesomeheading">NEW BOOKING</h1>
         </div>
         <div class="card-body">
-            <form id="booking-form" action="saveOrder" method="post">
+            <form id="booking-form" action="save-order" method="post">
                 @csrf
                 <fieldset>
                     <h4 class="h3 mb-0 fontawesomeheading">Customer Info</h4><br>
@@ -257,43 +286,147 @@
 
                     <hr>
 
-					@foreach($itemCategories as $key => $menuCategory)
-						<h4 class="h3 mb-0 fontawesomeheading">
-							<!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
-							{{ $menuCategory->name }}
-						</h4>
-						<br>
-						<div id="collapse1" class="panel-collapse">
+                    <h4 class="h3 mb-0 fontawesomeheading">
+                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
+                        Select Single Items
+                    </h4>
+                    <br>
+                    <div id="collapse1" class="panel-collapse">
 
-							<!--<p style="margin: 0px 10px">
-								<select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
-									@foreach($itemCategories as $key => $category)
-									<option value="{{ $category->id }}"> {{ $category->name }} </option>
-									@endforeach
-								</select>
-							</p>-->
+                        <p style="margin: 0px 10px">
+                            <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
+                                @foreach($itemCategories as $key => $category)
+                                <option value="{{ $category->id }}"> {{ $category->name }} </option>
+                                @endforeach
+                            </select>
+                        </p>
 
-							<!--<div class="row" id="menu-container" data-id="category-{{ $itemCategories[0]->id }}" style="margin: 10px 10px 10px 30px">-->
-							<div class="row" id="menu-container" style="margin: 10px 10px 10px 30px">
-								@foreach($menuCategory->menuItems as $key => $item)
+                        <div class="row" id="menu-container" data-id="category-{{ $itemCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                            @foreach($items as $key => $item)
+                            <div class="col-sm-2">
+                                <label class="category">
+                                    <input type="checkbox" cart_id="" id="{{ $item->id }}" onchange="addToCart(this)" name="items[]" value="{{ $item->id }}" />
+                                    <div>
+                                        <p class="product_label"> {{ $item->name }} </p><br>
+                                        <div class="popup" onmouseover="myFunction({{ $item->id }})" onmouseout="myFunctionClose({{ $item->id }})"><img src="{{ env('APP_URL') . 'public/' .$item->image }}" class="product_image">
+                                            <span class="popuptext" id="myPopup-{{ $item->id }}">
+                                                <small>
+                                                    <p class="p-2"> {{ $item->ingredients }}</p> PKR {{ $item->price }}
+                                                </small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="input-group input-number-group add-qty">
+                                    <div class="input-group-button">
+                                        <span onclick="removeQuantity(this.id)" id="{{ $item->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+                                    </div>
+                                    <input class="input-number" type="number" data_id="{{ $item->id}}" id="quantity-{{ $item->id }}" name="quantity" value="1" min="0" max="1000">
+                                    <div class="input-group-button">
+                                        <span onclick="addQuantity(this.id)" id="{{ $item->id }}" class="input-number-increment bg-whitesmoke">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+						
+					<hr>
+					
+					<h4 class="h3 mb-0 fontawesomeheading">
+                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
+                        Select Deals
+                    </h4>
+                    <br>
+                    <div id="collapse1" class="panel-collapse">
+
+                        <!--<p style="margin: 0px 10px">
+                            <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
+                                @foreach($dealCategories as $key => $dealCategory)
+                                <option value="{{ $dealCategory->id }}"> {{ $dealCategory->name }} </option>
+                                @endforeach
+                            </select>
+                        </p>-->
+
+                        <div class="row" id="deal-container" data-id="deal-category-{{ $dealCategories[0]->id }}" style="margin: 10px 10px 10px 30px">
+                            @foreach($deals as $key => $deal)
+                            <div class="col-sm-2">
+                                <label class="category">
+                                    <input type="checkbox" cart_deal_id="" class="deal-{{ $deal->id }}" id="{{ $deal->id }}" onchange="addDealToCart(this)" name="deals[]" value="{{ $deal->id }}" />
+                                     <div>
+                                        <p class="product_label"> {{ $deal->title }} </p><br>
+                                        <div class="popup"><img src="{{ env('APP_URL') . $deal->image }}" class="product_image">
+                                            <span class="popuptext" id="myPopup-{{ $deal->id }}">
+                                                <small>
+                                                    <p class="p-2"> </p> PKR {{ $deal->payable_price }}
+                                                </small>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </label>
+                                <div class="input-group input-number-group add-qty">
+                                    <div class="input-group-button">
+                                        <span onclick="removeDealQuantity(this.id)" id="{{ $deal->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+                                    </div>
+                                    <input class="input-number" type="number" data_id="{{ $deal->id}}" id="deal-quantity-{{ $deal->id }}" name="quantity" value="1" min="0" max="1000">
+                                    <div class="input-group-button">
+                                        <span onclick="addDealQuantity(this.id)" id="{{ $deal->id }}" class="input-number-increment bg-whitesmoke">+</span>
+                                    </div>
+                                </div>
+                            </div>
+                            @endforeach
+                        </div>
+                    </div>
+					<hr>
+
+                    <h4 class="h3 mb-0 fontawesomeheading">
+                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
+                        Select Add-ons
+                    </h4>
+                    <br>
+                    <div id="collapse1" class="panel-collapse">
+
+                        <!--<p style="margin: 0px 10px">
+                            <select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
+                                <option value=""> All </option>
+								@foreach($addonCategories as $key => $addonCategory)
+									<option value="{{ $addonCategory->id }}"> {{ $addonCategory->name }} </option>
+                                @endforeach
+                            </select>
+                        </p>-->
+
+                        <div class="row" id="addon-container" data-id="addon-0" style="margin: 10px 10px 10px 30px">
+                            @foreach($addons as $key => $addon)
+								@foreach($addon->addonTypes as $key => $type)
 									<div class="col-sm-2">
-										<a onclick="itemAddonModel(this)" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-price="{{ $item->price }}" id="menu-item-{{ $item->id}}" class="menu-item-{{ $item->id}}">
-											<label class="category">
-												<div>
-													<p class="product_label"> {{ $item->name }} </p><br>
-													<div class="popup" ><img src="{{ env('APP_URL') . '/' .$item->image }}" class="product_image">
-														
-													</div>
+										<label class="category">
+											<input type="checkbox" addon_cart_id="" class="addon-type-{{ $type->id }}" id="{{ $addon->id }}" onchange="addAddonToCart(this)" name="addons[]" value="{{ $addon->id }}" addon_type_id="{{ $type->id }}" />
+											 <div>
+												<p class="product_label"> {{ $addon->name }} ( {{ $type->size }} ) </p><br>
+												<div class="popup"><img src="{{ env('APP_URL') . $addon->image }}" class="product_image">
+													<span class="popuptext" id="myPopup-{{ $addon->id }}">
+														<small>
+															<p class="p-2"> </p> PKR {{ $type->price }}
+														</small>
+													</span>
 												</div>
-											</label>
-										</a>
-										
+											</div>
+										</label>
+										<div class="input-group input-number-group add-qty">
+											<div class="input-group-button">
+												<span onclick="removeAddonQuantity(this.id)" id="{{ $type->id }}" class="input-number-decrement bg-whitesmoke">-</span>
+											</div>
+											<input class="input-number" type="number" data_id="{{ $addon->id}}" type_id="{{ $type->id}}" id="addon-type-quantity-{{ $type->id }}" name="quantity" value="1" min="0" max="1000">
+											<div class="input-group-button">
+												<span onclick="addAddonQuantity(this.id)" id="{{ $type->id }}" class="input-number-increment bg-whitesmoke">+</span>
+											</div>
+										</div>
 									</div>
 								@endforeach
-							</div>
-						</div>
-						<hr><br>
-					 @endforeach
+                            @endforeach
+                        </div>
+                    </div>
+					<hr>
 					
 					<div class="row">
 						<div class="col-sm-12 m-b-2">
@@ -333,48 +466,6 @@
     </div>
 </div>
 
-<div class="modal fade" id="addonModal"  style="display: none"  tabindex="-1" role="dialog" aria-labelledby="addonModal" aria-hidden="true">
-
-    <div class="modal-dialog">
-
-        <div class="modal-content">
-            
-            <button type="button" class="btn waves-effect ml-auto" style="border-radius: 0px; color: #f6bf2d; background-color: black" data-dismiss="modal">Close</button>
-			<!-- <div><img src="{{asset('user')}}/img/burger.png" width="100%" height="250px"> </div>-->
-            <div class="modal-header">
-
-                <h4 id="item-name" class="modal-title text-dark font-weight-bold" > </h4>
-                <p id="item-price" class="font-weight-bold"><br></p>
-
-            </div>
-			
-            <div class="modal-body">
-                <h5 style="color:black; font-size: 16px">Select variation<span style="font-size: 12px; color:#7c888d; float: right; "> ( 1 Required )</span></h5>
-
-                <table class="table" id="variations">
-                    
-                </table>
-                <hr><br>
-                <div class="">
-					<div id="variation-items"></div>
-                </div>
-
-            </div>
-			
-            <div class="modal-footer">
-
-                <!--<button type="button" id="minus" class="btn text-warning" style="background-color: black; border: 1px solid #f6bf2d;" data-type="minus" data-field="">-</button>-->
-
-                <label> Quantity </label> <input type="text" id="vquantity" name="vquantity" style="width: 50px; text-align:center" class="input-number" value="1" min="1" max="100">
-
-                <!--<button id="qtyadd" type="button" class="quantity-right-plus btn text-warning btn-number" style="background-color: black; border: 1px solid #f6bf2d;" data-type="plus" data-field="">+</button>-->
-                <a href="#" onclick="addToBucket()" class="btn btn-sm btn-light" style=" color: black; font-weight: 600; background-color: #f6bf2d; margin-top:0px; border:2px solid #f6bf2d; margin-left:10px;"><b>ADD TO BUCKET</b></a>
-
-            </div>
-        </div>
-
-    </div>
-</div>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
@@ -384,23 +475,23 @@
 <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
 
 <script>
-	// $("#booking-form").submit(function(e) {
-		// e.preventDefault();
+	$("#booking-form").submit(function(e) {
+		e.preventDefault();
 		
-		// var totalItems = $(this).find('input[name="items[]"]:checked').length;
-		// var totalDeal = $(this).find('input[name="deals[]"]:checked').length;
-		// var totalAddons = $(this).find('input[name="addons[]"]:checked').length;
+		var totalItems = $(this).find('input[name="items[]"]:checked').length;
+		var totalDeal = $(this).find('input[name="deals[]"]:checked').length;
+		var totalAddons = $(this).find('input[name="addons[]"]:checked').length;
 		
-		// if(totalItems > 0 || totalDeal > 0 || totalAddons > 0) {
-			// $(this).submit()
-		// } else {
-			// Swal.fire(
-			  // 'Alert!',
-			  // 'Please select item, deal or addon!',
-			  // 'error'
-			// )
-		// }
-	// });
+		if(totalItems > 0 || totalDeal > 0 || totalAddons > 0) {
+			$(this).submit()
+		} else {
+			Swal.fire(
+			  'Alert!',
+			  'Please select item, deal or addon!',
+			  'error'
+			)
+		}
+	});
     $("#searchbox").autocomplete({
         source: function(request, response) {
             $.ajax({
@@ -802,132 +893,6 @@
             }
         });
     }
-	
-	
-	///////////////////////////////////////////////
-	
-	function itemAddonModel(element)
-	{
-		$('#variation-items').html("");
-		
-		var itemId = element.getAttribute('data-id');
-		var itemName = element.getAttribute('data-name');
-		var itemPrice = element.getAttribute('data-price');
-		
-		$('#item-name').html(itemName);
-		$('#item-price').html(itemPrice);
-		
-		$.ajax({
-			'type' : 'POST',
-			'url'  : 'item-variations',
-			'data' : {item_id : itemId},
-			headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-			'success' : function(response) {
-				$("#variations").html(response);
-			},
-			'error' : function(response) {
-				alert("Error");
-			}
-		})
-		
-		$('#addonModal').modal('toggle');
-	}
-	
-	function vItems(element) {
-		var variationId = element.id;
-		var itemId = element.getAttribute('item-id');
-
-		$.ajax({
-			'type' : 'POST',
-			'url'  : 'variation-items',
-			'data' : {variation_id : variationId, item_id : itemId},
-			headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-			'success' : function(response) {
-				$("#variation-items").html(response);
-			},
-			'error' : function(response) {
-				console.log(response);
-			}
-		})
-	}
-	
-	function addToBucket()
-	{
-		var vElement = document.querySelector("input[name=variation]:checked");
-		var itemId = vElement.getAttribute('item-id');
-		
-		var variationId = vElement.id;
-		
-		var dElement = document.querySelector("input[name=drink]:checked");
-		
-		var drinkId = "";
-		if(dElement == null)
-		{
-			var drinkId = "";
-		} else {
-			var drinkId = dElement.id;
-		}
-		
-		var sElement = document.querySelector("input[name=side]:checked");
-		
-		var sideId = "";
-		if(sElement == null)
-		{
-			var sideId = "";
-		} else {
-			var sideId = sElement.id;
-		}
-		
-		var eElement = document.querySelector("input[name=extra]:checked");
-		
-		var extraId = "";
-		if(eElement == null)
-		{
-			var extraId = "";
-		} else {
-			var extraId = eElement.id;
-		}
-		
-		var quantity = $("#vquantity").val();
-		
-		var addons = [];
-		$("input:checkbox[name=addon]:checked").each(function(){
-			addons.push($(this).val());
-		});
-		
-		console.log(addons);
-		
-		$.ajax({
-			'type' : 'POST',
-			'url'  : 'add-to-bucket',
-			'data' : {
-				item_id: itemId, 
-				variation_id: variationId, 
-				drink_id: drinkId, 
-				side_id: sideId, 
-				extra_id: extraId, 
-				quantity: quantity,
-				addons: addons,
-			},
-			success : function(response) {
-				Swal.fire({
-					title: 'Success',
-					text: "Item added successfully.",
-					icon: 'success',
-					confirmButtonText: 'Continue'
-				})
-			},
-			error : function(response) {
-				console.log(response);
-			}
-		});
-		
-	}
-	
 </script>
 
 @endsection

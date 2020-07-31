@@ -22,14 +22,16 @@ class DatabaseSeeder extends Seeder
             //SubAdminPermissions::class,
             //AuthPermissions::class,
             PaymentMethodSeeder::class,
-            RestaurantSeeder::class,
-            MenuSeeder::class,
-            DealSeeder::class,
+            //RestaurantSeeder::class,
+            //MenuSeeder::class,
+            //VariationSeeder::class,
+            //DrinkSeeder::class,
+            //DealSeeder::class,
             CountriesTableSeeder::class,
             StatesTableSeeder::class,
             CitiesTableSeeder::class,
-			AddonSeeder::class
+			//AddonSeeder::class
         ]);
-        factory(DealItem::class, 30)->create();
+        //factory(DealItem::class, 30)->create();
     }
 }

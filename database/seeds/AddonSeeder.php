@@ -17,16 +17,14 @@ class AddonSeeder extends Seeder
         AddonCategory::create(['name' => 'Soft Drinks']);
         AddonCategory::create(['name' => 'Sauces']);
 		
-		Addon::create(['addon_category_id' => 1, 'name' => 'Coke', 'image' => 'uploads/addons/coke.png']);
-		Addon::create(['addon_category_id' => 2, 'name' => 'Green Sauce', 'image' => 'uploads/addons/sauce.jpg']);
-		Addon::create(['addon_category_id' => 2, 'name' => 'Tomato Sauce', 'image' => 'uploads/addons/sauce.jpg']);
-		Addon::create(['addon_category_id' => 2, 'name' => 'White Sauce', 'image' => 'uploads/addons/sauce.jpg']);
+		Addon::create(['name' => 'Mushroom']);
+		Addon::create(['name' => 'Jalapeno']);
+		Addon::create(['name' => 'Cheese']);
+		Addon::create(['name' => 'Dip Suace']);
 		
 		AddonType::create(['addon_id' => 1, 'size' => 'Regular', 'price' => 30]);
-		AddonType::create(['addon_id' => 1, 'size' => 'Half Litre', 'price' => 60]);
-		AddonType::create(['addon_id' => 1, 'size' => '1.5 Litre', 'price' => 80]);
-		AddonType::create(['addon_id' => 2, 'size' => 'Regular', 'price' => 30]);
-		AddonType::create(['addon_id' => 3, 'size' => 'Regular', 'price' => 30]);
+		AddonType::create(['addon_id' => 2, 'size' => 'Regular', 'price' => 60]);
+		AddonType::create(['addon_id' => 3, 'size' => 'Regular', 'price' => 80]);
 		AddonType::create(['addon_id' => 4, 'size' => 'Regular', 'price' => 30]);
     }
 }
