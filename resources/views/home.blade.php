@@ -461,7 +461,7 @@ use App\Helpers\Helper;
         }
         $("#myAreaChart").CanvasJSChart(options);
       }
-      $.getJSON("http://127.0.0.1:8000/jsonobj", addData)
+      $.getJSON("{{env('APP_URL')}}/jsonobj", addData)
     }
     updateDailySale();
     setInterval(() => {

@@ -193,7 +193,6 @@ Route::group([
 ], function () {
 	Route::get('menu-variation', 'VariationController@create')->name('menu-variation');
 	Route::post('save-variation', 'VariationController@save')->name('save-variation');
-	
 });
 
 Route::group(['middleware' => 'auth'], function () {
@@ -225,7 +224,6 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('variation-items', 'VariationController@items')->name('variation-items');
 	Route::post('add-to-bucket', 'VariationController@addToBucket')->name('add-to-bucket');
 	Route::post('saveOrder', 'OrderController@saveOrder')->name('saveOrder');
-	
 });
 
 Auth::routes();

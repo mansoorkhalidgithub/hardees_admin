@@ -369,7 +369,7 @@ class OrderController extends Controller
 			$riderNotificationData = [
 				"order_id" => $orderId,
 				"device_token" => $rider->device_token,
-				"status" => "TR",
+				"type" => "TR",
 				"message" => "New Order Assigned"
 			];
 
@@ -408,15 +408,16 @@ class OrderController extends Controller
 	{
 		$orderId = $id;
 		$order = Order::with('orderItems', 'orderDeals', 'orderAddons')->where('id', $orderId)->first();
-		$rider_ids = OrderAssigned::where('order_id', $id)
-			->where('trip_status_id', '=', 8)->pluck('rider_id');
+		// $rider_ids = OrderAssigned::where('order_id', $id)
+		// 	->where('trip_status_id', '=', 8)->pluck('rider_id');
 		if ($order->user_id) {
 			$customer = User::where('id', $order->user_id)->first();
 		}
-		if ($rider_ids) {
-			$riders = User::role('rider')->whereNotIn('id',  $rider_ids)
-				->where('restaurant_id', $order->restaurant_id)->get();
-		}
+		// if ($rider_ids) {
+		$riders = User::role('rider')
+			// ->whereNotIn('id',  $rider_ids)
+			->where('restaurant_id', $order->restaurant_id)->get();
+		// }
 
 		return view('order/resend', compact('order', 'riders'));
 	}
@@ -448,7 +449,7 @@ class OrderController extends Controller
 
 		return Redirect::route('orders');
 	}
-	
+
 	public function saveOrder(Request $request)
 	{
 		$first_name = $request->first_name;
@@ -493,9 +494,9 @@ class OrderController extends Controller
 		$bucket->each->append(
 			'total'
 		);
-		
+
 		$total = $bucket->sum('total');
-		
+
 		$orderData = [
 			'user_id' => $customer->id,
 			'restaurant_id' => $restaurantId,
@@ -510,9 +511,8 @@ class OrderController extends Controller
 
 		$newOrder = Order::create($orderData);
 		$orderId = $newOrder->id;
-		
-		foreach($bucket as $key => $entry)
-		{
+
+		foreach ($bucket as $key => $entry) {
 			$data = [
 				'user_id' => $userId,
 				'item_id' => $entry->item_id,
@@ -523,10 +523,10 @@ class OrderController extends Controller
 				'quantity' => $entry->quantity,
 				'addons' => $entry->addons,
 			];
-			
+
 			OrderVariation::create($data);
 		}
-		
+
 		$bucketIds = $bucket->pluck('id');
 
 		Bucket::destroy($bucketIds);
@@ -552,5 +552,4 @@ class OrderController extends Controller
 
 		return redirect()->route('order-summary',  ['order_id' => encrypt($order->id), 'rider_id' => encrypt($riderId)]);
 	}
-
 }

@@ -112,7 +112,7 @@ class HomeController extends Controller
 
 	public function booking_show()
 	{
-		$orders = Order::with('orderAssigned.rider')->get();
+		$orders = Order::with('orderAssigned.rider')->orderBy('created_at', 'DESC')->get();
 		$orders->each->append('time', 'items', 'orderStatus');
 		// dd($orders);
 		return view('Delivery.trips', compact('orders'));
@@ -360,12 +360,14 @@ class HomeController extends Controller
 		$endMonth = Carbon::now()->endOfMonth();
 		// die;
 		return DB::table('orders')
-			->where('status', '=', 10)
+			->where('status', '=', 6)
 			->select(
-				DB::Raw('DATE(created_at) day'),
+				DB::raw('DATE(created_at) as  day'),
 				DB::raw('sum(total) as total'),
 			)
-			->groupBy('day')->orderBy('created_at', 'DESC')
+			->whereBetween('created_at', [$startMonth, $endMonth])
+			->groupBy('day')
+			// ->orderBy('created_at', 'DESC')
 			->get();
 
 		return Order::select('total', 'created_at')->whereBetween('created_at', [$startMonth, $endMonth])

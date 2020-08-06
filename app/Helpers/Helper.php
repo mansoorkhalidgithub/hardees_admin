@@ -116,7 +116,7 @@ class Helper
             // 'notification' => $notification,
             'data' => [
                 'order_id' => $data['order_id'],
-                'status' => $data['status'],
+                'type' => $data['status'],
                 'message' => $data['message'],
             ]
 

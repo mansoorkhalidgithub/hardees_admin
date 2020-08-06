@@ -474,7 +474,7 @@ class RiderApiController extends Controller
                 : ($status == Config::get('constants.STATUS_COMPLETE_DELIVERY') ? $total_time // elseif
                     : round(10 * $distance))); // else
         $order['distance'] = $distance;
-        $trip_status = ($rider->getRiderStatus->trip_status == 'free' ? 'N' : 'Y');
+        $trip_status = ($rider->getRiderStatus->trip_status == 'ontrip' ?  "ontrip" : "free");
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
