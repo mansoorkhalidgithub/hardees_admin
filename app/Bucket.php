@@ -40,8 +40,6 @@ class Bucket extends Model
 			}
 		}
 		
-		$total = $total * $this->quantity;
-		
 		if($this->drink_id) {
 			$drink = Drink::find($this->drink_id);
 			if($drink->default == 1) {
@@ -65,6 +63,8 @@ class Bucket extends Model
 			
 			$total = $total + $extra->price;
 		}
+		
+		$total = $total * $this->quantity;
 		
         return $total;
     }

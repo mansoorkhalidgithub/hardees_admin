@@ -12,6 +12,7 @@ class OrderVariation extends Model
 	
     protected $fillable = [
 		'user_id',
+		'order_id',
 		'item_id',
 		'variation_id',
 		'drink_id',

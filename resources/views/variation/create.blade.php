@@ -76,7 +76,7 @@
 
 <div class="card">
 	<div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
-		<h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold">ADD NEW MENU</h1>
+		<h1 class="h3 mb-0" style="color: black; font-family: serif; font-weight: bold"> {{ $item->name }} </h1>
 					<a href="{{ route('menu') }}"
 					   class="d-none d-sm-inline-block btn btn-sm shadow-sm" style="background-color:#ffc107; color: black"><i
 							class="fas fa-fw fa-1x fa-arrow-left fa-sm text-dark-300"></i> <span style="font-weight: bold">Back to Menu List</span></a>
@@ -85,11 +85,14 @@
 	<div class="card-body">
 		<form role="form" method="post" action="save-variation" enctype="multipart/form-data">
 			@csrf
-			<input type="hidden" name="item_id" value="{{ $itemId }}">
+			<input type="hidden" name="item_id" value="{{ $item->id }}">
 			@foreach($variations as $key => $variation)
 				<div class="row">
-					<input type="hidden" name="variation_id[]" value="{{ $variation->id }}">
-					<div class="col-md-4">
+					<!--<input type="hidden" name="variation_id[]" value="{{ $variation->id }}">-->
+					<div class="col-md-1">
+						<center> <input type="checkbox" name="variation_id[]" class="" value="{{ $variation->id }}"> </center>
+					</div>
+					<div class="col-md-3">
 						<input readonly type="text" name="title[]" class="form-control" value="{{ $variation->name }}">
 					</div>
 					<div class="col-md-2">
@@ -108,17 +111,17 @@
 						</div>
 					</div>
 					<div class="col-md-2">
-					<div class="form-group">
-						<input type="checkbox" id="extras" name="is_extra[{{ $key}}]" value="1" aria-invalid="false">
-						<label style="color: black; font-size: 12px; font-weight: 700"> Extra Patty </label> 
-                    </div>
-				</div>
+						<div class="form-group">
+							<input type="checkbox" id="extras" name="is_extra[{{ $key}}]" value="1" aria-invalid="false">
+							<label style="color: black; font-size: 12px; font-weight: 700"> Extra Patty </label> 
+						</div>
+					</div>
 				</div><br>
 			@endforeach
-			
+			<hr>
 			<div class="row">
 				<div class="col-md-6">
-					<div class="form-group">
+					<div class="form-group pull-right">
 						<button type="submit" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold"> Submit </button>
                     </div>
 				</div>

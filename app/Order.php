@@ -25,6 +25,7 @@ class Order extends Model
 		'longitude',
 		'customer_address',
 		'order_type_id',
+		'menu',
 	];
 
 	public function orderItems()

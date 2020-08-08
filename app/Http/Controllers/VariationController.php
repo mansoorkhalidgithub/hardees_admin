@@ -8,6 +8,7 @@ use App\Extra;
 use App\Drink;
 use App\Addon;
 use App\Bucket;
+use App\MenuItem;
 use App\Variation;
 use App\ItemVariation;
 use Illuminate\Http\Request;
@@ -18,17 +19,19 @@ class VariationController extends Controller
 	public function create(Request $request)
 	{
 		$itemId = $request->id;
+		$item = MenuItem::where('id', $itemId)->first();
 		
 		$variations = Variation::all();
 		$drinks = Drink::all();
 		$sides = Side::all();
 		$extras = Extra::all();
 		
-		return view('variation/create', compact('variations', 'drinks', 'sides', 'extras', 'itemId'));
+		return view('variation/create', compact('variations', 'drinks', 'sides', 'extras', 'item'));
 	}
 	
 	public function save(Request $request)
 	{
+		//dd($request->all());
 		$variationDrinks = [];
 		$variationSides = [];
 		$variationExtras = [];
@@ -36,9 +39,9 @@ class VariationController extends Controller
 		$itemId = $request->item_id;
 		$variationIds = $request->variation_id;
 		$variationPrices = $request->price;
-		$variationDrinks = $request->is_drink;
-		$variationSides = $request->is_side;
-		$variationExtras = $request->is_extra;
+		$variationDrinks = $request->has('is_drink') ? $request->is_drink : $variationDrinks;
+		$variationSides = $request->has('is_side') ? $request->is_side : $variationSides;
+		$variationExtras = $request->has('is_extra') ? $request->is_extra : $variationExtras;
 		
 		foreach($variationIds as $key => $variationId) {
 			

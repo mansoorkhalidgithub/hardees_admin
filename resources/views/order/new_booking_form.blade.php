@@ -281,7 +281,7 @@
 											<label class="category">
 												<div>
 													<p class="product_label"> {{ $item->name }} </p><br>
-													<div class="popup" ><img src="{{ env('APP_URL') . '/' .$item->image }}" class="product_image">
+													<div class="popup" ><img src="{{ env('APP_URL') . $item->image }}" class="product_image">
 														
 													</div>
 												</div>
@@ -294,7 +294,11 @@
 						</div>
 						<hr><br>
 					 @endforeach
-					
+					<div class="row">
+						<div class="col-sm-12 m-b-2">
+							<input required id="menu" name="menu" class="form-control textInput abcdefgh" type="text" value="" placeholder="Enter Menu" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+						</div>
+					</div>
 					<div class="row">
 						<div class="col-sm-12 m-b-2">
 							<input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">

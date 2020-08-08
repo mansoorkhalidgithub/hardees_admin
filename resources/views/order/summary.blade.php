@@ -418,6 +418,15 @@ p {
 													</span>
 												</td>
 											</tr>
+											<tr class="order-total border-0">
+												
+												<th>Addtion</th>
+												<td data-title="Addtion">
+													<span>
+														<input type="number" name="addition" class="form-control" id="addition">
+													</span>
+												</td>
+											</tr>
 										</table>
 									</div>
 									<p><textarea placeholder="Note for Rider..." class="form-control" rows="3" style="border-radius: 0px" oninput="this.className = ''" name="rider_note"></textarea></p>
@@ -447,10 +456,11 @@ p {
 	function sendNotification(orderId, restaurantId, riderId)
 	{
 		var deductionAmount = $("#deduction").val();
+		var additionAmount = $("#addition").val();
 		$.ajax({
 			type : "POST",
 			url  : "send-notification",
-			data : {order_id : orderId, restaurant_id : restaurantId, rider_id : riderId, deduction_amount: deductionAmount},
+			data : {order_id : orderId, restaurant_id : restaurantId, rider_id : riderId, deduction_amount: deductionAmount, addition_amount: additionAmount},
 			success : function(response) {
 				console.log(response);
 				Swal.fire({

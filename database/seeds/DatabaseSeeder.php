@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
             //SubAdminPermissions::class,
             //AuthPermissions::class,
             PaymentMethodSeeder::class,
-            //RestaurantSeeder::class,
+            RestaurantSeeder::class,
             //MenuSeeder::class,
             //VariationSeeder::class,
             //DrinkSeeder::class,
