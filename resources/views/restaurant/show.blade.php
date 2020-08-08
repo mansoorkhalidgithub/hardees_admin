@@ -59,8 +59,8 @@
  									<i class="fas fa-money-bill-alt fa-3x text-light-300"></i>
  								</div>
  								<div class="col ml-4">
- 									<div class="text-xs font-weight-bold text-uppercase mb-1">HARDEES DHA TODAY EARNING</div>
- 									<div class="h5 mb-0 font-weight-bold text-light-800">767</div>
+ 									<div class="text-xs font-weight-bold text-uppercase mb-1">HARDEES {{$model->name}} TODAY EARNING</div>
+ 									<div class="h5 mb-0 font-weight-bold text-light-800">RS:{{$today}}</div>
  								</div>
 
  							</div>
@@ -77,8 +77,8 @@
  									<i class="fas fa-dollar-sign fa-2x text-light-300"></i>
  								</div>
  								<div class="col ml-5">
- 									<div class="text-xs font-weight-bold  text-uppercase mb-1">HARDEES DHA WEEKLY EARNING</div>
- 									<div class="h5 mb-0 font-weight-bold text-light-800">$215,000</div>
+ 									<div class="text-xs font-weight-bold  text-uppercase mb-1">HARDEES {{$model->name}} WEEKLY EARNING</div>
+ 									<div class="h5 mb-0 font-weight-bold text-light-800">RS:{{$week}}</div>
  								</div>
 
  							</div>
@@ -95,8 +95,8 @@
  									<i class="fas fa-dollar-sign fa-2x text-light-300"></i>
  								</div>
  								<div class="col ml-5">
- 									<div class="text-xs font-weight-bold  text-uppercase mb-1">HARDEES DHA YEARLY EARNING</div>
- 									<div class="h5 mb-0 font-weight-bold text-light-800">$215,000</div>
+ 									<div class="text-xs font-weight-bold  text-uppercase mb-1">HARDEES {{$model->name}} Monthly EARNING</div>
+ 									<div class="h5 mb-0 font-weight-bold text-light-800">RS:{{$month}}</div>
  								</div>
 
  							</div>
@@ -109,12 +109,12 @@
  			<div class="row">
  				<div class="col-sm-12">
  					<div class="form-group">
- 						<legend style="color: black; font-family: serif; font-weight: bold">HARDEES DHA TOTAL EARNING: 213296</legend>
+ 						<legend style="color: black; font-family: serif; font-weight: bold">HARDEES {{$model->name}} TOTAL EARNING: {{$total}}</legend>
  						<select id="schedule" name="schedule" style="border-radius: 0px" class="form-control">
- 							<option>Select Schedule</option>
+ 							<option selected>Select Schedule</option>
  							<option>Daily</option>
  							<option>Weekly</option>
- 							<option>Yearly</option>
+ 							<option>Monthly</option>
  						</select>
  					</div>
  				</div>
@@ -124,28 +124,20 @@
  					<div class="card shadow mb-4">
  						<!-- Card Header - Dropdown -->
  						<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
- 							<h6 class="m-0 font-weight-bold text-primary">Hardees DHA Total Earning</h6>
- 							<!--div class="dropdown no-arrow">
-								<a class="dropdown-toggle" href="#" role="button"
-									id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false"> <i
-									class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-								</a>
-								<div
-									class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-									aria-labelledby="dropdownMenuLink">
-									<div class="dropdown-header">Dropdown Header:</div>
-									<a class="dropdown-item" href="#">Action</a> <a
-										class="dropdown-item" href="#">Another action</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Something else here</a>
-								</div>
-							</div-->
+ 							<h6 class="m-0 font-weight-bold text-primary">Hardees {{$model->name}} Earning</h6>
+
  						</div>
  						<!-- Card Body -->
  						<div class="card-body">
- 							<div class="chart-area">
- 								<canvas id="myAreaChart"></canvas>
+ 							<div class="chart-pie pt-4 pb-2">
+ 								<canvas id="earningChart"></canvas>
+ 							</div>
+ 							<div class="mt-4 text-center small">
+ 								<span class="mr-2"> <i class="fas fa-circle text-primary"></i>
+ 									Previous
+ 								</span> <span class="mr-2"> <i class="fas fa-circle text-info"></i>
+ 									Current
+ 								</span>
  							</div>
  						</div>
 
@@ -155,23 +147,8 @@
  					<div class="card shadow mb-4">
  						<!-- Card Header - Dropdown -->
  						<div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
- 							<h6 class="m-0 font-weight-bold text-primary">Hardees DHA Total Rides</h6>
- 							<!--div class="dropdown no-arrow">
-								<a class="dropdown-toggle" href="#" role="button"
-									id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true"
-									aria-expanded="false"> <i
-									class="fas fa-ellipsis-v fa-sm fa-fw text-gray-400"></i>
-								</a>
-								<div
-									class="dropdown-menu dropdown-menu-right shadow animated--fade-in"
-									aria-labelledby="dropdownMenuLink">
-									<div class="dropdown-header">Dropdown Header:</div>
-									<a class="dropdown-item" href="#">Action</a> <a
-										class="dropdown-item" href="#">Another action</a>
-									<div class="dropdown-divider"></div>
-									<a class="dropdown-item" href="#">Something else here</a>
-								</div>
-							</div-->
+ 							<h6 class="m-0 font-weight-bold text-primary">Hardees {{$model->name}} Rides</h6>
+
  						</div>
  						<!-- Card Body -->
  						<div class="card-body">
@@ -181,8 +158,6 @@
  							<div class="mt-4 text-center small">
  								<span class="mr-2"> <i class="fas fa-circle text-primary"></i>
  									Completed
- 								</span> <span class="mr-2"> <i class="fas fa-circle text-danger"></i>
- 									Rejected
  								</span> <span class="mr-2"> <i class="fas fa-circle text-info"></i>
  									InProgress
  								</span>
@@ -200,44 +175,24 @@
  								<tr style="font-weight: bold; font-size: 18px; font-family: serif; background-color: white">
  									<th>#</th>
  									<th>Rider Name</th>
- 									<th>Booking No</th>
  									<th>Total Amount</th>
  								</tr>
  							</thead>
  							<tbody>
+ 								@foreach($rider as $key => $rider)
  								<tr>
- 									<td>1</td>
- 									<td>Sharukh Zahid</td>
- 									<td>Hardees001842</td>
- 									<td>100</td>
+ 									<td>{{++$key}}</td>
+ 									<td>
+ 										<a href="{{route('rider.show', $rider->id)}}">
+ 											{{$rider->name}}
+ 										</a>
+ 									</td>
+ 									<td>{{$rider->RiderOrderCount*75}}</td>
  								</tr>
- 								<tr>
- 									<td>2</td>
- 									<td>Sharukh Zahid</td>
- 									<td>Hardees001843</td>
- 									<td>100</td>
- 								</tr>
- 								<tr>
- 									<td>3</td>
- 									<td>Sharukh Zahid</td>
- 									<td>Hardees001848</td>
- 									<td>100</td>
- 								</tr>
- 								<tr>
- 									<td>4</td>
- 									<td>Sharukh Zahid</td>
- 									<td>Hardees001852</td>
- 									<td>100</td>
- 								</tr>
+ 								@endforeach
+
  							</tbody>
- 							<tfoot>
- 								<tr style="font-weight: bold; background-color: white;">
- 									<td></td>
- 									<td></td>
- 									<td></td>
- 									<td>400</td>
- 								</tr>
- 							</tfoot>
+
  						</table>
  					</div>
  				</div>
@@ -256,14 +211,13 @@
  	$(document).ready(function() {
  		$.noConflict();
  		var table = $('#restaurant_riders').DataTable();
-
- 		var ctx = document.getElementById("myPieChart");
- 		var myPieChart = new Chart(ctx, {
+ 		var ctx1 = document.getElementById("earningChart");
+ 		var earningChart = new Chart(ctx1, {
  			type: "doughnut",
  			data: {
- 				labels: ["Completed", "Inprogress", "Rejected"],
+ 				labels: ["Previous", "Current"],
  				datasets: [{
- 					data: [35, 50, 15],
+ 					data: [<?php echo $pre_month ?>, <?php echo $month ?>],
  					backgroundColor: ["#4e73df", "#1cc88a", "red"],
  					hoverBackgroundColor: ["#2e59d9", "#17a673", "red"],
  					hoverBorderColor: "rgba(234, 236, 244, 1)",
@@ -284,8 +238,61 @@
  				legend: {
  					display: false,
  				},
- 				cutoutPercentage: 80,
+ 				cutoutPercentage: 50,
  			},
+ 		});
+ 		var ctx = document.getElementById("myPieChart");
+ 		var myPieChart = new Chart(ctx, {
+ 			type: "doughnut",
+ 			data: {
+ 				labels: ["Completed", "Inprogress"],
+ 				datasets: [{
+ 					data: [<?php echo $complete ?>, <?php echo $inprogress ?>],
+ 					backgroundColor: ["#4e73df", "#1cc88a", "red"],
+ 					hoverBackgroundColor: ["#2e59d9", "#17a673", "red"],
+ 					hoverBorderColor: "rgba(234, 236, 244, 1)",
+ 				}, ],
+ 			},
+ 			options: {
+ 				maintainAspectRatio: false,
+ 				tooltips: {
+ 					backgroundColor: "rgb(255,255,255)",
+ 					bodyFontColor: "#858796",
+ 					borderColor: "#dddfeb",
+ 					borderWidth: 1,
+ 					xPadding: 15,
+ 					yPadding: 15,
+ 					displayColors: false,
+ 					caretPadding: 10,
+ 				},
+ 				legend: {
+ 					display: false,
+ 				},
+ 				cutoutPercentage: 50,
+ 			},
+ 		});
+ 		$("#schedule").on("change", function(e) {
+ 			sch = $(this).val();
+ 			$.ajax({
+ 				url: "{{ route('branch.chart') }}",
+ 				type: 'POST',
+ 				dataType: 'json',
+ 				data: {
+ 					"id": "<?php echo $model->id; ?>",
+ 					"type": sch,
+ 					"_token": "{{ csrf_token() }}",
+ 				},
+ 				success: function(data) {
+ 					console.log(data)
+ 					myPieChart.data.datasets[0].data = data.data;
+ 					myPieChart.update();
+ 					earningChart.data.datasets[0].data = data.earning;
+ 					earningChart.update();
+ 				},
+ 				error: function(data) {
+ 					console.log(data);
+ 				}
+ 			});
  		});
  	});
  </script>

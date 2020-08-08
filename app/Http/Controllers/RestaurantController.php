@@ -2,17 +2,21 @@
 
 namespace App\Http\Controllers;
 
-use App\Helpers\Helper;
-use App\Http\Requests\RestaurantRequest;
-use App\Restaurant;
-use App\RestaurantCategories;
 use App\User;
+use App\Order;
+use Carbon\Carbon;
+use App\Restaurant;
+use App\Helpers\Helper;
 use Illuminate\Http\Request;
+use App\RestaurantCategories;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Support\Facades\Session;
 use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\Session;
+use App\Http\Requests\RestaurantRequest;
+use App\OrderAssigned;
+use Illuminate\Support\Facades\Redirect;
 
 class RestaurantController extends Controller
 {
@@ -73,14 +77,14 @@ class RestaurantController extends Controller
 		// dd($data);
 		$restaurant = Restaurant::create($data);
 		// if ($restaurant) {
-			// foreach ($request->categories as $key => $category) {
-				// $res_data = [
-					// 'restaurant_id' => $restaurant->id,
-					// 'title' => $category,
-				// ];
+		// foreach ($request->categories as $key => $category) {
+		// $res_data = [
+		// 'restaurant_id' => $restaurant->id,
+		// 'title' => $category,
+		// ];
 
-				// RestaurantCategories::create($res_data);
-			// }
+		// RestaurantCategories::create($res_data);
+		// }
 		// }
 
 		Session::flash('success', 'New restaurant created successfully');
@@ -96,8 +100,37 @@ class RestaurantController extends Controller
 
 	public function show($id)
 	{
+		$todaystart = Carbon::now()->startOfDay();
+		$todayend = Carbon::now()->endOfDay();
+		$startWeek = Carbon::now()->startOfWeek();
+		$endWeek = Carbon::now()->endOfWeek();
+		$startMonth = Carbon::now()->startOfMonth();
+		$endMonth = Carbon::now()->endOfMonth();
+		$laststartMonth = Carbon::now()->startOfMonth()->modify('-1 month');
+		$lastendMonth = Carbon::now()->endOfMonth()->modify('-1 month');
+		$today = Order::where('restaurant_id', $id)->whereBetween('created_at', [$todaystart, $todayend])->sum('total');
+		$week  = Order::where('restaurant_id', $id)->whereBetween('created_at', [$startWeek, $endWeek])->sum('total');
+		$month = Order::where('restaurant_id', $id)->whereBetween('created_at', [$startMonth, $endMonth])->sum('total');
+		$pre_month = Order::where('restaurant_id', $id)->whereBetween('created_at', [$laststartMonth, $lastendMonth])->sum('total');
+		$total = Order::where('restaurant_id', $id)->sum('total');
+		$complete = Order::where('restaurant_id', $id)->where('status', 6)->count();
+		$inprogress = Order::where('restaurant_id', $id)->whereIn('status', [1, 2, 3, 4, 5])->count();
 		$model = $this->findModel($id);
-		return view('restaurant.show', compact('model'));
+		$order_ids = Order::where('restaurant_id', $id)
+			->where('status', 6)->pluck('id');
+		$rider = $this->getriderDetail($id);
+		// dd($rider);
+		return view('restaurant.show', compact('model', 'rider', 'total', 'today', 'week', 'month', 'pre_month', 'complete', 'inprogress'));
+	}
+
+	protected function getriderDetail($id)
+	{
+		$order_ids = Order::where('restaurant_id', $id)
+			->where('status', 6)->pluck('id');
+		$odr_ass = OrderAssigned::whereIn('order_id', $order_ids)->pluck('rider_id');
+		$riders = User::whereIn('id', $odr_ass)
+			->get();
+		return $riders->each->append('RiderOrderCount');
 	}
 	public function update(RestaurantRequest $request)
 	{
@@ -261,5 +294,69 @@ class RestaurantController extends Controller
 			// 	'restaurant_id.numeric' => 'Please Select Restaurants Branch',
 			// ]
 		);
+	}
+
+	public function chart(Request $request)
+	{
+		$schedule = $request->type;
+		$start = '';
+		$end = '';
+		switch ($schedule) {
+			case 'Weekly':
+				$start = Carbon::now()->startOfWeek();
+				$end = Carbon::now()->endOfWeek();
+				$laststart = Carbon::now()->startOfWeek()->modify('-1 week');
+				$lastend = Carbon::now()->endOfWeek()->modify('-1 week');
+				break;
+			case 'Daily':
+				$start = Carbon::now()->startOfDay();
+				$end = Carbon::now()->endOfDay();
+				$laststart = Carbon::now()->startOfDay()->modify('-1 day');
+				$lastend = Carbon::now()->endOfDay()->modify('-1 day');
+				break;
+			case 'Monthly':
+				$start = Carbon::now()->startOfMonth();
+				$end = Carbon::now()->endOfMonth();
+				$laststart = Carbon::now()->startOfMonth()->modify('-1 month');
+				$lastend = Carbon::now()->endOfMonth()->modify('-1 month');
+				break;
+			case 'Select Schedule':
+				$complete = Order::where('restaurant_id', $request->id)
+					->where('status', '=', 6)->count();
+				$inprogress = Order::where('restaurant_id', $request->id)
+					->whereIn('status', [1, 2, 3, 4, 5])->count();
+				$start = Carbon::now()->startOfMonth();
+				$end = Carbon::now()->endOfMonth();
+				$laststart = Carbon::now()->startOfMonth()->modify('-1 month');
+				$lastend = Carbon::now()->endOfMonth()->modify('-1 month');
+				$current = Order::where('restaurant_id', $request->id)
+					->where('status', '=', 6)
+					->whereBetween('created_at', [$start, $end])->sum('total');
+				$previous = Order::where('restaurant_id', $request->id)
+					->where('status', 6)
+					->whereBetween('created_at', [$laststart, $lastend])->sum('total');
+
+				$earning = [$previous, $current];
+				$data =  [$complete, $inprogress];
+				return response()->json(compact('data', 'earning'));
+		}
+
+		$complete = Order::where('restaurant_id', $request->id)
+			->where('status', '=', 6)
+			->whereBetween('created_at', [$start, $end])->count();
+		$inprogress = Order::where('restaurant_id', $request->id)
+			->whereIn('status', [1, 2, 3, 4, 5])
+			->whereBetween('created_at', [$start, $end])->count();
+
+		$current = Order::where('restaurant_id', $request->id)
+			->where('status', '=', 6)
+			->whereBetween('created_at', [$start, $end])->sum('total');
+		$previous = Order::where('restaurant_id', $request->id)
+			->where('status', 6)
+			->whereBetween('created_at', [$laststart, $lastend])->sum('total');
+
+		$earning = [$previous, $current];
+		$data =  [$complete, $inprogress];
+		return response()->json(compact('data', 'earning'));
 	}
 }

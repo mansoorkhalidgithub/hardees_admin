@@ -11,6 +11,7 @@ use App\Restaurant;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Http\Requests\RiderRequest;
+use App\OrderAssigned;
 use App\RiderDetail;
 use App\RiderStatus;
 use Illuminate\Support\Facades\Hash;
@@ -126,6 +127,8 @@ class RiderController extends Controller
     public function show($id)
     {
         $model = $this->findModel($id);
+        $count = OrderAssigned::where('rider_id', $id)->count();
+        $model->append('RiderOrderCount');
         return view('rider.show', compact('model'));
     }
 

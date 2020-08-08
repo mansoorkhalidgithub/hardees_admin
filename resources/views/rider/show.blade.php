@@ -20,6 +20,68 @@
 
      </div>
      <hr>
+     <div class="row">
+
+         <!-- Earnings (Monthly) Card Example -->
+         <div class="col-xl-4 col-md-6 mb-4">
+             <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6d00 30%, #ffb278 85%); border-radius: 0px; color: white">
+                 <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                         <div class="col-auto">
+                             <i class="fas fa-car fa-2x text-light-300"></i>
+                         </div>
+                         <div class="col ml-5">
+                             <div class="text-xs font-weight-bold text-uppercase mb-1">Total Deliveries
+                             </div>
+                             <div id="total" class="h5 mb-0 font-weight-bold text-light-800">{{$model->RiderOrderCount}}</div>
+                         </div>
+
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Earnings (Monthly) Card Example -->
+         <div class="col-xl-4 col-md-6 mb-4">
+             <div class="card shadow h-100 py-2" style="background: linear-gradient(to right, #ff6275 40%, #ff9caa 75%); border-radius: 0px; color: white;">
+                 <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                         <div class="col-auto">
+                             <i class="fas fa-dollar-sign fa-2x text-light-300"></i>
+                         </div>
+                         <div class="col ml-5">
+                             <div class="text-xs font-weight-bold  text-uppercase mb-1">Total Earning
+                             </div>
+                             <div id="totalEarning" class="h5 mb-0 font-weight-bold text-light-800">Rs: {{$model->RiderOrderCount*75}}</div>
+                         </div>
+
+                     </div>
+                 </div>
+             </div>
+         </div>
+
+         <!-- Rejected Requests Card Example -->
+         <div class="col-xl-4 col-md-6 mb-4">
+             <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #10c888 40%, #58dfb6 75%); border-radius: 0px; color: white;">
+                 <div class="card-body">
+                     <div class="row no-gutters align-items-center">
+                         <div class="col-auto">
+                             <i class="fas fa-cart-plus fa-2x text-light-300"></i>
+                         </div>
+                         <div class="col ml-5">
+                             <div class="text-xs font-weight-bold text-uppercase mb-1">Rejected Orders</div>
+                             <div id="progress" class="h5 mb-0 font-weight-bold text-light-800">
+                                 {{App\OrderAssigned::where('rider_id' , $model->id)
+                                    ->where('trip_status_id' , 8)->count()}}
+                             </div>
+                         </div>
+
+                     </div>
+                 </div>
+             </div>
+         </div>
+     </div>
+     <hr>
      <div class="row" style="margin-bottom:2rem">
          <div class="col-sm-6">
              <table class="table-striped table-bordered abc" style="width:100%; font-size: 15px; color: black;">

@@ -126,6 +126,12 @@ class User extends Authenticatable
 
 	public function getOrderCountAttribute()
 	{
-		return Order::where('user_id', $this->id)->where('status', 10)->count();
+		return Order::where('user_id', $this->id)->where('status', 6)->count();
+	}
+
+	public function getRiderOrderCountAttribute()
+	{
+		return OrderAssigned::where('rider_id', $this->id)
+			->where('trip_status_id', 5)->count();
 	}
 }

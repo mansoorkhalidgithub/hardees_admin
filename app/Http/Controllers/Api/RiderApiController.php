@@ -71,6 +71,15 @@ class RiderApiController extends Controller
         $order_id = '';
         $loggedInRider = User::where('phone_number', $request['phone_number'])->where('user_type', 'rider')->first();
 
+        DB::table('oauth_access_tokens')
+            ->where('user_id', $loggedInRider->id)->delete();
+        $logout = [
+            "order_id" => 'order_id',
+            "device_token" => $loggedInRider->device_token,
+            "status" => "logout",
+            "message" => "You are Logout"
+        ];
+        Helper::sendNotification($logout);
         if (!empty($loggedInRider)) :
             if (Hash::check($request['password'], $loggedInRider->password)) {
                 $data = [
@@ -867,5 +876,13 @@ class RiderApiController extends Controller
             'message' => "You Are Logout",
         ];
         return response()->json($response);
+    }
+
+
+    public function token()
+    {
+        $token = 'f4Me_EHmPMw:APA91bFYuZ65TmS7jjGWPt0lFm6FYwghqltps8BAA012RwU1M-RFgL66Ou8Mcg7gGmK9E-3S45DfvKKzMYs2FWYB2-4fkRvSc-670x73vRpYK7LwRMfpDhModSm8ny3zlnyBVlGltr_w';
+        MasterModel::notification($token, 'test');
+        return '2000';
     }
 }

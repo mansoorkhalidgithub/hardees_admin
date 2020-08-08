@@ -17,7 +17,6 @@
  					<th>State</th>
  					<th>City</th>
  					<th>Name</th>
- 					<th>Area</th>
  					<th>Mobile No.</th>
  					<th>Email</th>
  					<th style="min-width: 80px">Vehical No.</th>
@@ -70,7 +69,6 @@
  						@endif
  					</td>
  					<td> {{ $rider->first_name }} {{$rider->last_name}} </td>
- 					<td>Delivery Peshawar Pakistan</td>
  					<td> {{ $rider->phone_number }} </td>
  					<td> {{ $rider->email }} </td>
  					<td>

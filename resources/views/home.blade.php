@@ -162,10 +162,10 @@ use App\Helpers\Helper;
             <canvas id="order_summary"></canvas>
           </div>
           <div class="mt-4 text-center small">
-            <span class="mr-2"> <i class="fas fa-circle text-success"></i>
+            <span class="mr-2"> <i class="fas fa-circle text-warning"></i>
               Completed
             </span>
-            <span class="mr-2" data-toggle="tooltip" title="<?php echo "12" ?>"> <i class="fas fa-circle text-warning"></i>
+            <span class="mr-2" data-toggle="tooltip"> <i class="fas fa-circle text-success"></i>
               InProgress
             </span>
           </div>
@@ -277,67 +277,7 @@ use App\Helpers\Helper;
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <h4 class="small font-weight-bold">
-            M.M Alam <span class="float-right">53653</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-success" role="progressbar" style="width: 89%" aria-valuenow="89" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees DHA <span class="float-right">212352</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-primary" role="progressbar" style="width: 60%" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Emporium Mall <span class="float-right">196550</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees MOG <span class="float-right">96000</span>
-          </h4>
-          <div class="progress mb-4">
-            <div class="progress-bar bg-danger" role="progressbar" style="width: 20%" aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Lalik Chowk <span class="float-right">256100</span>
-          </h4>
-          <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees F7 Islamabad <span class="float-right">156700</span>
-          </h4>
-          <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Thokar Niaz Baig <span class="float-right">235650</span>
-          </h4>
-          <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-primary" role="progressbar" style="width: 68%" aria-valuenow="68" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Faisalabad <span class="float-right">135000</span>
-          </h4>
-          <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 35%" aria-valuenow="35" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Fazal Center <span class="float-right">156700</span>
-          </h4>
-          <div class="progress" style="margin-bottom: 1.5rem">
-            <div class="progress-bar bg-info" role="progressbar" style="width: 45%" aria-valuenow="45" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
-          <h4 class="small font-weight-bold">
-            Hardees Guldasht Colony Multan <span class="float-right">132550</span>
-          </h4>
-          <div class="progress">
-            <div class="progress-bar bg-warning" role="progressbar" style="width: 29%" aria-valuenow="29" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
+        <div class="card-body" id="live_branch_data">
 
         </div>
       </div>
@@ -355,7 +295,7 @@ use App\Helpers\Helper;
     var order_summary = new Chart(ctx, {
       type: "doughnut",
       data: {
-        labels: ["Completed", "Inprogress"],
+        labels: ["Inprogress", "Completed"],
         datasets: [{
           data: [],
           backgroundColor: ["#1cc88a", "#fcbd12", ],
@@ -409,15 +349,15 @@ use App\Helpers\Helper;
           "_token": "{{ csrf_token() }}",
         },
         success: function(data) {
-          // console.log(data.data[0])
-          completeOrder
-          $('#completeOrder').text('Complete Orders (' + data.data[0] + ')');
-          $('#progress').text(data.data[1]);
+          // console.log(data.branchHtml)
+          $('#completeOrder').text('Complete Orders (' + data.data[1] + ')');
+          $('#progress').text(data.data[0]);
           $('#total').text(data.totalOrders);
           $('#totalEarning').text('Rs : ' + data.totalEarning);
           $('#complete').text(data.completeOrders + ' %');
           $('#completeOrderbar').width(100);
           $('#live_menu_data').html(data.html)
+          $('#live_branch_data').html(data.branchHtml)
           order_summary.data.datasets[0].data = data.data;
           order_summary.update();
         },

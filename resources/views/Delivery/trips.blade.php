@@ -89,9 +89,14 @@
  					<td>Punjab</td>
  					<td>Lahore</td>
  					<td>{{$order->customer->name}}</td>
- 					<td>{{$order->orderAssigned->rider->name}}</td>
- 					<td>{{$order->created_at}}</td>
- 					<td>{{$order->updated_at}}</td>
+ 					<td>
+ 						@if(!empty($order->orderAssigned))
+ 						{{$order->orderAssigned->rider->name}}
+ 						@else NotSet
+ 						@endif
+ 					</td>
+ 					<td>{{$order->created_at->format('Y-m-d h:i:s a')}}</td>
+ 					<td>{{$order->updated_at->format('Y-m-d h:i:s a')}}</td>
  					<td>{{$order->time}}</td>
  					<td>{{$order->orderStatus}}</td>
  					<td>{{$order->total}}</td>

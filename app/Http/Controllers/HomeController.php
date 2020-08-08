@@ -28,6 +28,7 @@ class HomeController extends Controller
 	public function chart()
 	{
 		$html = '';
+		$branchHtml = '';
 		$completeOrders = 0;
 		$totalOrders = Order::all()->count();
 		$complete = Order::where('status', 6)->count();
@@ -46,7 +47,7 @@ class HomeController extends Controller
 			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
 			->limit(Helper::getRestaurants()->count())
 			->get();
-		$getTotal = OrderItem::all()->sum('item_quantity');
+		$getTotalItem = OrderItem::all()->sum('item_quantity');
 		foreach ($menuData as $key => $item) {
 			$html .= '<h4 class="small font-weight-bold">';
 			$html .= $item->name;
@@ -61,7 +62,7 @@ class HomeController extends Controller
 				  <div class="progress-bar ' . $bgClass;
 
 			$html .= '" style="width:';
-			$html .= round($item->total / $getTotal * 100);
+			$html .= round($item->total / $getTotalItem * 100);
 
 			$html .= '%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
 				</div>';
@@ -69,9 +70,43 @@ class HomeController extends Controller
 
 		$complete = Order::where('status', '=', 6)->count();
 		$inprogress = Order::whereIn('status', [1, 2, 3, 4, 5])->count();
-		$data = [$complete, $inprogress];
+		$data = [$inprogress, $complete];
+		$branchHtml = $this->branchData($branchHtml);
+		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders', 'branchHtml'));
+	}
 
-		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders'));
+	protected function branchData($html)
+	{
+		$orders = DB::table('orders')
+			->join('restaurants', 'orders.restaurant_id', 'restaurants.id')
+			->select(
+				DB::raw('restaurants.name as name'),
+				DB::raw('sum(total) as total'),
+			)
+			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
+			// ->limit(Helper::getRestaurants()->count())
+			->get();
+		$getTotal = Order::all()->sum('total');
+		foreach ($orders as $key => $order) {
+			$html .= '<h4 class="small font-weight-bold">';
+			$html .= $order->name;
+			$html .= '<span class="float-right">';
+			$html .= $order->total;
+			$bgClass = $order->total > 20000 ? 'bg-success' // if
+				: ($order->total > 15000 ? 'bg-primary' // elseif
+					: ($order->total >= 10000 && $order->total < 15000 ? 'bg-warning' // elseif
+						: 'bg-danger'));
+
+			$html .= '</span> </h4><div class="progress mb-4">
+			  <div class="progress-bar ' . $bgClass;
+
+			$html .= '" style="width:';
+			$html .= round($order->total / $getTotal * 100);
+
+			$html .= '%" aria-valuenow="12" aria-valuemin="0" aria-valuemax="100"></div>
+			</div>';
+		}
+		return $html;
 	}
 	public function index()
 	{

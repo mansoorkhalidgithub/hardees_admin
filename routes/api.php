@@ -108,3 +108,5 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 
 Route::post('test-notification', 'Api\OrderApiController@notification');
+
+Route::post('notification-test', 'Api\RiderApiController@token');

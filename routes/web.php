@@ -79,6 +79,7 @@ Route::group([
 	Route::post('save-restaurant', 'RestaurantController@store')->name('save-restaurant');
 	Route::get('show-restaurant/{id}', 'RestaurantController@show')->name('restaurant.show');
 	Route::post('destroy-restaurant', 'RestaurantController@destroy')->name('restaurant.destroy');
+	Route::post('branch-chart', 'RestaurantController@chart')->name('branch.chart');
 	Route::get('status/{id}', 'RestaurantController@status')->name('restaurant.status');
 });
 
