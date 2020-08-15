@@ -3,29 +3,33 @@
 namespace App\Http\Controllers\Api;
 
 // use Auth;
-use App\User;
-use App\Cart;
-use App\Helpers\Helper;
-use App\Http\Controllers\Controller;
-use App\MenuItem;
-use App\Order;
-use App\OrderItem;
-use App\OrderDeal;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Log;
-
+use App\Cart;
+use App\User;
+use App\Order;
+use App\MenuItem;
+use App\OrderDeal;
+use App\OrderItem;
 use Kreait\Firebase;
-use Kreait\Firebase\Messaging\Notification;
-use Kreait\Firebase\Messaging\CloudMessage;
+use App\MenuCategory;
+use App\Helpers\Helper;
+use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
-class OrderApiController extends Controller {
-	
-	public function __construct() {
-		
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Validator;
+use Kreait\Firebase\Messaging\CloudMessage;
+use Kreait\Firebase\Messaging\Notification;
+
+class OrderApiController extends Controller
+{
+
+	public function __construct()
+	{
 	}
 
-	public function placeOrder(Request $request) {
+	public function placeOrder(Request $request)
+	{
 		$restaurantId = $request->input('restaurant_id');
 		$customerId = Auth::user()->id;
 		$latitude = $request->input('latitude');
@@ -93,7 +97,7 @@ class OrderApiController extends Controller {
 	public function addCart(Request $request)
 	{
 		$userId = Auth::user()->id;
-		
+
 		$data = [
 			'user_id'  => $userId,
 			'item_id'  => $request->item_id,
@@ -104,32 +108,31 @@ class OrderApiController extends Controller {
 			'addon_quantity'  => $request->addon_quantity,
 			'addon_type_id'  => $request->addon_type_id,
 		];
-		
+
 		$cartId = "";
 		$cartItem = "";
 		$cartDeal = "";
-		if(isset($request->item_id)) {
+		if (isset($request->item_id)) {
 			$cartItem = Cart::where(['user_id' => $userId, 'item_id' => $request->item_id])->first();
 		}
-		
-		if(isset($request->deal_id)) {
+
+		if (isset($request->deal_id)) {
 			$cartDeal = Cart::where(['user_id' => $userId, 'deal_id' => $request->deal_id])->first();
 		}
-		
-		if(isset($request->addon_id)) {
+
+		if (isset($request->addon_id)) {
 			$cartAddon = Cart::where(['user_id' => $userId, 'addon_id' => $request->addon_id, 'addon_type_id' => $request->addon_type_id])->first();
 		}
-		
-		if(!empty($cartItem)) 
-		{
+
+		if (!empty($cartItem)) {
 			$quantity = $cartItem->quantity + $request->quantity;
 			$cartItem->update(['quantity' => $quantity]);
 			$cartId = $cartItem->id;
-		} else if(!empty($cartDeal)) {
+		} else if (!empty($cartDeal)) {
 			$dealQuantity = $cartDeal->deal_quantity + $request->deal_quantity;
 			$cartDeal->update(['deal_quantity' => $dealQuantity]);
 			$cartId = $cartDeal->id;
-		} else if(!empty($cartAddon)) {
+		} else if (!empty($cartAddon)) {
 			$addonQuantity = $cartAddon->addon_quantity + $request->addon_quantity;
 			$cartAddon->update(['addon_quantity' => $addonQuantity]);
 			$cartId = $cartAddon->id;
@@ -137,7 +140,7 @@ class OrderApiController extends Controller {
 			$cart = Cart::create($data);
 			$cartId = $cart->id;
 		}
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -146,22 +149,22 @@ class OrderApiController extends Controller {
 				'cart_id' => $cartId
 			]
 		];
-		
+
 		return response()->json($response);
 	}
 
 	public function getCart(Request $request)
 	{
 		$userId = Auth::user()->id;
-		
+
 		$cart = Cart::with('item', 'deal')->where('user_id', '=', $userId)
 			->where('status', '=', 1)->get();
 		$cart->each->append(
 			'total'
 		);
-		
+
 		$grandTotal = $cart->sum('total');
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -171,100 +174,100 @@ class OrderApiController extends Controller {
 				'cartTotalAmount' => $grandTotal,
 			]
 		];
-		
-		return response()->json($response);		
+
+		return response()->json($response);
 	}
-	
+
 	public function addQuantity(Request $request)
 	{
 		$version = 1;
 		$cart = Cart::where('id', $request->cart_id)->first();
-		
+
 		$newQuantity = 0;
-		if(!empty($cart))
-		{
-			if(isset($request->item_id)) {
+		if (!empty($cart)) {
+			if (isset($request->item_id)) {
 				$version = 3;
 				$newQuantity = $cart->quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
 			}
-			if(isset($request->deal_id)) {
+			if (isset($request->deal_id)) {
 				$newQuantity = $cart->deal_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
-			}	
-			if(isset($request->addon_id)) {
+			}
+			if (isset($request->addon_id)) {
 				$newQuantity = $cart->addon_quantity + 1;
 				Cart::where('id', $request->cart_id)->update(['addon_quantity' => $newQuantity]);
 			}
 		}
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Quantity updated successfully',
 		];
-		
-		return response()->json($response);	
+
+		return response()->json($response);
 	}
-	
+
 	public function removeQuantity(Request $request)
 	{
 		$cart = Cart::where('id', $request->cart_id)->first();
-		
+
 		$newQuantity = 0;
-		if(isset($request->item_id) && $cart->quantity > 0) {
+		if (isset($request->item_id) && $cart->quantity > 0) {
 			$newQuantity = $cart->quantity - 1;
 			Cart::where('id', $request->cart_id)->update(['quantity' => $newQuantity]);
 		}
-		if(isset($request->deal_id) && $cart->deal_quantity > 0) {
+		if (isset($request->deal_id) && $cart->deal_quantity > 0) {
 			$newQuantity = $cart->deal_quantity - 1;
 			Cart::where('id', $request->cart_id)->update(['deal_quantity' => $newQuantity]);
 		}
-		if(isset($request->addon_id) && $cart->addon_quantity > 0) {
+		if (isset($request->addon_id) && $cart->addon_quantity > 0) {
 			$newQuantity = $cart->addon_quantity - 1;
 			Cart::where('id', $request->cart_id)->update(['addon_quantity' => $newQuantity]);
 		}
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Quantity updated successfully',
 		];
-		
-		return response()->json($response);	
+
+		return response()->json($response);
 	}
-	
+
 	public function removeCartItem(Request $request)
 	{
 		Cart::destroy($request->cart_id);
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Item removed successfully',
 		];
-		
-		return response()->json($response);	
+
+		return response()->json($response);
 	}
-	
+
 	public function deleteCart(Request $request)
 	{
 		$userId = Auth::user()->id;
-		
+
 		$cartItems = Cart::where('user_id', $userId)->pluck('id');
-		
+
 		Cart::destroy($cartItems);
-		
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'User cart removed successfully',
 		];
-		
-		return response()->json($response);	
+
+		return response()->json($response);
 	}
 
-	public function updateCart(Request $request) {
+	public function updateCart(Request $request)
+	{
 		$data['quantity'] = $request->quantity;
 		$cart = Cart::find($request->id);
 		if ($request->quantity == 0) {
@@ -291,31 +294,31 @@ class OrderApiController extends Controller {
 			return response()->json($response);
 		}
 	}
-	
+
 	public function checkout(Request $request)
 	{
 		$model = new Order;
 		$modelItems = new OrderItem;
 		$modelDeals = new OrderItem;
-		
+
 		$userId = Auth::user()->id;
-		
+
 		$cartItems = Cart::where('user_id', $userId)->where('item_id', '!=', null)->pluck('item_id');
-		
+
 		$menuItems = MenuItem::whereIn('id', $cartItems)->get();
-		
+
 		$cartDeals = Cart::where('user_id', $userId)->where('deal_id', '!=', null)->pluck('deal_id');
-		
+
 		$deals = MenuItem::whereIn('id', $cartDeals)->get();
-		
+
 		$cart = Cart::where('user_id', '=', $userId)
 			->where('status', '=', 1)->get();
 		$cart->each->append(
 			'total'
 		);
-		
+
 		$total = $cart->sum('total');
-		
+
 		$orderData = [
 			'user_id' => $userId,
 			'latitude' => $request->latitude,
@@ -326,7 +329,7 @@ class OrderApiController extends Controller {
 			'sub_total' => $total,
 			'total' => $total,
 		];
-		
+
 		$newOrder = Order::create($orderData);
 		$orderId = $newOrder->id;
 
@@ -344,10 +347,10 @@ class OrderApiController extends Controller {
 
 			OrderItem::create($orderItem);
 		}
-		
+
 		foreach ($deals as $key => $deal) {
 			$dealId = $deal->id;
-			
+
 			$orderDeals = [
 				'order_id' => $orderId,
 				'deal_id' => $dealId,
@@ -356,36 +359,36 @@ class OrderApiController extends Controller {
 
 			OrderDeal::create($orderDeals);
 		}
-		
+
 		$cartItems = $cart->pluck('id');
-		
+
 		Cart::destroy($cartItems);
-		
+
 		$rider = User::where('user_type', 'rider')->first();
-		
+
 		$rider = User::where('user_type', 'rider')->first();
 		$deviceToken = $rider->device_token;
-		
+
 		Log::info($deviceToken);
-		
+
 		$riderNotificationData = [
 			"order_id" => $orderId,
 			"device_token" => $deviceToken,
 			"status" => "TR",
 			"message" => "New Order Assigned"
 		];
-		
+
 		$restaurantNotificationData = [
 			"order_id" => $orderId,
 			"device_token" => $deviceTokens,
 			"status" => 1,
 			"message" => "New Order"
 		];
-		
+
 		$notification = Helper::sendNotification($riderNotificationData);
-		
+
 		//Helper::sendNotification($restaurantNotificationData);
-		
+
 		$contact_number = '111-222-333';
 		$order_reference = Helper::orderReference($orderId);
 
@@ -403,13 +406,57 @@ class OrderApiController extends Controller {
 
 		return response()->json($response);
 	}
-	
+
 	public static function notification(Request $request)
 	{
-		try{
+		try {
 			echo Helper::sendNotification($request->order_id, $request->device_token);
 		} catch (Exception $e) {
 			echo $e->getMessage();
 		}
+	}
+
+	public function getMenu(Request $request)
+	{
+		$categories = MenuCategory::all();
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Categories Fetched successfully',
+			'categories' => $categories,
+		];
+
+		return response()->json($response);
+	}
+
+	public function getMenuItems(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'item_id' => 'required',
+		]);
+		if ($validator->fails()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'errors' => $validator->messages()
+			];
+
+			return response()->json($response);
+		}
+		$id = $request->item_id;
+		$category = MenuCategory::find($id);
+		if ($category->name == 'deals')
+			$items = [];
+
+		else
+			$items = MenuItem::where('menu_category_id', $id)->get();
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Items Fetched successfully',
+			'items' => $items,
+		];
+
+		return response()->json($response);
 	}
 }

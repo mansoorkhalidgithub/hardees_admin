@@ -336,7 +336,7 @@
          <div>
              <strong> Order Reference : </strong> {{ $order->order_reference }}
              <div class="card" style="background-color: transparent">
-                 <form id="msform" method="post" action="{{route('resend-order')}}">
+                 <form id="msform" method="POST" action="{{route('resend-order')}}">
                      @csrf
                      <input type="hidden" value="{{$order->id}}" name="order_id">
                      <fieldset>
@@ -412,31 +412,14 @@
  <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
 
  <script>
-     function sendNotification(orderId, restaurantId, riderId) {
-         console.log(riderId)
-         var deductionAmount = $("#deduction").val();
-         $.ajax({
-             type: "POST",
-             url: "send-notification",
-             data: {
-                 order_id: orderId,
-                 restaurant_id: restaurantId,
-                 rider_id: riderId,
-                 deduction_amount: deductionAmount
-             },
-             success: function(response) {
-                 console.log(response);
-                 Swal.fire({
-                     title: 'Success',
-                     text: "Order placed successfully.",
-                     icon: 'success'
-                 }).then((result) => {
-                     window.location.href = "new-orders";
-                 })
-             },
-             error: function(error) {
-                 console.log(error);
-             }
-         });
-     }
+     $(document).ready(function() {
+         var form = document.getElementById('msform');
+         form.addEventListener('submit', function(event) {
+             console.log('sss');
+             event.preventDefault();
+             // Disable the submit button to prevent repeated clicks
+             document.getElementById('submit-btn').disabled = true;
+             form.submit();
+         })
+     });
  </script>

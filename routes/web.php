@@ -113,7 +113,8 @@ Route::group([
 	'middleware' => 'auth',
 ], function () {
 	Route::get('/booking_show', 'HomeController@booking_show')->name('booking_show');
-
+	Route::get('/complete', 'DeliveryController@complete')->name('delivery.complete');
+	Route::get('/progress', 'DeliveryController@progress')->name('delivery.progress');
 	Route::get('/delivery_log/{id}', 'HomeController@delivery_log')->name('delivery_log');
 });
 Route::group([

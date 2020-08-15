@@ -42,10 +42,20 @@
 						<td> {{ $order->restaurant->name }} </td>
 						<td> {!! $order->status_html !!} </td>
 						<td>
-							<span class="btn btn-success btn-sm">{{ $order->orderAssigned->deliveryStatus->description }} </span>
+							<span class="btn btn-success btn-sm">
+								@if(!empty($order->orderAssigned))
+								{{ $order->orderAssigned->deliveryStatus->description }}
+								@else NOTSET
+								@endif
+							</span>
 						</td>
+						<?php
+						$status = (empty($order->orderAssigned)) ? '' // if
+							: ($order->orderAssigned->trip_status_id == 8 || $order->orderAssigned->trip_status_id == 9 ? '' // elseif
+								: 'disabled');
+						?>
 						<td>
-							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{($order->orderAssigned->trip_status_id == 8 ||$order->orderAssigned->trip_status_id == 9 ) ? '' : 'disabled'}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>
+							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{$status}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>
 						</td>
 						<td>
 							<a href="{{ route('edit-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>

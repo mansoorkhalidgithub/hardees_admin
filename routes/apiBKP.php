@@ -61,8 +61,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
-	Route::post('menu', 'Api\OrderApiController@getMenu');
-	Route::post('menu-item', 'Api\OrderApiController@getMenuItems');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -103,9 +101,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('rider-logout', 'Api\RiderApiController@logout');
 });
 
-// Route::group(['middleware' => 'auth:api'], function () {
-// 	Route::post('trip-manage', 'Api\RiderAuthController@tripManage');
-// });
+Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('trip-manage', 'Api\RiderAuthController@tripManage');
+});
 // Rider Api Ending Point By Qadeer
 
 

@@ -13,6 +13,7 @@ use App\Order;
 use App\Bucket;
 use App\MenuItem;
 use App\AddonType;
+use App\MasterModel;
 use App\OrderDeal;
 use App\OrderItem;
 use App\OrderAddon;
@@ -304,6 +305,8 @@ class OrderController extends Controller
 			$modelAssign = new OrderAssigned;
 
 			$modelAssign->create($assignData);
+
+			MasterModel::freetoride($riderId); // set to on delivery current rider
 		}
 
 
@@ -369,7 +372,7 @@ class OrderController extends Controller
 			$riderNotificationData = [
 				"order_id" => $orderId,
 				"device_token" => $rider->device_token,
-				"type" => "TR",
+				"status" => "TR",
 				"message" => "New Order Assigned"
 			];
 
@@ -426,7 +429,7 @@ class OrderController extends Controller
 	{
 		$ids = OrderAssigned::where('order_id', $request->order_id)->pluck('id');
 		OrderAssigned::whereIn('id', $ids)->update(['status' => 0]);
-		$rider = User::where('id', $request->rider)->first();
+		$rider = User::role('rider')->where('id', $request->rider)->first();
 		$data = [
 			'order_id' => $request->order_id,
 			'rider_id' => $rider->id,
@@ -514,6 +517,7 @@ class OrderController extends Controller
 
 		foreach ($bucket as $key => $entry) {
 			$data = [
+				'order_id' => $orderId,
 				'user_id' => $userId,
 				'item_id' => $entry->item_id,
 				'variation_id' => $entry->variation_id,

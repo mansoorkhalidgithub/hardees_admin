@@ -267,7 +267,6 @@ class RestaurantApiController extends Controller
 	public function dashboardByMonth(Request $request)
 	{
 		$userRestaurantId = Auth::user()->restaurant_id;
-
 		$startDate = Carbon::now()->startOfMonth()->format('Y-m-d H:i');
 		$endDate = Carbon::now()->toDateTimeString();
 		$statusCompleted = Config::get('constants.order_completed');
@@ -303,22 +302,21 @@ class RestaurantApiController extends Controller
 	{
 		// $restaurant_id = 1;
 		$restaurant_id = auth()->user()->restaurant_id;
-		$accptedOrders = Order::has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
+		$accptedOrders = Order::with('orderItems')->has('ordersAccepted')->where('restaurant_id', $restaurant_id)->get();
 		if ($accptedOrders->isNotEmpty()) {
 			$accptedOrders->each->append(
-				['bookingNo', 'ordertype', 'approxTime', 'orderItems', 'riderAsigned', 'customerData']
+				['bookingNo', 'ordertype', 'approxTime', 'riderAsigned', 'customerData']
 			);
 			// $accptedOrders->order_items->each->append(
 			// 	'Name'
 			// );
 		}
 
-		$newOrders = Order::has('newOrders')->where('restaurant_id', $restaurant_id)->get();
+		$newOrders = Order::with('orderItems')->has('newOrders')->where('restaurant_id', $restaurant_id)->get();
 		if ($newOrders->isNotEmpty()) {
 			$newOrders->each->append(
-				['bookingNo', 'ordertype', 'orderItems', 'approxTime', 'customerData']
+				['bookingNo', 'ordertype', 'approxTime', 'customerData']
 			);
-			// $newOrders->each->append('orderItems')->orderItems;
 		}
 
 		$response = [

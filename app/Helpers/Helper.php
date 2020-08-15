@@ -160,12 +160,12 @@ class Helper
         $number = $data['number'];
         $message = $data['message'];
         try {
-            $url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=Business&To=' . $number . '&Message=' . $message;
+            $url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=HARDEES&To=' . $number . '&Message=' . $message;
 
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $url);
-
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
             $result = curl_exec($ch);
             if ($result === false) {
                 die('Curl failed: ' . curl_error($ch));

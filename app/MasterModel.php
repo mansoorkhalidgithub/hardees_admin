@@ -103,4 +103,16 @@ class MasterModel extends Model
         // dd($result);
         return $result;
     }
+
+
+    public static function freetoride($id)
+    {
+        $model = RiderStatus::where('rider_id', '=', $id)
+            ->where('online_status', '=', 'online')
+            ->where('status', '=', 1)
+            ->first();
+        $st = ($model->trip_status == 'free' ?  "ontrip" : "free");
+        $model->trip_status = $st;
+        $model->save();
+    }
 }

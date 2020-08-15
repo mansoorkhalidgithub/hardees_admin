@@ -118,8 +118,7 @@ class Order extends Model
 	public function orderAssigned()
 	{
 		return $this->hasOne(OrderAssigned::class, 'order_id', 'id')
-			->where('status', 1);
-		// ->orderBy('created_at', 'DESC');
+			->orderBy('created_at', 'DESC');
 	}
 
 	public function getOrderReferenceAttribute()
@@ -164,7 +163,10 @@ class Order extends Model
 
 	public function getRatingAttribute()
 	{
-		return Review::where('user_id', $this->user_id)->pluck('rating')->first();
+		$review = Review::where('user_id', $this->user_id)->pluck('rating')->first();
+		if (!empty($review))
+			return $review;
+		else return 0;
 	}
 
 	public function getCustomernameAttribute()
@@ -175,47 +177,14 @@ class Order extends Model
 
 	public function getItemsAttribute()
 	{
-		$menu_item_ids = OrderItem::where('order_id', $this->id)->pluck('menu_item_id');
+		$model = OrderVariation::where('order_id', $this->id);
+		$menu_item_ids = $model->pluck('item_id');
+		// $addon = $model->get();
 		$menu_items = MenuItem::whereIn('id', $menu_item_ids->all())->pluck('name');
-		return $menu_items;
-	}
-	public function getOrderItemsAttribute()
-	{
-		$data = [];
-		$model = OrderVariation::where('order_id', $this->id)->get();
-		// return array();
-		if (!empty($model)) :
-			foreach ($model as $key => $items) {
-				$menu_item = MenuItem::where('id', $items->item_id)->first();
-				$menu_items = $menu_item->name;
-				$quantity = $items->quantity;
-				if (!empty($items->drink_id)) {
-					$drink = Drink::where('id', $items->drink_id)->pluck('name');
-					$drinks = $drink;
-				} else {
-					$drinks = array();
-				}
-				if (!empty($items->extra_id)) {
-					$extra = Extra::where('id', $items->drink_id)->pluck('name');
-					$extras = $extra;
-				} else {
-					$extras = array();
-				}
-				if (!empty($items->addons)) {
-					$addon_ids = unserialize($items->addons);
-					$addons = Addon::whereIn('id', $addon_ids)->pluck('name');
-				} else {
-					$addons = array();
-				}
-				$data[] = [
-					'name' => $menu_items,
-					'quantity' => $quantity,
-					'drinks' => $drinks,
-					'extras' => $extras,
-					'addons' => $addons
-				];
-			}
-		endif;
+		$data = [
+			'items' => $menu_items,
+			// 'addon' => $addon
+		];
 		return $data;
 	}
 

@@ -131,10 +131,10 @@
                 <li class="nav-item"><a class="nav-link" href="#formsDropdown" aria-expanded="true" data-toggle="collapse"> <i class="fas fa-fw fa-car"></i> <span>Delivery Management</span></a>
 
                     <ul id="formsDropdown" style="margin-left: 20px;" class="list-unstyled collapse in" aria-expanded="true">
-                        <li class="nav-item"><a class="nav-link" href="#">
+                        <li class="nav-item"><a class="nav-link" href="{{route('delivery.complete')}}">
                                 <i class="fa fa-tasks"></i> <span style="margin-left: 5px;">Completed </span></a>
                         </li>
-                        <li class="nav-item"><a class="nav-link" href="#">
+                        <li class="nav-item"><a class="nav-link" href="{{route('delivery.progress')}}">
                                 <i class="fa fa-tasks"></i> <span style="margin-left: 5px;">Inprogress </span></a>
                         </li>
                         <li class="nav-item"><a class="nav-link" href="#">

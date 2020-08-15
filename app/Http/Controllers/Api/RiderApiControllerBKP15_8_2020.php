@@ -70,7 +70,17 @@ class RiderApiController extends Controller
     {
         $order_id = '';
         $loggedInRider = User::where('phone_number', $request['phone_number'])->where('user_type', 'rider')->first();
-
+        if ($loggedInRider->device_id != $request->device_id) :
+            DB::table('oauth_access_tokens')
+                ->where('user_id', $loggedInRider->id)->delete();
+            $logout = [
+                "order_id" => 'order_id',
+                "device_token" => $loggedInRider->device_token,
+                "status" => "logout",
+                "message" => "You are Logout"
+            ];
+            Helper::sendNotification($logout);
+        endif;
         if (!empty($loggedInRider)) :
             if (Hash::check($request['password'], $loggedInRider->password)) {
                 $data = [
@@ -347,6 +357,8 @@ class RiderApiController extends Controller
             // unset($_SESSION['start_time'][$rider_id][$order_id]);
             // echo $status->id;
             // die;
+            $ids = OrderAssigned::where('order_id', $request->order_id)->update(['status' => 0]);
+            // OrderAssigned::whereIn('id', $ids)->update(['status' => 0]);
             $order_status = TripStatus::where('name', '=', 'TC')->first();
             $order_assigned = OrderAssigned::where('order_id', $order_id)
                 ->where('rider_id', $rider_id)
@@ -362,7 +374,7 @@ class RiderApiController extends Controller
                 'message' => $message,
             ];
             Helper::sendMessage($messageData); */
-            MasterModel::notification($user->device_token, 'Your Order is on the Way');
+            // MasterModel::notification($user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             $total_time = $end->diff($start)->format('%H:%i:%s');
             // $total_time = date_diff($end, $start);
@@ -646,26 +658,37 @@ class RiderApiController extends Controller
 
     public function riderDetail(Request $request)
     {
-        $loggedInRider = User::role('rider')->where('device_id', '=', $request->device_id)->first();
-        $loggedInRider->append(
-            'name'
-        );
-        if (!$loggedInRider) {
-            $response = [
-                'status' => 0,
-                'method' => $request->route()->getActionMethod(),
-                'message' => "Rider Detail Not Found",
-            ];
-            return response()->json($response);
-        }
+        $loggedInRider =  Auth::user();
+        $order_id = '';
+        // exit;
+        // $loggedInRider = User::role('rider')->where('device_id', '=', $request->device_id)->first();
+        // $loggedInRider->append(
+        //     'name'
+        // );
+        // if (!$loggedInRider) {
+        //     $response = [
+        //         'status' => 0,
+        //         'method' => $request->route()->getActionMethod(),
+        //         'message' => "Rider Detail Not Found",
+        //     ];
+        //     return response()->json($response);
+        // }
         $status = ($loggedInRider->status == 1 ?  "Active" : "InActive");
-        $trip_status = ($loggedInRider->getRiderStatus->trip_status == 'free' ? 'Free' : 'On Trip');
+        $trip_status = ($loggedInRider->getRiderStatus->trip_status == 'ontrip' ?  "ontrip" : "free");
+        if ($loggedInRider->getRiderStatus->trip_status == 'ontrip') {
+            $gt_ord = OrderAssigned::where('rider_id', $loggedInRider->id)
+                ->where('status', 1)
+                ->whereIn('trip_status_id', [2, 3, 4, 5, 6, 7])->first();
+            $order_id = $gt_ord->order_id;
+            // exit;
+        }
         $response = [
             'status' => 1,
             'method' => $request->route()->getActionMethod(),
             'message' => "Rider Detail",
             'data' => [
                 'datamodel' => [
+                    'order_id' => $order_id,
                     'rider_id' => $loggedInRider->id,
                     'first_name' => $loggedInRider->first_name,
                     'last_name' => $loggedInRider->last_name,
@@ -692,15 +715,7 @@ class RiderApiController extends Controller
                     // "eVisible" => "Y"
                 ],
                 'dataVehicle' => [
-                    "id" => 262,
-                    "plate_number" => "leu-112",
-                    "made_by" => "Suzuki",
-                    "model" => "125",
-                    "color" => "RED",
-                    "image" => asset('images/ic_gallery.jpg'),
-                    "model_year" => "2017",
-                    "vehicle_type_id" => 52,
-                    "title" => "Delivery Lahore"
+                    "plate_number" => $loggedInRider->vehicle->vehicle_number,
                 ]
             ]
         ];
@@ -752,6 +767,7 @@ class RiderApiController extends Controller
                 'email' => $order->customer->email,
                 "invoice_number" => $order->id,
                 "total" => $order->total,
+                "menu" => $order->menu,
                 'items' => $order->orderItems->pluck('items.name'),
                 "start_latitude" => $order->restaurant->latitude,
                 "start_longitude" => $order->restaurant->longitude,
