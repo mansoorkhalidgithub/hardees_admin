@@ -63,6 +63,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
 	Route::post('menu', 'Api\OrderApiController@getMenu');
 	Route::post('menu-item', 'Api\OrderApiController@getMenuItems');
+	Route::post('variations', 'Api\OrderApiController@variations');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {

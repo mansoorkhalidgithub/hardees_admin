@@ -107,7 +107,7 @@ class RiderApiController extends Controller
                 if ($rider_status->trip_status == 'ontrip') {
                     $gt_ord = OrderAssigned::where('rider_id', $loggedInRider->id)
                         ->where('status', 1)
-                        ->whereIn('trip_status_id', [2, 3, 4, 5, 6, 7])->first();
+                        ->whereIn('trip_status_id', [2, 3, 4])->first();
                     $order_id = $gt_ord->order_id;
                     // exit;
                 }
@@ -660,25 +660,13 @@ class RiderApiController extends Controller
     {
         $loggedInRider =  Auth::user();
         $order_id = '';
-        // exit;
-        // $loggedInRider = User::role('rider')->where('device_id', '=', $request->device_id)->first();
-        // $loggedInRider->append(
-        //     'name'
-        // );
-        // if (!$loggedInRider) {
-        //     $response = [
-        //         'status' => 0,
-        //         'method' => $request->route()->getActionMethod(),
-        //         'message' => "Rider Detail Not Found",
-        //     ];
-        //     return response()->json($response);
-        // }
+
         $status = ($loggedInRider->status == 1 ?  "Active" : "InActive");
         $trip_status = ($loggedInRider->getRiderStatus->trip_status == 'ontrip' ?  "ontrip" : "free");
         if ($loggedInRider->getRiderStatus->trip_status == 'ontrip') {
             $gt_ord = OrderAssigned::where('rider_id', $loggedInRider->id)
                 ->where('status', 1)
-                ->whereIn('trip_status_id', [2, 3, 4, 5, 6, 7])->first();
+                ->whereIn('trip_status_id', [2, 3, 4])->first();
             $order_id = $gt_ord->order_id;
             // exit;
         }

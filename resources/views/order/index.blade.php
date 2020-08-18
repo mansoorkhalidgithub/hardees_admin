@@ -51,8 +51,9 @@
 						</td>
 						<?php
 						$status = (empty($order->orderAssigned)) ? '' // if
-							: ($order->orderAssigned->trip_status_id == 8 || $order->orderAssigned->trip_status_id == 9 ? '' // elseif
-								: 'disabled');
+							: ($order->orderAssigned->trip_status_id == 1 && Carbon\Carbon::parse($order->orderAssigned->created_at)->addMinute(10) < Carbon\Carbon::now() ? ''
+								: ($order->orderAssigned->trip_status_id == 8 || $order->orderAssigned->trip_status_id == 9 ? '' // elseif
+									: 'disabled'));
 						?>
 						<td>
 							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{$status}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>

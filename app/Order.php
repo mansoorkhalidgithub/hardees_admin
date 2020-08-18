@@ -164,7 +164,11 @@ class Order extends Model
 
 	public function getRatingAttribute()
 	{
-		return Review::where('user_id', $this->user_id)->pluck('rating')->first();
+		$data = 0;
+		$rating = Review::where('user_id', $this->user_id)->pluck('rating')->first();
+		if ($rating)
+			return $rating;
+		else return $data;
 	}
 
 	public function getCustomernameAttribute()

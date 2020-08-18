@@ -15,7 +15,8 @@ use App\MenuCategory;
 use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-
+use App\ItemVariation;
+use App\Variation;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Kreait\Firebase\Messaging\CloudMessage;
@@ -455,6 +456,34 @@ class OrderApiController extends Controller
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Items Fetched successfully',
 			'items' => $items,
+		];
+
+		return response()->json($response);
+	}
+
+
+	public function variations(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'item_id' => 'required',
+		]);
+		if ($validator->fails()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'errors' => $validator->messages()
+			];
+
+			return response()->json($response);
+		}
+		$item_id = $request->item_id;
+		$variations = ItemVariation::with('variation', 'addon')->where('menu_item_id', $item_id)->get();
+		$variations->each->append('drinks', 'sides', 'extras');
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Variation Fetched successfully',
+			'variations' => $variations,
 		];
 
 		return response()->json($response);
