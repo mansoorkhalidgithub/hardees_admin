@@ -117,6 +117,13 @@
                     </a>
                 </li>
 
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ route('version.index') }}">
+                        <i class="fas fa-fw fa-refresh"></i>
+                        <span>Versions Control</span>
+                    </a>
+                </li>
+
                 <li class="nav-item"><a class="nav-link" href="{{ route('customers') }}"> <i class="fas fa-fw fa-users"></i> <span>Customer</span></a></li>
 
                 <li class="nav-item"><a class="nav-link" href="{{ route('zone_list') }}"> <i class="fas fa-fw fa-motorcycle"></i> <span>Zones</span></a></li>

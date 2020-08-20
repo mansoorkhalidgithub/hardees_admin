@@ -21,6 +21,7 @@ use App\Restaurant;
 use App\OrderStatus;
 use App\OrderAssigned;
 use App\OrderVariation;
+use App\RiderStatus;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
@@ -34,7 +35,7 @@ class OrderController extends Controller
 	public function index()
 	{
 		$model = Order::where('status', '!=', 1)->orderBy('created_at', 'DESC')->get();
-
+		$model->each->append('ridername');
 		return view('order/index', compact('model'));
 	}
 
@@ -555,5 +556,23 @@ class OrderController extends Controller
 		$order = Order::with('orderVariations')->where('id', $orderId)->first();
 
 		return redirect()->route('order-summary',  ['order_id' => encrypt($order->id), 'rider_id' => encrypt($riderId)]);
+	}
+
+
+	public function tripStatus($id)
+	{
+		$model = OrderAssigned::where('order_id', $id)
+			->whereIn('trip_status_id', [2, 3, 4])->first();
+		$model->update(['trip_status_id' => 11]);
+		$order = Order::find($model->id);
+		$order->status = 6;
+		$order->save();
+		// dd($order->status);
+		$rider = RiderStatus::where('rider_id', $model->rider_id)
+			->where('status', 1)->first();
+		$st = ($rider->trip_status == 'ontrip' ? 'free' : 'free');
+		$rider->trip_status = $st;
+		$rider->save();
+		return redirect()->back();
 	}
 }

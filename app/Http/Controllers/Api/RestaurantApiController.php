@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\User;
-use Auth;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
@@ -21,17 +21,21 @@ class RestaurantApiController extends Controller
 		$endDate = $dt->copy()->endOfDay();
 		$model = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', [$startDate, $endDate])->get();
 		$model->each->append(
-			['orderStatus', 'customerData']
+			['orderStatus', 'customerData', 'ridername']
 		);
 		$data = [];
 		if ($model->isNotEmpty()) {
 			foreach ($model as $value) {
 				$data[] = [
-					'time' => $value->created_at->toTimeString(),
+					'time' => date("g:i A", strtotime($value->created_at)),
+					'date' => $value->created_at->toDateString(),
 					'orderNo' => '#0' . $value->id,
 					'customer' => $value->customerData->name,
+					'customer_phone_number' => $value->customerData->phone_number,
+					'rider_name' => $value->ridername,
 					'total' => $value->total,
 					'orderStatus' => $value->orderStatus,
+					'menu_items' => $value->append('orderItems')->orderItems,
 				];
 			}
 		}
@@ -50,17 +54,21 @@ class RestaurantApiController extends Controller
 		$endDate = Carbon::now()->toDateTimeString();
 		$model = Order::where('restaurant_id', $restaurant_id)->whereBetween('created_at', [$startDate, $endDate])->get();
 		$model->each->append(
-			['orderStatus', 'customerData']
+			['orderStatus', 'customerData', 'ridername']
 		);
 		$data = [];
 		if ($model->isNotEmpty()) {
 			foreach ($model as $value) {
 				$data[] = [
-					'time' => $value->created_at->toTimeString(),
+					'time' => date("g:i A", strtotime($value->created_at)),
+					'date' => $value->created_at->toDateString(),
 					'orderNo' => '#0' . $value->id,
 					'customer' => $value->customerData->name,
+					'customer_phone_number' => $value->customerData->phone_number,
+					'rider_name' => $value->ridername,
 					'total' => $value->total,
 					'orderStatus' => $value->orderStatus,
+					'menu_items' => $value->append('orderItems')->orderItems
 				];
 			}
 		}
@@ -77,17 +85,21 @@ class RestaurantApiController extends Controller
 		$restaurant_id = Auth::user()->restaurant_id;
 		$model = Order::where('restaurant_id', $restaurant_id)->get();
 		$model->each->append(
-			['orderStatus', 'customerData']
+			['orderStatus', 'customerData', 'ridername']
 		);
 		$data = [];
 		if ($model->isNotEmpty()) {
 			foreach ($model as $value) {
 				$data[] = [
-					'time' => $value->created_at->toTimeString(),
+					'time' => date("g:i A", strtotime($value->created_at)),
+					'date' => $value->created_at->toDateString(),
 					'orderNo' => '#0' . $value->id,
 					'customer' => $value->customerData->name,
+					'customer_phone_number' => $value->customerData->phone_number,
+					'rider_name' => $value->ridername,
 					'total' => $value->total,
 					'orderStatus' => $value->orderStatus,
+					'menu_items' => $value->append('orderItems')->orderItems
 				];
 			}
 		}
@@ -329,6 +341,17 @@ class RestaurantApiController extends Controller
 			'newOrders' => $newOrders,
 		];
 
+		return response()->json($response);
+	}
+
+	public function logout(Request $request)
+	{
+		$request->user()->token()->revoke();
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => "You Are Logout",
+		];
 		return response()->json($response);
 	}
 }

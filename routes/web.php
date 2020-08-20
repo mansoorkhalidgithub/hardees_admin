@@ -196,6 +196,13 @@ Route::group([
 	Route::get('menu-variation', 'VariationController@create')->name('menu-variation');
 	Route::post('save-variation', 'VariationController@save')->name('save-variation');
 });
+Route::group([
+	'middleware' => 'auth',
+], function () {
+	Route::get('version', 'VersionController@index')->name('version.index');
+	Route::get('edit-version/{id}', 'VersionController@edit')->name('version.edit');
+	Route::post('update-version', 'VersionController@update')->name('version.update');
+});
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::post('search-customer', 'OrderController@searchCustomer')->name('search-customer');
@@ -204,6 +211,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::get('order-summary', 'OrderController@summary')->name('order-summary');
 	Route::get('resend/{id}', 'OrderController@resend')->name('resend');
 	Route::post('resend-order', 'OrderController@resendOrder')->name('resend-order');
+	Route::get('order/trip_status/{id}', 'OrderController@tripStatus')->name('order.tripstatus');
 	Route::post('send-notification', 'OrderController@notification')->name('send-notification');
 });
 

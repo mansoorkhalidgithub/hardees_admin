@@ -374,6 +374,8 @@ class RiderController extends Controller
 
     public function tripStatus($id)
     {
+        OrderAssigned::where('rider_id', $id)->whereIn('trip_status_id', [2, 3, 4])
+            ->first()->update(['trip_status_id' => 11]);
         $rider = RiderStatus::where('rider_id', $id)
             ->where('status', 1)->first();
         $st = ($rider->trip_status == 'ontrip' ? 'free' : 'ontrip');

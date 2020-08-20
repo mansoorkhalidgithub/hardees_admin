@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 // use Auth;
+
+use App\Bucket;
 use Log;
 use App\Cart;
 use App\User;
@@ -179,7 +181,7 @@ class OrderApiController extends Controller
 		return response()->json($response);
 	}
 
-	public function addQuantity(Request $request)
+	/* public function addQuantity(Request $request)
 	{
 		$version = 1;
 		$cart = Cart::where('id', $request->cart_id)->first();
@@ -208,9 +210,9 @@ class OrderApiController extends Controller
 		];
 
 		return response()->json($response);
-	}
+	} */
 
-	public function removeQuantity(Request $request)
+	/* public function removeQuantity(Request $request)
 	{
 		$cart = Cart::where('id', $request->cart_id)->first();
 
@@ -235,7 +237,7 @@ class OrderApiController extends Controller
 		];
 
 		return response()->json($response);
-	}
+	} */
 
 	public function removeCartItem(Request $request)
 	{
@@ -381,7 +383,7 @@ class OrderApiController extends Controller
 
 		$restaurantNotificationData = [
 			"order_id" => $orderId,
-			"device_token" => $deviceTokens,
+			"device_token" => $deviceToken,
 			"status" => 1,
 			"message" => "New Order"
 		];
@@ -484,6 +486,112 @@ class OrderApiController extends Controller
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Variation Fetched successfully',
 			'variations' => $variations,
+		];
+
+		return response()->json($response);
+	}
+
+
+	public function addBucket(Request $request)
+	{
+		$userId = Auth::user()->id;
+		$validator = Validator::make($request->all(), [
+			'item_id' => 'required',
+			'variation_id' => 'required',
+			'quantity' => 'required',
+		]);
+		if ($validator->fails()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'errors' => $validator->messages()
+			];
+
+			return response()->json($response);
+		}
+		$addons = "";
+		if (!empty($request->addons) && count($request->addons) > 0) {
+			$addons = serialize($request->addons);
+		}
+
+		$data = [
+			'user_id' => $userId,
+			'item_id' => $request->item_id,
+			'variation_id' => $request->variation_id,
+			'drink_id' => $request->drink_id,
+			'side_id' => $request->side_id,
+			'extra_id' => $request->extra_id,
+			'quantity' => $request->quantity,
+			'addons' => $addons,
+		];
+
+		$bucket = Bucket::create($data);
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'success',
+			'data' => [
+				'cart_id' => $bucket->id
+			]
+		];
+
+		return response()->json($response);
+	}
+
+	public function getBucket(Request $request)
+	{
+		$user = Auth::user();
+		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
+		$bucket->each->append('total', 'addon');
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'success',
+			'data' => $bucket
+		];
+
+		return response()->json($response);
+	}
+
+	public function addQuantity(Request $request)
+	{
+		$bucket = Bucket::where('id', $request->bucket_id)->first();
+
+		$newQuantity = 0;
+		if (!empty($bucket)) {
+			$newQuantity = $bucket->quantity + 1;
+			Bucket::where('id', $request->bucket_id)->update(['quantity' => $newQuantity]);
+		}
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Quantity updated successfully',
+		];
+
+		return response()->json($response);
+	}
+
+	public function removeQuantity(Request $request)
+	{
+		$bucket = Bucket::where('id', $request->bucket_id)->first();
+
+		$newQuantity = 0;
+		if (!empty($bucket)) {
+			$newQuantity = $bucket->quantity - 1;
+			if ($newQuantity > 0) {
+				Bucket::where('id', $request->bucket_id)->update(['quantity' => $newQuantity]);
+				$message = 'Quantity updated successfully';
+			} else {
+				$bucket->delete();
+				$message = 'Cart Item Deleted successfully';
+			}
+		}
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => $message,
 		];
 
 		return response()->json($response);

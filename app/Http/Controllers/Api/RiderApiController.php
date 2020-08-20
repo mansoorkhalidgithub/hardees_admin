@@ -6,18 +6,18 @@ use App\User;
 use DateTime;
 use App\Order;
 use App\Review;
+use App\Version;
 use Carbon\Carbon;
 use App\Restaurant;
 use App\TripStatus;
 use App\MasterModel;
+use App\RiderStatus;
 use App\ReviewDetail;
 use App\OrderAssigned;
 use App\Helpers\Helper;
-use App\RiderEarningSummary;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\RiderStatus;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Intervention\Image\Facades\Image;
@@ -518,7 +518,7 @@ class RiderApiController extends Controller
                 "booking_date" => $order->created_at,
                 "end_delivery_date" => $order->updated_at,
                 'ETA' => $eta . " Mins",
-                "status" => "TPDD",
+                "status" => "TR",
                 "trip_status" => $trip_status,
                 "user_rating" => 2,
                 "Payment_type" => $order->ordertype
@@ -773,7 +773,7 @@ class RiderApiController extends Controller
                 "booking_time" => Carbon::parse($order->created_at)->format('H:i:s'),
                 "end_delivery_date" => Carbon::parse($order->updated_at)->format('Y-m-d'),
                 "end_delivery_time" => Carbon::parse($order->updated_at)->format('H:i:s'),
-                "status" => "TPDD",
+                "status" => "TR",
                 "trip_status" => "N",
                 "user_rating" => 2,
                 "Payment_type" => $order->ordertype
@@ -877,5 +877,43 @@ class RiderApiController extends Controller
         $token = 'f4Me_EHmPMw:APA91bFYuZ65TmS7jjGWPt0lFm6FYwghqltps8BAA012RwU1M-RFgL66Ou8Mcg7gGmK9E-3S45DfvKKzMYs2FWYB2-4fkRvSc-670x73vRpYK7LwRMfpDhModSm8ny3zlnyBVlGltr_w';
         MasterModel::notification($token, 'test');
         return '2000';
+    }
+
+    public function version(Request $request)
+    {
+        $version = Version::where('type', 'rider')->first();
+        if ($request->device_type == 'A') {
+            if ($version->android == $request->version) {
+                $response = [
+                    'status' => 1,
+                    'method' => $request->route()->getActionMethod(),
+                    'message' => 'Your app is updated'
+                ];
+                return response()->json($response);
+            } else {
+                $response = [
+                    'status' => 0,
+                    'method' => $request->route()->getActionMethod(),
+                    'message' => 'Please update Your App'
+                ];
+                return response()->json($response);
+            }
+        } elseif ($request->device_type == 'I') {
+            if ($version->android == $request->version) {
+                $response = [
+                    'status' => 1,
+                    'method' => $request->route()->getActionMethod(),
+                    'message' => 'Your app is updated'
+                ];
+                return response()->json($response);
+            } else {
+                $response = [
+                    'status' => 0,
+                    'method' => $request->route()->getActionMethod(),
+                    'message' => 'Please update Your App'
+                ];
+                return response()->json($response);
+            }
+        }
     }
 }

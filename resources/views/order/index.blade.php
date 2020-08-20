@@ -30,6 +30,7 @@
 						<th scope="col"> Branch Name </th>
 						<th scope="col">Status</th>
 						<th scope="col"> Delivery Status </th>
+						<th scope="col"> Rider Status </th>
 						<th scope="col"> Resend </th>
 						<th scope="col">Action</th>
 					</tr>
@@ -49,12 +50,26 @@
 								@endif
 							</span>
 						</td>
+
 						<?php
 						$status = (empty($order->orderAssigned)) ? '' // if
 							: ($order->orderAssigned->trip_status_id == 1 && Carbon\Carbon::parse($order->orderAssigned->created_at)->addMinute(10) < Carbon\Carbon::now() ? ''
 								: ($order->orderAssigned->trip_status_id == 8 || $order->orderAssigned->trip_status_id == 9 ? '' // elseif
 									: 'disabled'));
+						$riderstatus = (empty($order->orderAssigned)) ? 'disabled' // if
+							: ($order->orderAssigned->trip_status_id == 2 || $order->orderAssigned->trip_status_id == 3 || $order->orderAssigned->trip_status_id == 4 ? '' // elseif
+								: 'disabled');
+						$tripstatus = (empty($order->orderAssigned)) ? 'Not Set' // if
+							: ($order->orderAssigned->trip_status_id == 2 || $order->orderAssigned->trip_status_id == 3 || $order->orderAssigned->trip_status_id == 4 ? 'Ontrip' // elseif
+								: 'Free');
 						?>
+						<td>
+							<a href="{{ route('order.tripstatus', $order->id) }}" type="button" class="btn btn-danger {{$riderstatus}}" style="background-color:  #dc3545; color: white">
+								<span style="font-size: 12px; font-weight: bold">
+									{{$tripstatus}}
+								</span>
+							</a>
+						</td>
 						<td>
 							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{$status}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>
 						</td>

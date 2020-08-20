@@ -30,6 +30,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('restaurant/recent-todayorders', 'Api\RestaurantApiController@recentTodayOrders');
 	Route::get('restaurant/recent-yesterdayorders', 'Api\RestaurantApiController@recentYesterdayOrders');
 	Route::post('restaurant/order-readyforpickup', 'Api\RestaurantApiController@orderReadyForPickup');
+	Route::post('restaurant-logout', 'Api\RestaurantApiController@logout');
 });
 
 // Route::group(['middleware' => 'auth:api'], function () {;});
@@ -64,6 +65,10 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('menu', 'Api\OrderApiController@getMenu');
 	Route::post('menu-item', 'Api\OrderApiController@getMenuItems');
 	Route::post('variations', 'Api\OrderApiController@variations');
+	Route::post('addbucket', 'Api\OrderApiController@addBucket');
+	Route::post('getbucket', 'Api\OrderApiController@getBucket');
+	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
+	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -109,7 +114,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 // });
 // Rider Api Ending Point By Qadeer
 
-
+Route::post('version', 'Api\RiderApiController@version');
 Route::post('test-notification', 'Api\OrderApiController@notification');
 
 Route::post('notification-test', 'Api\RiderApiController@token');

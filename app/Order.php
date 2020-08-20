@@ -228,6 +228,16 @@ class Order extends Model
 
 		return $this->hasOne(PaymentMethod::class, 'id', 'payment_method_id');
 	}
+	public function getRiderNameAttribute()
+	{
+		$rider = '';
+		$rider_id = OrderAssigned::where('order_id', $this->id)->first();
+		if (!empty($rider_id)) {
+			$model = User::find($rider_id->id);
+			if ($model)
+				return $model->name;
+		} else return $rider;
+	}
 	// End By Qadeer
 
 	public function orderVariations()

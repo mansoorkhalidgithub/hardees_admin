@@ -33,7 +33,7 @@
  			<tbody>
  				@foreach($model as $key => $rider)
  				<tr style="color: black">
- 					<td>1</td>
+ 					<td>{{++$key}}</td>
  					<td>
  						@if(!empty($rider->created_by))
  						{{ $rider->createdBy->username }}
