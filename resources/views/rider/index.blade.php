@@ -86,7 +86,7 @@
  						</a>
  					</td>
  					<td>
- 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{($rider->getRiderStatus->online_status == 'online') ? 'btn-success' : 'btn-danger'}}" style="color: white;width:6rem">
+ 						<a href="{{ route('rider.eStatus', $rider->id) }}" class="btn {{($rider->getRiderStatus->online_status == 'online') ? 'btn-success' : 'btn-danger'}} disabled" style="color: white;width:6rem">
  							{{($rider->getRiderStatus->online_status == 'online') ? 'Online' : 'Offline'}}
 
  						</a>
@@ -94,7 +94,7 @@
  					<td>
  						<form action="{{ route('rider.tripstatus', $rider->id) }}" method="post">
  							@csrf @method('GET')
- 							<button class="btn" style="background-color:  white; color: red" type="submit">
+ 							<button id="submit" class="btn" style="background-color:  white; color: red" type="submit">
  								{{($rider->getRiderStatus->trip_status == 'free') ? 'Free' : 'On Trip'}}
  							</button>
  						</form>
@@ -131,6 +131,7 @@
  	$(document).ready(function() {
  		$.noConflict();
  		var table = $('#rider_list').DataTable();
+ 		$(':input[type="submit"]').prop('disabled', true);
  		setTimeout(function() {
  			window.location = window.location
  		}, 120000);

@@ -4,7 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class OrderType extends Model
+class Template extends Model
 {
-	protected $table = 'order_types';
+    //
 }

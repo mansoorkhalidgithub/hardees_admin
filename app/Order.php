@@ -231,12 +231,18 @@ class Order extends Model
 	public function getRiderNameAttribute()
 	{
 		$rider = '';
-		$rider_id = OrderAssigned::where('order_id', $this->id)->first();
-		if (!empty($rider_id)) {
-			$model = User::find($rider_id->id);
+		$model = OrderAssigned::where('order_id', $this->id)->first();
+		if (!empty($model)) {
+			// return $model->rider_id;
+			$model = User::find($model->rider_id);
 			if ($model)
 				return $model->name;
 		} else return $rider;
+	}
+
+	public function type()
+	{
+		return $this->hasOne(OrderType::class, 'id', 'order_type_id');
 	}
 	// End By Qadeer
 

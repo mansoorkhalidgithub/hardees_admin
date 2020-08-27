@@ -28,7 +28,7 @@
 						<th scope="col"> Status </th>
 						<th scope="col"> Delivery Status </th>
 						<th scope="col"> Resend </th>
-						<th scope="col"> Action </th>
+						<th scope="col"> Type </th>
 					</tr>
 				</thead>
 				<tbody>
@@ -63,8 +63,11 @@
 							<a href="{{route('resend',['id' => $order->id])}}" type="button" class="btn btn-danger {{$status}}" style="background-color:  #dc3545; color: white"><span style="font-size: 12px; font-weight: bold">Resend</span></a>
 						</td>
 						<td>
-							<a href="{{ route('edit-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
-							<a href="{{ route('view-order', ['id' => $order->id]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-eye"></a></i>
+							<a type="button" class="btn {{($order->type->id == 1 ? 'btn-primary': 'btn-success')}}">
+								<span style="font-size: 12px; font-weight: bold;color:white">
+									{{$order->type->type}}
+								</span>
+							</a>
 						</td>
 					</tr>
 					@endforeach

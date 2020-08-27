@@ -60,49 +60,59 @@ use App\Helpers\Helper;
 
     <!-- Earnings (Monthly) Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #ff976a 40%, #ffc1a3 75%); border-radius: 0px; color: white;">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col-auto">
-              <i class="fas fa-cart-arrow-down fa-2x text-light-300"></i>
-            </div>
-            <div class="col ml-5">
-              <div id="completeOrder" class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
-              <div class="row no-gutters align-items-center">
-                <div class="col-auto">
-                  <div id="complete" class="h5 mb-0 mr-3 font-weight-bold text-light-800"></div>
-                </div>
-                <div class="col">
-                  <div class="progress progress-sm ml-1">
-                    <div id="completeOrderBar" class="progress-bar bg-red" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+      <a href="{{route('delivery.complete')}}" style="text-decoration: none">
+        <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #ff976a 40%, #ffc1a3 75%); border-radius: 0px; color: white;">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col-auto">
+                <i class="fas fa-cart-arrow-down fa-2x text-light-300"></i>
+              </div>
+              <div class="col ml-5">
+                <div id="completeOrder" class="text-xs font-weight-bold text-uppercase mb-1">Orders Completed</div>
+                <div class="row no-gutters align-items-center">
+                  <div class="col-auto">
+                    <div id="complete" class="h5 mb-0 mr-3 font-weight-bold text-light-800"></div>
+                  </div>
+                  <div class="col">
+                    <div class="progress progress-sm ml-1">
+                      <div id="completeOrderBar" class="progress-bar bg-red" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-      </div>
+      </a>
     </div>
 
     <!-- Pending Requests Card Example -->
     <div class="col-xl-3 col-md-6 mb-4">
-      <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #10c888 40%, #58dfb6 75%); border-radius: 0px; color: white;">
-        <div class="card-body">
-          <div class="row no-gutters align-items-center">
-            <div class="col-auto">
-              <i class="fas fa-cart-plus fa-2x text-light-300"></i>
-            </div>
-            <div class="col ml-5">
-              <div class="text-xs font-weight-bold text-uppercase mb-1">Inprogress Orders</div>
-              <div id="progress" class="h5 mb-0 font-weight-bold text-light-800"></div>
-            </div>
+      <a href="{{route('delivery.progress')}}" style="text-decoration: none">
+        <div class="card shadow h-100 py-2" style="background:linear-gradient(to right, #10c888 40%, #58dfb6 75%); border-radius: 0px; color: white;">
+          <div class="card-body">
+            <div class="row no-gutters align-items-center">
+              <div class="col-auto">
+                <i class="fas fa-cart-plus fa-2x text-light-300"></i>
+              </div>
+              <div class="col ml-5">
+                <div class="text-xs font-weight-bold text-uppercase mb-1">Inprogress Orders</div>
+                <div id="progress" class="h5 mb-0 font-weight-bold text-light-800"></div>
+              </div>
 
+            </div>
           </div>
         </div>
-      </div>
+      </a>
     </div>
   </div>
-
+  <div class="row">
+    <marquee>
+      <p style="font-family: Impact; font-size: 18pt">Average Delivery Time:
+        <span style="color:red" id="avg_delivery"></span>
+      </p>
+    </marquee>
+  </div>
   <!-- Content Row -->
 
   <div class="row">
@@ -207,24 +217,12 @@ use App\Helpers\Helper;
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
         <div class="card-header py-3 bg-secondary d-flex flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-white">Menu Categories</h6>
-          <div class="dropdown no-arrow">
-            <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink3" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"> <i class="fas fa-ellipsis-v fa-sm fa-fw text-white"></i>
-            </a>
-            <div class="dropdown-menu dropdown-menu-right shadow animated--fade-in" aria-labelledby="dropdownMenuLink3">
-              <a class="dropdown-item" href="#">Today</a>
-              <a class="dropdown-item" href="#">Yesterday</a>
-              <a class="dropdown-item" href="#">Last 7 Days</a>
-              <a class="dropdown-item" href="#">Last Month</a>
-              <a class="dropdown-item" href="#">Last 3 Month</a>
-              <a class="dropdown-item" href="#">Last 6 Month</a>
-              <a class="dropdown-item" href="#">Last Year</a>
-            </div>
-          </div>
+          <h6 class="m-0 font-weight-bold text-white">Average Delivery Time</h6>
+
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <div id="pyramid-chart" style="height: 300px; width: 100%;"></div>
+          <div id="avg_delivery" style="height: 300px; width: 100%;"></div>
         </div>
       </div>
     </div>
@@ -321,7 +319,7 @@ use App\Helpers\Helper;
       },
     });
 
-    var chart = new CanvasJS.Chart("pyramid-chart", {
+    /* var chart = new CanvasJS.Chart("pyramid-chart", {
 
       animationEnabled: true,
       data: [{
@@ -338,7 +336,7 @@ use App\Helpers\Helper;
         ]
       }]
     });
-    chart.render();
+    chart.render(); */
 
     var updateChart = function() {
       $.ajax({
@@ -349,7 +347,7 @@ use App\Helpers\Helper;
           "_token": "{{ csrf_token() }}",
         },
         success: function(data) {
-          // console.log(data.branchHtml)
+          $('#avg_delivery').text(data.averageCompletionTime);
           $('#completeOrder').text('Complete Orders (' + data.data[1] + ')');
           $('#progress').text(data.data[0]);
           $('#total').text(data.totalOrders);

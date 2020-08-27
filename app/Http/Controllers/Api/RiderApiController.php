@@ -277,7 +277,7 @@ class RiderApiController extends Controller
             // session_start();
             // $_SESSION['start_time'][$rider_id][$order_id] = date('Y-m-d h:i:s');
             // $message = $status->description;
-            if ($order->status == 4 || $order->status == 5) {
+            if ($order->status == 4 || $order->status == 5 || $order->status == 6) {
                 $data = [
                     'order_id' => $order_id,
                     'rider_id' => $rider_id,
@@ -296,7 +296,7 @@ class RiderApiController extends Controller
                     'number' => $user->phone_number,
                     'message' => $message,
                 ];
-                Helper::sendMessage($messageData);
+                // Helper::sendMessage($messageData);
                 MasterModel::notification($user->device_token, 'Your Order is on the Way');
                 MasterModel::notification($rider->device_token, $status->description);
             } else {
@@ -355,7 +355,8 @@ class RiderApiController extends Controller
             // unset($_SESSION['start_time'][$rider_id][$order_id]);
             // echo $status->id;
             // die;
-            $ids = OrderAssigned::where('order_id', $request->order_id)->update(['status' => 0]);
+            $ids = OrderAssigned::where('order_id', $request->order_id)
+                ->whereNotIn('trip_status_id', [5])->update(['status' => 0]);
             // OrderAssigned::whereIn('id', $ids)->update(['status' => 0]);
             $order_status = TripStatus::where('name', '=', 'TC')->first();
             $order_assigned = OrderAssigned::where('order_id', $order_id)
@@ -371,7 +372,7 @@ class RiderApiController extends Controller
                 'order' => $order->total,
                 'message' => $message,
             ];
-            Helper::sendMessage($messageData);
+            // Helper::sendMessage($messageData);
             // MasterModel::notification($user->device_token, 'Your Order is on the Way');
             MasterModel::notification($rider->device_token, $status->description);
             $total_time = $end->diff($start)->format('%H:%i:%s');
@@ -388,6 +389,7 @@ class RiderApiController extends Controller
 
         // Review By Rider 
         if ($status->name == Config::get('constants.STATUS_REVIEW')) {
+            OrderAssigned::where('order_id', $request->order_id)->update(['status' => 0]);
             $data = [
                 'user_id' => $order->user_id,
                 'order_id' => $request->order_id,
@@ -667,7 +669,8 @@ class RiderApiController extends Controller
             $gt_ord = OrderAssigned::where('rider_id', $loggedInRider->id)
                 ->where('status', 1)
                 ->whereIn('trip_status_id', [2, 3, 4])->first();
-            $order_id = $gt_ord->order_id;
+            if ($gt_ord)
+                $order_id = $gt_ord->order_id;
             // exit;
         }
         $response = [

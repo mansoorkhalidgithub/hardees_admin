@@ -6,6 +6,8 @@ use App\Order;
 use App\OrderItem;
 use Carbon\Carbon;
 use App\Helpers\Helper;
+use App\OrderVariation;
+use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\DB;
 
 class HomeController extends Controller
@@ -38,16 +40,17 @@ class HomeController extends Controller
 			$completeOrders = round($completeOrders, 0);
 		}
 
-		$menuData = DB::table('order_items')
-			->join('menu_items', 'order_items.menu_item_id', 'menu_items.id')
+		$menuData = DB::table('order_variations')
+			->join('menu_items', 'order_variations.item_id', 'menu_items.id')
 			->select(
 				DB::raw('menu_items.name as name'),
-				DB::raw('sum(item_quantity) as total'),
+				DB::raw('sum(order_variations.quantity) as total'),
 			)
 			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
 			->limit(Helper::getRestaurants()->count())
 			->get();
-		$getTotalItem = OrderItem::all()->sum('item_quantity');
+		$getTotalItem = OrderVariation::all()->sum('quantity');
+		// dd($menuData);
 		foreach ($menuData as $key => $item) {
 			$html .= '<h4 class="small font-weight-bold">';
 			$html .= $item->name;
@@ -72,7 +75,18 @@ class HomeController extends Controller
 		$inprogress = Order::whereIn('status', [1, 2, 3, 4, 5])->count();
 		$data = [$inprogress, $complete];
 		$branchHtml = $this->branchData($branchHtml);
-		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders', 'branchHtml'));
+
+		$model = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->get();
+		$total_complete = Order::where('status', 6)->count();
+		$averageCompletionTime = CarbonInterval::seconds((int)$model[0]->timediff)
+			->cascade()
+			->forHumans();
+
+
+		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders', 'branchHtml', 'averageCompletionTime'));
 	}
 
 	protected function branchData($html)
@@ -110,12 +124,12 @@ class HomeController extends Controller
 	}
 	public function index()
 	{
-		$getTotal = OrderItem::all()->sum('item_quantity');
-		$data = DB::table('order_items')
-			->join('menu_items', 'order_items.menu_item_id', 'menu_items.id')
+		$getTotal = OrderItem::all()->sum('quantity');
+		$data = DB::table('order_variations')
+			->join('menu_items', 'order_variations.item_id', 'menu_items.id')
 			->select(
 				DB::raw('menu_items.name as name'),
-				DB::raw('sum(item_quantity) as total'),
+				DB::raw('sum(order_variations.quantity) as total'),
 			)
 			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
 			->limit(Helper::getRestaurants()->count())
