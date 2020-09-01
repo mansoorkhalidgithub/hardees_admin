@@ -749,8 +749,10 @@ class OrderController extends Controller
 			'address' => $address,
 
 		];
-
-		$customer = User::role('customer')->where('phone_number', $phone)->first();
+		
+		$userId = Auth::user()->id;
+		
+		$customer = User::where('id', $userId)->where('user_type', 'customer')->first();
 
 		if (!empty($customer)) {
 
@@ -762,7 +764,7 @@ class OrderController extends Controller
 			$customer->assignRole('customer');
 		}
 
-		$userId = Auth::user()->id;
+		
 
 		$bucket = Bucket::where('user_id', '=', $userId)
 

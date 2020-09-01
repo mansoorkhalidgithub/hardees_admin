@@ -49,7 +49,7 @@ class CreateUsersTable extends Migration
 		DB::table('users')->insert([
             [
                 'username' => 'admin',
-                'email' => 'admin@hardees.com',
+                'email' => 'lahore@hardees.com',
                 'password' => '$2y$10$68N8GubryLRmUzyvecqpWuAbix3gURUBs.OJdjF5laaFA2.2OiF96',
 				'user_type' => 'admin',
             ],

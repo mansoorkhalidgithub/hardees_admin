@@ -120,7 +120,18 @@
 			@endforeach
 			<hr>
 			<div class="row">
-				<div class="col-md-6">
+				<div class="col-md-12">
+					<div class="form-group">
+						<button type="button" onclick="newAddon();" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold"> <i class="fa fa-plus"></i> Addon </button>
+                    </div>
+				</div>
+			</div>
+			<div id="addon-container">
+				
+			</div>
+			<hr>
+			<div class="row">
+				<div class="col-md-12">
 					<div class="form-group pull-right">
 						<button type="submit" class="btn" style="background-color: #F6BF2D; color: black; font-weight: bold"> Submit </button>
                     </div>
@@ -161,5 +172,30 @@
 				}
 			});
 	//});
+	
+	var addonId = 0;
+	function newAddon()
+	{
+		addonId++;
+		var newAddon = '<div style="margin-top: 10px" id="row-'+ addonId +'" class="row">'+
+					'<div class="col-md-6">'+
+						'<input type="text" required name="names[]" class="form-control" placeholder="Enter Addon Name">'+
+					'</div>'+
+					'<div class="col-md-5">'+
+						'<input type="text" required name="prices[]" class="form-control" placeholder="Enter Addon Price">'+
+					'</div>'+
+					'<div class="col-md-1">'+
+						'<div class="input-group-btn">'+
+							'<button class="btn btn-warning" onclick="removeAddon('+ addonId +');" type="button"> <i class="fas fa-minus"></i> </button>'+
+						'</div>'+
+					'</div>'+
+				'</div>';
+				
+		$("#addon-container").append(newAddon);
+	}
+	
+	function removeAddon(rowId) {
+		$("#row-"+rowId).remove();
+	}
 </script>
 @stop

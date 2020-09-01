@@ -19,12 +19,14 @@ class MenuController extends Controller {
 	}
 
 	public function index() {
-		$model = MenuItem::all();
+		$createdBy = Auth::user()->id;
+		$model = MenuItem::where('created_by', $createdBy)->get();
 		return view('menu/index', compact('model'));
 	}
 
 	public function menuCategories() {
-		$model = MenuCategory::all();
+		$createdBy = Auth::user()->id;
+		$model = MenuCategory::where('created_by', $createdBy)->get();
 		return view('menu/menu-categories', compact('model'));
 	}
 

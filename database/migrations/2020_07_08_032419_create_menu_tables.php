@@ -22,7 +22,7 @@ class CreateMenuTables extends Migration
 			$table->bigIncrements('id');
 			$table->unsignedBigInteger('menu_category_id')->nullable();
 			$table->unsignedBigInteger('created_by')->nullable();
-			$table->string('name')->unique();
+			$table->string('name');
 			$table->unsignedBigInteger('restaurant_id')->nullable();
 			$table->unsignedInteger('quantity')->nullable();
 			$table->double('price', 8, 2)->nullable();

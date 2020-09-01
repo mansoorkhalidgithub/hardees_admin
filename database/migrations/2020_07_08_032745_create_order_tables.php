@@ -21,7 +21,7 @@ class CreateOrderTables extends Migration
 
         DB::table('order_types')->insert([
             ['type' => 'Delivery'],
-            ['type' => 'Pickup'],
+            ['type' => 'Take Away'],
         ]);
 
         Schema::create('order_status', function (Blueprint $table) {
