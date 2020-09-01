@@ -235,6 +235,7 @@ Route::group(['middleware' => 'auth'], function () {
 	Route::post('variation-items', 'VariationController@items')->name('variation-items');
 	Route::post('add-to-bucket', 'VariationController@addToBucket')->name('add-to-bucket');
 	Route::post('saveOrder', 'OrderController@saveOrder')->name('saveOrder');
+	Route::post('remove-order-item', 'OrderController@removeOrderItem')->name('remove-order-item');
 });
 
 Auth::routes();

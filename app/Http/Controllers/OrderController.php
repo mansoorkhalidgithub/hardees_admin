@@ -3,65 +3,40 @@
 namespace App\Http\Controllers;
 
 use Log;
-
 use Auth;
-
 use App\Cart;
-
 use App\Deal;
-
 use App\User;
-
 use App\Addon;
-
 use App\Order;
-
 use App\Rider;
-
 use App\Bucket;
-
 use App\MenuItem;
-
 use App\AddonType;
-
 use App\OrderDeal;
-
 use App\OrderItem;
-
 use App\OrderAddon;
-
 use App\Restaurant;
-
 use App\MasterModel;
-
 use App\OrderStatus;
-
 use App\RiderStatus;
-
 use App\OrderAssigned;
-
 use App\Helpers\Helper;
-
 use App\OrderVariation;
 use App\Template;
 use App\Tracking;
 use Illuminate\Http\Request;
-
 use Illuminate\Support\Facades\DB;
-
 use Illuminate\Support\Facades\Redirect;
 
 class OrderController extends Controller
-
 {
 
 	public function __construct()
-
 	{
 	}
 
 	public function index()
-
 	{
 
 		$model = Order::where('status', '!=', 1)->orderBy('id', 'DESC')->get();
@@ -72,7 +47,6 @@ class OrderController extends Controller
 	}
 
 	public function edit(Request $request)
-
 	{
 
 		$orderId = $request->id;
@@ -95,7 +69,6 @@ class OrderController extends Controller
 	}
 
 	public function view(Request $request)
-
 	{
 
 		$rider = [];
@@ -122,7 +95,6 @@ class OrderController extends Controller
 	}
 
 	public function newOrders()
-
 	{
 
 		$model = Order::where(['status' => 1])->orderBy('id', 'DESC')->get();
@@ -131,7 +103,6 @@ class OrderController extends Controller
 	}
 
 	public function orderStatus()
-
 	{
 
 		$model = OrderStatus::all();
@@ -140,7 +111,6 @@ class OrderController extends Controller
 	}
 
 	public function nearestRestaurant(Request $request)
-
 	{
 
 		$nearestRestaurants = Restaurant::select(
@@ -222,7 +192,6 @@ class OrderController extends Controller
 	}
 
 	public function searchCustomer(Request $request)
-
 	{
 
 		$output = '';
@@ -259,7 +228,6 @@ class OrderController extends Controller
 	}
 
 	public function save(Request $request)
-
 	{
 
 		$first_name = $request->first_name;
@@ -480,7 +448,6 @@ class OrderController extends Controller
 	}
 
 	public function summary(Request $request)
-
 	{
 
 		$rider = [];
@@ -507,7 +474,6 @@ class OrderController extends Controller
 	}
 
 	public function notification(Request $request)
-
 	{
 
 		$orderId = $request->order_id;
@@ -629,7 +595,6 @@ class OrderController extends Controller
 	}
 
 	public function resend($id)
-
 	{
 
 		$orderId = $id;
@@ -659,7 +624,6 @@ class OrderController extends Controller
 	}
 
 	public function resendOrder(Request $request)
-
 	{
 
 		$ids = OrderAssigned::where('order_id', $request->order_id)->pluck('id');
@@ -705,7 +669,6 @@ class OrderController extends Controller
 	}
 
 	public function saveOrder(Request $request)
-
 	{
 
 		$first_name = $request->first_name;
@@ -900,5 +863,25 @@ class OrderController extends Controller
 		}
 
 		return redirect()->back();
+	}
+	
+	public function removeOrderItem(Request $request)
+	{
+		$orderId = $request->order_id;
+		$orderVeriationId = $request->order_variation_id;
+		
+		$order = Order::where('id', $orderId)->first();
+		
+		$orderVariation = OrderVariation::where('id', $orderVeriationId)->first();
+		
+		//echo $orderVariation->total;exit;
+		
+		$newTotal = $order->total - $orderVariation->total;
+		
+		Order::where('id', $orderId)->update(['sub_total' => $newTotal, 'total' => $newTotal]);
+		
+		OrderVariation::where('id', $orderVeriationId)->delete();
+		
+		echo json_encode(['code' => 200, 'message' => 'success']);
 	}
 }
