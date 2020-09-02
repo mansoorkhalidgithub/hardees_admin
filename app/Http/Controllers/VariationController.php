@@ -37,6 +37,7 @@ class VariationController extends Controller
 		$variationExtras = [];
 
 		$itemId = $request->item_id;
+
 		$variationIds = $request->variation_id;
 		$variationPrices = $request->price;
 		$variationDrinks = $request->has('is_drink') ? $request->is_drink : $variationDrinks;
@@ -56,6 +57,24 @@ class VariationController extends Controller
 
 			ItemVariation::create($data);
 		}
+
+		if($request->has('names'))
+		{
+			$names = $request->names;
+			$prices = $request->prices;
+
+			foreach($names as $keyOne => $name)
+			{
+				$dataOne = [
+					'menu_item_id' => $itemId,
+					'name' => $names[$keyOne],
+					'price' => $prices[$keyOne],
+				];
+
+				Addon::create($dataOne);
+			}
+		}
+
 
 		return redirect('menu');
 	}
@@ -141,23 +160,37 @@ class VariationController extends Controller
 		$addons = Addon::all();
 
 		if (count($addons) > 0) {
-			$html .= '<h5 style="color:black; font-size: 16px">Choose your Add Ons<span style="font-size: 12px; color:#7c888d; float: right; "> OPTIONAL</span></h5>';
-			$html .= '<span style="color:black; font-size: 13px">Select up to 4 (Optional)</span><br>';
-			$html .= '<table class="table text-light"><tbody>';
 
-			foreach ($addons as $addon) {
-				$price = "+ PKR " . $addon->price;
+			$addons = [];
 
-				$html .= '<tr>
-						<td  style="border-bottom:1px solid transparent;color:black"><input id="' . $addon->id . '" type="checkbox" name="addon" value="' . $addon->id . '"> ' . $addon->name . ' </td>
+			$addons = Addon::where('menu_item_id', $itemId)->get();
 
-						<td  style="border-bottom:1px solid transparent;color:black; font-size: 12px">' . $price . '</td>
-					</tr>';
+			if(count($addons) > 0) {
+				$addons = $addons;
+			} else {
+				$addons = Addon::all();
 			}
-			$html .= '</tbody></table><hr><br>';
-		}
 
-		echo $html;
+			if(count($addons) > 0)
+			{
+				$html .= '<h5 style="color:black; font-size: 16px">Choose your Add Ons<span style="font-size: 12px; color:#7c888d; float: right; "> OPTIONAL</span></h5>';
+				$html .= '<span style="color:black; font-size: 13px">Select up to 4 (Optional)</span><br>';
+				$html .= '<table class="table text-light"><tbody>';
+
+				foreach ($addons as $addon) {
+					$price = "+ PKR " . $addon->price;
+
+					$html .= '<tr>
+							<td  style="border-bottom:1px solid transparent;color:black"><input id="' . $addon->id . '" type="checkbox" name="addon" value="' . $addon->id . '"> ' . $addon->name . ' </td>
+
+							<td  style="border-bottom:1px solid transparent;color:black; font-size: 12px">' . $price . '</td>
+						</tr>';
+				}
+				$html .= '</tbody></table><hr><br>';
+			}
+
+			echo $html;
+		}
 	}
 
 	public function addToBucket(Request $request)

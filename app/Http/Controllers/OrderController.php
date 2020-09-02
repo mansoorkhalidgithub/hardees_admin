@@ -519,7 +519,7 @@ class OrderController extends Controller
 
 		$notification = "";
 
-		if (!empty($rider) && $rider->device_token) {
+		if (!empty($rider) && $rider->device_token && $order->order_type_id == 1) {
 
 			$riderNotificationData = [
 

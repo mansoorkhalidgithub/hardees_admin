@@ -100,8 +100,8 @@
             left: 50%;
             margin-left: -80px;
         }
-    
-         Popup arrow 
+
+         Popup arrow
         .popup .popuptext::after {
             content: "";
             position: absolute;
@@ -226,7 +226,7 @@
     /*    .input-number-group .input-number-decrement {
             margin-top: 0.3rem;
         }
-    
+
         .input-number-group .input-number-increment {
             margin-top: 0.3rem;
         }*/
@@ -288,21 +288,11 @@
 
                     @foreach($itemCategories as $key => $menuCategory)
                     <h4 class="h3 mb-0 fontawesomeheading">
-                        <!--<i  data-toggle="collapse" href="#collapse1" class="fas fa-fw fa-1x fa-plus-square fa-sm text-white-300" style="color: #4c4c4c; cursor: pointer"></i>-->
                         {{ $menuCategory->name }}
                     </h4>
                     <br>
                     <div id="collapse1" class="panel-collapse">
 
-                        <!--<p style="margin: 0px 10px">
-								<select class="form-control textInput" data-live-search="true" data-width="100%" style="width: 100%; border-radius: 0px;" id="menu_category" onchange="menuItems(this.value)" name="menu_category">
-									@foreach($itemCategories as $key => $category)
-									<option value="{{ $category->id }}"> {{ $category->name }} </option>
-									@endforeach
-								</select>
-							</p>-->
-
-                        <!--<div class="row" id="menu-container" data-id="category-{{ $itemCategories[0]->id }}" style="margin: 10px 10px 10px 30px">-->
                         <div class="row" id="menu-container" style="margin: 10px 10px 10px 30px">
                             @foreach($menuCategory->menuItems as $key => $item)
                             <div class="col-sm-2">
@@ -323,18 +313,30 @@
                     </div>
                     <hr><br>
                     @endforeach
-                    <div class="row">
-                        <div class="col-sm-12 m-b-2">
-                            <input id="menu" name="menu" class="form-control textInput abcdefgh" type="text" value="" placeholder="Enter Menu" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-sm-12 m-b-2">
-                            <input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
-                            <input type="hidden" name="latitude" id="latitude">
-                            <input type="hidden" name="longitude" id="longitude">
-                            <input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
-                        </div>
+                  
+					<div class="row">
+						<div class="col-sm-12 m-b-2">
+							<input required id="menu" name="menu" class="form-control textInput abcdefgh" type="text" value="" placeholder="Enter Menu" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 m-b-2">
+							<div id="order_types">
+								<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="order_type_id" required>
+									<option>Select Order Type</option>
+									<option value="1"> Home Delivery </option>
+									<option value="2"> Take Away </option>
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-sm-12 m-b-2">
+							<input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+							<input type="hidden" name="latitude" id="latitude">
+							<input type="hidden" name="longitude" id="longitude">
+							<input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
+						</div>
 
                         <div class="col-sm-12">
 
