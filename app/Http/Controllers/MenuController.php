@@ -180,16 +180,24 @@ class MenuController extends Controller {
 		$catgorey->save();
 		return redirect('menu-categories')->with('message', 'Menue category updated successfully');
 	}
-	public function addCategory(Request $request) {
+	public function addCategory(Request $request) 
+	{
 		$this->validateInput($request);
-		$user = new MenuCategory;
-		$user->name = $request->name;
-		$user->save();
+		
+		$createdBy = Auth::user()->id;
+		
+		$category = new MenuCategory;
+		$category->name = $request->name;
+		$category->created_by = $createdBy;
+		$category->type = $request->type;
+		$category->save();
+		
 		return redirect('menu-categories')->with('message', 'Menue category added successfully');
 	}
 	private function validateInput($request) {
 		$this->validate($request, [
 			'name' => 'required|max:60|unique:menu_categories,name',
+			'type' => 'required',
 		]);
 
 	}

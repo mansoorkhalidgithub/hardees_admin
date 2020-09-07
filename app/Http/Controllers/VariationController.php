@@ -218,4 +218,9 @@ class VariationController extends Controller
 
 		echo json_encode($response);
 	}
+	
+	public function manageDeal(Request $request)
+	{
+		echo $request->id;
+	}
 }

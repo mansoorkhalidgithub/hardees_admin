@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Auth;
 use App\Cart;
+use App\Bucket;
 use App\User;
 use App\Deal;
 use App\Addon;
@@ -24,13 +25,13 @@ class BookingController extends Controller
     {
 		$userId = Auth::user()->id;
 		
-		$cart = Cart::where('user_id', $userId)->get();
+		$cart = Bucket::where('user_id', $userId)->get();
 		
 		$cartIds = $cart->pluck('id');
 		
-		Cart::destroy($cartIds);
+		Bucket::destroy($cartIds);
 		
-		$itemCategories = MenuCategory::with('menuItems')->where('created_by', $userId)->get();
+		$itemCategories = MenuCategory::with('menuItems')->where('created_by', $userId)->orderBy('type', 'ASC')->get();
 		$items = MenuItem::all();
 		$dealCategories = DealCategory::where('status', 1)->get();
 		$deals = Deal::where('status', 1)->get();

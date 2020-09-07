@@ -23,9 +23,10 @@
 				<thead>
 					<tr style="color:black">
 						<th scope="col">ID</th>
-									<th scope="col">Name1</th>
+						<th scope="col">Category Name</th>
+						<th scope="col">Type</th>
 
-									<th scope="col">Action</th>
+						<th scope="col">Action</th>
 					</tr>
 				</thead>
 				<tbody>
@@ -33,6 +34,7 @@
 								<tr>
 									<th scope="row"> {{ ++$key }} </th>
 									<td> {{ $product->name }} </td>
+									<td> {{ $product->type }} </td>
 
 									<td>
 	<a href="edit-category/{{$product->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a></td>

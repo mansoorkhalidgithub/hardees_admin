@@ -196,6 +196,7 @@ Route::group([
 ], function () {
 	Route::get('menu-variation', 'VariationController@create')->name('menu-variation');
 	Route::post('save-variation', 'VariationController@save')->name('save-variation');
+	Route::get('manage-deal', 'VariationController@manageDeal')->name('manage-deal');
 });
 Route::group([
 	'middleware' => 'auth',
