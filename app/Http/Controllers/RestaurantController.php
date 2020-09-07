@@ -16,6 +16,7 @@ use Intervention\Image\Facades\Image;
 use Illuminate\Support\Facades\Session;
 use App\Http\Requests\RestaurantRequest;
 use App\OrderAssigned;
+use Carbon\CarbonInterval;
 use Illuminate\Support\Facades\Redirect;
 
 class RestaurantController extends Controller
@@ -119,18 +120,40 @@ class RestaurantController extends Controller
 		$order_ids = Order::where('restaurant_id', $id)
 			->where('status', 6)->pluck('id');
 		$rider = $this->getriderDetail($id);
+		$rider_1 = $this->get_rider_detail($id);
 		// dd($rider);
-		return view('restaurant.show', compact('model', 'rider', 'total', 'today', 'week', 'month', 'pre_month', 'complete', 'inprogress'));
+		$averageCompletionTime = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->where('restaurant_id', $id)
+			->whereBetween('created_at', [$startMonth, $endMonth])
+			->get();
+		$averageCompletionTime = CarbonInterval::seconds((int)$averageCompletionTime[0]->timediff)
+			->cascade()
+			->forHumans();
+		// dd($averageCompletionTime);
+		return view('restaurant.show', compact('averageCompletionTime', 'model', 'rider_1', 'rider', 'total', 'today', 'week', 'month', 'pre_month', 'complete', 'inprogress'));
 	}
 
 	protected function getriderDetail($id)
 	{
 		$order_ids = Order::where('restaurant_id', $id)
 			->where('status', 6)->pluck('id');
-		$odr_ass = OrderAssigned::whereIn('order_id', $order_ids)->pluck('rider_id');
+		$odr_ass = OrderAssigned::whereIn('order_id', $order_ids)
+			->where('trip_status_id', 5)->pluck('rider_id');
 		$riders = User::whereIn('id', $odr_ass)
 			->get();
 		return $riders->each->append('RiderOrderCount');
+	}
+	protected function get_rider_detail($id)
+	{
+		$order_ids = Order::where('restaurant_id', $id)
+			->where('status', 6)->pluck('id');
+		$odr_ass = OrderAssigned::whereIn('order_id', $order_ids)
+			->where('trip_status_id', 11)->pluck('rider_id');
+		return User::whereIn('id', $odr_ass)
+			->get();
+		// return $riders->each->append('RiderOrderCount');
 	}
 	public function update(RestaurantRequest $request)
 	{
@@ -357,6 +380,15 @@ class RestaurantController extends Controller
 
 		$earning = [$previous, $current];
 		$data =  [$complete, $inprogress];
-		return response()->json(compact('data', 'earning'));
+		$averageCompletionTime = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->where('restaurant_id', $request->id)
+			->whereBetween('created_at', [$start, $end])
+			->get();
+		$averageCompletionTime = CarbonInterval::seconds((int)$averageCompletionTime[0]->timediff)
+			->cascade()
+			->forHumans();
+		return response()->json(compact('data', 'earning', 'averageCompletionTime'));
 	}
 }

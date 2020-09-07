@@ -105,6 +105,13 @@
  				</div>
 
  			</div>
+ 			<div class="row">
+ 				<marquee>
+ 					<p style="font-family: Impact; font-size: 18pt">Average Delivery Time In Current Week:
+ 						<span style="color:red" id="avg_delivery">{{$averageCompletionTime}}</span>
+ 					</p>
+ 				</marquee>
+ 			</div>
  			<hr>
  			<div class="row">
  				<div class="col-sm-12">
@@ -168,7 +175,8 @@
  			</div>
  			<hr>
  			<div class="row" style="margin-top: 1rem">
- 				<div class="col-sm-12">
+ 				<div class="col-sm-6">
+ 					<h1>Completed Rides</h1>
  					<div class="uper">
  						<table class="table table-striped table-bordered" id="restaurant_riders" style="width:100%; font-size: 15px; color: black;">
  							<thead>
@@ -176,6 +184,7 @@
  									<th>#</th>
  									<th>Rider Name</th>
  									<th>Total Amount</th>
+ 									<th>Rider Status</th>
  								</tr>
  							</thead>
  							<tbody>
@@ -187,7 +196,50 @@
  											{{$rider->name}}
  										</a>
  									</td>
- 									<td>{{$rider->RiderOrderCount*75}}</td>
+ 									<td>{{$rider->RiderOrderCount*45}}</td>
+ 									<td>
+ 										<a type="button" class="btn {{$rider->getRiderStatus->online_status == 'online' ? 'btn-primary' : 'btn-danger'}}"> <span style="font-size: 12px; font-weight: bold;color:white">
+ 												{{$rider->getRiderStatus->online_status}}
+ 											</span>
+ 										</a>
+ 									</td>
+ 								</tr>
+ 								@endforeach
+
+ 							</tbody>
+
+ 						</table>
+ 					</div>
+ 				</div>
+ 				<div class="col-sm-6">
+ 					<h1>Forcefully Completed Rides</h1>
+ 					<div class="uper">
+ 						<table class="table table-striped table-bordered" id="riders" style="width:100%; font-size: 15px; color: black;">
+ 							<thead>
+ 								<tr style="font-weight: bold; font-size: 18px; font-family: serif; background-color: white">
+ 									<th>#</th>
+ 									<th>Rider Name</th>
+ 									<th>Total Amount</th>
+ 									<th>Rider Status</th>
+ 								</tr>
+ 							</thead>
+ 							<tbody>
+ 								@foreach($rider_1 as $key => $rider)
+ 								<tr>
+ 									<td>{{++$key}}</td>
+ 									<td>
+ 										<a href="{{route('rider.show', $rider->id)}}">
+ 											{{$rider->name}}
+ 										</a>
+ 									</td>
+ 									<td>{{App\OrderAssigned::where('rider_id',$rider->id)->where('trip_status_id',11)->count()*45}}</td>
+ 									<td>
+ 										<a type="button" class="btn {{$rider->getRiderStatus->online_status == 'online' ? 'btn-primary' : 'btn-danger'}}">
+ 											<span style="font-size: 12px; font-weight: bold;color:white">
+ 												{{$rider->getRiderStatus->online_status}}
+ 											</span>
+ 										</a>
+ 									</td>
  								</tr>
  								@endforeach
 
@@ -211,6 +263,7 @@
  	$(document).ready(function() {
  		$.noConflict();
  		var table = $('#restaurant_riders').DataTable();
+ 		$('#riders').DataTable();
  		var ctx1 = document.getElementById("earningChart");
  		var earningChart = new Chart(ctx1, {
  			type: "doughnut",
@@ -284,6 +337,7 @@
  				},
  				success: function(data) {
  					console.log(data)
+ 					$('#avg_delivery').text(data.averageCompletionTime);
  					myPieChart.data.datasets[0].data = data.data;
  					myPieChart.update();
  					earningChart.data.datasets[0].data = data.earning;

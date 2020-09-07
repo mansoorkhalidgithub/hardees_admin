@@ -6,16 +6,19 @@ use Illuminate\Database\Migrations\Migration;
 
 class CreateMenuTables extends Migration
 {
-    /**
-     * Run the migrations.
-     *
-     * @return void
-     */
-    public function up() {
+	/**
+	 * Run the migrations.
+	 *
+	 * @return void
+	 */
+	public function up()
+	{
 		Schema::create('menu_categories', function (Blueprint $table) {
 			$table->bigIncrements('id');
 			$table->string('name')->nullable();
 			$table->string('image')->nullable();
+
+			$table->tinyInteger('sequence')->nullable();
 		});
 
 		Schema::create('menu_items', function (Blueprint $table) {
@@ -30,6 +33,7 @@ class CreateMenuTables extends Migration
 			$table->double('weight', 8, 2)->nullable();
 			$table->integer('is_favourite')->nullable();
 			$table->tinyInteger('status')->default(1);
+			$table->tinyInteger('web_status')->default(1);
 			$table->string('image')->nullable();
 			$table->text('ingredients')->nullable();
 			$table->timestamps();
@@ -38,7 +42,6 @@ class CreateMenuTables extends Migration
 			$table->foreign('restaurant_id')->references('id')->on('restaurants')->onDelete('cascade');
 			$table->foreign('created_by')->references('id')->on('users')->onDelete('cascade');
 		});
-
 	}
 
 	/**
@@ -46,7 +49,8 @@ class CreateMenuTables extends Migration
 	 *
 	 * @return void
 	 */
-	public function down() {
+	public function down()
+	{
 		Schema::dropIfExists('menu_items');
 		Schema::dropIfExists('menu_categories');
 	}

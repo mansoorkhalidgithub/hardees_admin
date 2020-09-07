@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use Log;
-use Auth;
 use App\Cart;
 use App\Deal;
 use App\User;
@@ -26,6 +25,7 @@ use App\OrderVariation;
 use App\Template;
 use App\Tracking;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Redirect;
 
@@ -712,9 +712,9 @@ class OrderController extends Controller
 			'address' => $address,
 
 		];
-		
+
 		$userId = Auth::user()->id;
-		
+
 		$customer = User::where('id', $userId)->where('user_type', 'customer')->first();
 
 		if (!empty($customer)) {
@@ -727,7 +727,7 @@ class OrderController extends Controller
 			$customer->assignRole('customer');
 		}
 
-		
+
 
 		$bucket = Bucket::where('user_id', '=', $userId)
 
@@ -864,24 +864,24 @@ class OrderController extends Controller
 
 		return redirect()->back();
 	}
-	
+
 	public function removeOrderItem(Request $request)
 	{
 		$orderId = $request->order_id;
 		$orderVeriationId = $request->order_variation_id;
-		
+
 		$order = Order::where('id', $orderId)->first();
-		
+
 		$orderVariation = OrderVariation::where('id', $orderVeriationId)->first();
-		
+
 		//echo $orderVariation->total;exit;
-		
+
 		$newTotal = $order->total - $orderVariation->total;
-		
+
 		Order::where('id', $orderId)->update(['sub_total' => $newTotal, 'total' => $newTotal]);
-		
+
 		OrderVariation::where('id', $orderVeriationId)->delete();
-		
+
 		echo json_encode(['code' => 200, 'message' => 'success']);
 	}
 }

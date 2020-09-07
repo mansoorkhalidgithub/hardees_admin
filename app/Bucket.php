@@ -20,7 +20,10 @@ class Bucket extends Model
 		'deal_id',
 		'deal_quantity'
 	];
-
+	public function item()
+	{
+		return $this->belongsTo(MenuItem::class, 'item_id');
+	}
 	public function getTotalAttribute()
 	{
 		$variationId = $this->variation_id;

@@ -313,30 +313,30 @@
                     </div>
                     <hr><br>
                     @endforeach
-                  
-					<div class="row">
-						<div class="col-sm-12 m-b-2">
-							<input required id="menu" name="menu" class="form-control textInput abcdefgh" type="text" value="" placeholder="Enter Menu" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 m-b-2">
-							<div id="order_types">
-								<select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="order_type_id" required>
-									<option>Select Order Type</option>
-									<option value="1"> Home Delivery </option>
-									<option value="2"> Take Away </option>
-								</select>
-							</div>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-sm-12 m-b-2">
-							<input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
-							<input type="hidden" name="latitude" id="latitude">
-							<input type="hidden" name="longitude" id="longitude">
-							<input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
-						</div>
+
+                    <div class="row">
+                        <div class="col-sm-12 m-b-2">
+                            <input required id="menu" name="menu" class="form-control textInput abcdefgh" type="text" value="" placeholder="Enter Menu" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 m-b-2">
+                            <div id="order_types">
+                                <select readonly class="form-control" data-width="100%" style="margin-bottom: 10px; border-radius: 0px" name="order_type_id" required>
+                                    <option>Select Order Type</option>
+                                    <option value="1"> Home Delivery </option>
+                                    <option value="2"> Take Away </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-12 m-b-2">
+                            <input required id="drop_off_location" name="drop_off_location" class="form-control textInput abcdefgh" type="text" value="" placeholder="Drop Off Location" style="margin-bottom: 10px; width: 100%; border-radius: 0px">
+                            <input type="hidden" name="latitude" id="latitude">
+                            <input type="hidden" name="longitude" id="longitude">
+                            <input type="hidden" name="location_search_filter" id="location_search_filter" value="0">
+                        </div>
 
                         <div class="col-sm-12">
 

@@ -318,3 +318,5 @@ Route::group([
 	Route::post('store-restaurant-user', 'RestaurantController@storeRestaurantUser')->name('store-restaurant-user');
 });
 Route::get('jsonobj', 'HomeController@jsonObj')->name('json');
+
+Route::get('order-detail', 'HomeController@orderDetail')->name('order.detail');

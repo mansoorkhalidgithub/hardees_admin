@@ -18,8 +18,15 @@ use App\Helpers\Helper;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\ItemVariation;
+use App\OrderAssigned;
+use App\OrderVariation;
+use App\Restaurant;
+use App\Tracking;
+use App\Transaction;
 use App\Variation;
+use Exception;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 use Kreait\Firebase\Messaging\CloudMessage;
 use Kreait\Firebase\Messaging\Notification;
@@ -298,7 +305,7 @@ class OrderApiController extends Controller
 		}
 	}
 
-	public function checkout(Request $request)
+	/* public function checkout(Request $request)
 	{
 		$model = new Order;
 		$modelItems = new OrderItem;
@@ -408,7 +415,7 @@ class OrderApiController extends Controller
 		];
 
 		return response()->json($response);
-	}
+	} */
 
 	public static function notification(Request $request)
 	{
@@ -463,7 +470,6 @@ class OrderApiController extends Controller
 		return response()->json($response);
 	}
 
-
 	public function variations(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
@@ -506,34 +512,111 @@ class OrderApiController extends Controller
 				'method' => $request->route()->getActionMethod(),
 				'errors' => $validator->messages()
 			];
-
 			return response()->json($response);
 		}
+
 		$addons = "";
-		if (!empty($request->addons) && count($request->addons) > 0) {
-			$addons = serialize($request->addons);
+		if (!empty($request->addons)) {
+			$addons = serialize(json_decode($request->addons));
 		}
+		$model = Bucket::where('user_id', $userId)
+			->where('item_id', $request->item_id)
+			->where('addons', $addons)
+			->where('variation_id', $request->variation_id)
+			->first();
+		if ($model) {
+			if (isset($request->drink_id, $request->side_id, $request->extra_id)) {
+				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->side_id, $request->extra_id)) {
+				if ($model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->drink_id, $request->extra_id)) {
+				if ($model->drink_id == $request->drink_id && $model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->drink_id, $request->side_id)) {
+				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->side_id)) {
+				if ($model->side_id == $request->side_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->drink_id)) {
+				if ($model->drink_id == $request->drink_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} elseif (isset($request->extra_id)) {
+				if ($model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} else {
+				$model->update(['quantity' => $model->quantity + $request->quantity]);
+				$response = [
+					'status' => 1,
+					'method' => $request->route()->getActionMethod(),
+					'message' => 'success',
+				];
+				return response()->json($response);
+			}
+		}
+		$data = $request->all();
+		$data['user_id'] = $userId;
+		$data['addons'] = $addons;
 
-		$data = [
-			'user_id' => $userId,
-			'item_id' => $request->item_id,
-			'variation_id' => $request->variation_id,
-			'drink_id' => $request->drink_id,
-			'side_id' => $request->side_id,
-			'extra_id' => $request->extra_id,
-			'quantity' => $request->quantity,
-			'addons' => $addons,
-		];
+		Bucket::create($data);
 
-		$bucket = Bucket::create($data);
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'success',
-			'data' => [
-				'cart_id' => $bucket->id
-			]
 		];
+
 
 		return response()->json($response);
 	}
@@ -543,11 +626,17 @@ class OrderApiController extends Controller
 		$user = Auth::user();
 		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
 		$bucket->each->append('total', 'addon');
+		$vat = $bucket->sum('total') * .0;
+		$delivery_charges = 0;
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'success',
-			'data' => $bucket
+			'data' => $bucket,
+			'sub_total' => $bucket->sum('total'),
+			'delivery_charges' => $delivery_charges,
+			'vat' => $vat,
+			'total_amount' => $bucket->sum('total') + $delivery_charges + $vat,
 		];
 
 		return response()->json($response);
@@ -592,6 +681,237 @@ class OrderApiController extends Controller
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => $message,
+		];
+
+		return response()->json($response);
+	}
+
+	public function cartCount(Request $request)
+	{
+		$userId = (Auth::user()) ? Auth::user()->id : -1;
+
+		$bucket = Bucket::where('user_id', '=', $userId)
+
+			->where('status', '=', 1)->sum('quantity');
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Success',
+			'count' => $bucket,
+		];
+		return response()->json($response);
+	}
+
+	public function checkout(Request $request)
+	{
+
+		$userId = Auth::user()->id;
+
+		$bucket = Bucket::where('user_id', '=', $userId)
+			->where('status', '=', 1)->get();
+		if ($bucket->isEmpty()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'message' => 'Please Choose Items',
+
+			];
+
+			return response()->json($response);
+		}
+		$bucket->each->append(
+			'total'
+		);
+		$restaurant_id = $this->nearestRestaurant($request->latitude, $request->longitude);
+		$total = $bucket->sum('total') + $request->delivery_charges;
+		if ($restaurant_id) {
+			$orderData = [
+				'user_id' => $userId,
+				'restaurant_id' => $restaurant_id,
+				'latitude' => $request->latitude,
+				'longitude' => $request->longitude,
+				'customer_address' => $request->customer_address,
+				'order_type_id' => 4,
+				'payment_method_id' => $request->payment_method_id,
+				'sub_total' => $total,
+				'total' => $total,
+			];
+			$newOrder = Order::create($orderData);
+			$orderId = $newOrder->id;
+
+			foreach ($bucket as $key => $entry) {
+				$data = [
+					'order_id' => $orderId,
+					'user_id' => $userId,
+					'item_id' => $entry->item_id,
+					'variation_id' => $entry->variation_id,
+					'drink_id' => $entry->drink_id,
+					'side_id' => $entry->side_id,
+					'extra_id' => $entry->extra_id,
+					'quantity' => $entry->quantity,
+					'addons' => $entry->addons,
+				];
+				OrderVariation::create($data);
+			}
+			// dd(count($data));
+			$bucketIds = $bucket->pluck('id');
+			Bucket::destroy($bucketIds);
+			$restaurantUsers = User::role('user')->where('restaurant_id', $restaurant_id)->get();
+
+			foreach ($restaurantUsers as $user) {
+				$restaurantNotificationData = [
+					"order_id" => '',
+					"device_token" => $user->device_token,
+					"status" => 1,
+					"message" => "New Order Arrived"
+				];
+
+				// Helper::sendNotification($restaurantNotificationData, '');
+				break;
+			}
+		}
+		$riderId = $this->nearestRider($restaurant_id);
+		if ($riderId) {
+			$assignData = [
+				'order_id' => $orderId,
+				'rider_id' => $riderId,
+				'trip_status_id' => 1,
+			];
+			$rider = User::find($riderId);
+			$riderNotificationData = [
+				"order_id" => $orderId,
+				"device_token" => $rider->device_token,
+				"status" => "TR",
+				"message" => "New Order Assigned"
+			];
+
+			Helper::sendNotification($riderNotificationData, $rider->device_type);
+			$modelAssign = new OrderAssigned();
+
+			$modelAssign->create($assignData);
+		}
+		$order_reference = Helper::orderReference($orderId);
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Order placed successfully',
+			'data' => [
+				'contact_number' => Auth::user()->phone_number,
+				'order_reference' => $order_reference,
+				// 'rider_id' => $rider->id,
+				// 'notification' => json_decode($notification),
+			],
+		];
+
+		return response()->json($response);
+	}
+
+	protected function nearestRestaurant($latitude, $longitude)
+	{
+		$nearestRestaurants = Restaurant::select(
+			"*",
+			DB::raw("6371 * acos(cos(radians(" . $latitude . "))
+				* cos(radians(restaurants.latitude))
+				* cos(radians(restaurants.longitude) - radians(" . $longitude . "))
+				+ sin(radians(" . $latitude . "))
+				* sin(radians(restaurants.latitude))) AS nearest")
+		)
+			->where(['status' => 1])
+			->having('nearest', '<', 10)
+			->orderBy("nearest", 'asc')
+			->limit(1)
+			->get();
+		// echo "<pre>";
+		// print_r($nearestRestaurants[0]->id);
+		// exit;
+		return $nearestRestaurants[0]->id;
+	}
+
+	protected function nearestRider($restaurantId)
+	{
+
+		$availableRiderId = "";
+
+		$restaurantRiders = User::role('rider')->where('restaurant_id', $restaurantId)->get();
+
+		// dd($restaurantRiders);
+		foreach ($restaurantRiders as $key => $rider) {
+
+			if ($rider->getRiderStatus->trip_status == 'free' && $rider->getRiderStatus->online_status == 'online') {
+
+				$availableRiderId = $rider->id;
+				// Help
+				break;
+			}
+		}
+		return $availableRiderId;
+	}
+
+	public function currentOrder(Request $request)
+	{
+		$model = Order::with('restaurant')->where('user_id', Auth::user()->id)
+			->whereIn('status', [1, 2, 3, 4, 5])->where('order_type_id', 4)->first();
+		if (!empty($model)) {
+			$model->append('orderStatus', 'orderItems', 'riderAsigned');
+			$flag = 'yes';
+		} else {
+			$flag = 'no';
+		}
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Current Order Fetched successfully',
+			'flag' => $flag,
+			'current_order' => $model,
+		];
+
+		return response()->json($response);
+	}
+
+	public function ordersHistory(Request $request)
+	{
+		$model = Order::with('restaurant')->where('user_id', Auth::user()->id)
+			->where('status', 6)
+			->where('order_type_id', 4)->get();
+		if (!empty($model))
+			$model->each->append('orderStatus', 'orderItems', 'riderAsigned');
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Orders History Fetched successfully',
+			'current_order' => $model,
+		];
+
+		return response()->json($response);
+	}
+
+
+	public function trackorder(Request $request)
+	{
+		$model = Order::with('restaurant')->where('user_id', Auth::user()->id)
+			->whereIn('status', [1, 2, 3, 4, 5])->where('order_type_id', 4)->first();
+		$track_rider = [];
+		if (!empty($model)) {
+			$model->append('riderAsigned');
+			$track_rider = Tracking::where('order_id', $model->id)->first();
+		}
+		$rider_lat = ($track_rider) ? $track_rider->current_lat : $model->restaurant->latitude;
+		$rider_lng = ($track_rider) ? $track_rider->current_lng : $model->restaurant->longitude;;
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Tracking',
+			'data' => [
+				'start_lat' => $model->restaurant->latitude,
+				'start_lng' => $model->restaurant->longitude,
+				'end_lat' => $model->latitude,
+				'end_lng' => $model->longitude,
+				'rider_lat' => $rider_lat,
+				'rider_lng' => $rider_lng,
+				'rider' => $model->riderAsigned
+			]
 		];
 
 		return response()->json($response);

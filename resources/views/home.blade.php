@@ -108,7 +108,7 @@ use App\Helpers\Helper;
   </div>
   <div class="row">
     <marquee>
-      <p style="font-family: Impact; font-size: 18pt">Average Delivery Time:
+      <p style="font-family: Impact; font-size: 18pt">Average Delivery Time In Current Week:
         <span style="color:red" id="avg_delivery"></span>
       </p>
     </marquee>
@@ -140,7 +140,7 @@ use App\Helpers\Helper;
         <!-- Card Body -->
         <div class="card-body">
           <div class="chart-area">
-            <div style="height: 280px; width: 100%;" id="myAreaChart"></div>
+            <div style="height: 280px; width: 100%;" id="earning_chart"></div>
           </div>
         </div>
       </div>
@@ -207,7 +207,7 @@ use App\Helpers\Helper;
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <div id="pie-chart" style="height: 300px; width: 100%;"></div>
+          <div id="order-detail" style="height: 300px; width: 100%;"></div>
         </div>
       </div>
     </div>
@@ -217,12 +217,12 @@ use App\Helpers\Helper;
       <div class="card shadow mb-4">
         <!-- Card Header - Dropdown -->
         <div class="card-header py-3 bg-secondary d-flex flex-row align-items-center justify-content-between">
-          <h6 class="m-0 font-weight-bold text-white">Average Delivery Time</h6>
+          <h6 class="m-0 font-weight-bold text-white">Order Types</h6>
 
         </div>
         <!-- Card Body -->
         <div class="card-body">
-          <div id="avg_delivery" style="height: 300px; width: 100%;"></div>
+          <div id="pyramid-chart" style="height: 300px; width: 100%;"></div>
         </div>
       </div>
     </div>
@@ -319,7 +319,7 @@ use App\Helpers\Helper;
       },
     });
 
-    /* var chart = new CanvasJS.Chart("pyramid-chart", {
+    var chart = new CanvasJS.Chart("pyramid-chart", {
 
       animationEnabled: true,
       data: [{
@@ -336,12 +336,12 @@ use App\Helpers\Helper;
         ]
       }]
     });
-    chart.render(); */
+    chart.render();
 
     var updateChart = function() {
       $.ajax({
         url: "{{ route('api.chart') }}",
-        type: 'POST',
+        type: 'post',
         dataType: 'json',
         data: {
           "_token": "{{ csrf_token() }}",
@@ -397,7 +397,7 @@ use App\Helpers\Helper;
             y: data[i].total
           });
         }
-        $("#myAreaChart").CanvasJSChart(options);
+        $("#earning_chart").CanvasJSChart(options);
       }
       $.getJSON("{{env('APP_URL')}}/jsonobj", addData)
     }
@@ -407,6 +407,69 @@ use App\Helpers\Helper;
       updateDailySale();
     }, 10000);
 
+    var order_detail = new CanvasJS.Chart("order-detail", {
+      axisX: {
+        valueFormatString: "YYYY",
+        interval: 1,
+        intervalType: "month",
+      },
+
+      data: [{
+          type: "stackedBar",
+          legendText: "WEB",
+          showInLegend: "true",
+          dataPoints: [{
+              x: new Date(2012, 01, 1),
+              y: 71
+            },
+            {
+              x: new Date(2012, 02, 1),
+              y: 55
+            },
+            {
+              x: new Date(2012, 03, 1),
+              y: 50
+            },
+            {
+              x: new Date(2012, 04, 1),
+              y: 65
+            },
+            {
+              x: new Date(2012, 05, 1),
+              y: 95
+            },
+          ],
+        },
+        {
+          type: "stackedBar",
+          legendText: "UAN",
+          showInLegend: "true",
+          dataPoints: [{
+              x: new Date(2012, 01, 1),
+              y: 71
+            },
+            {
+              x: new Date(2012, 02, 1),
+              y: 55
+            },
+            {
+              x: new Date(2012, 03, 1),
+              y: 50
+            },
+            {
+              x: new Date(2012, 04, 1),
+              y: 65
+            },
+            {
+              x: new Date(2012, 05, 1),
+              y: 95
+            },
+          ],
+        },
+      ],
+    });
+
+    order_detail.render();
   });
 </script>
 

@@ -75,17 +75,17 @@ class HomeController extends Controller
 		$inprogress = Order::whereIn('status', [1, 2, 3, 4, 5])->count();
 		$data = [$inprogress, $complete];
 		$branchHtml = $this->branchData($branchHtml);
-
+		$startWeek = Carbon::now()->startOfWeek();
+		$endWeek = Carbon::now()->endOfWeek();
 		$model = DB::table('orders')
 			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
 			->where('status', 6)
+			// ->whereBetween('created_at', [$startWeek, $endWeek])
 			->get();
 		$total_complete = Order::where('status', 6)->count();
 		$averageCompletionTime = CarbonInterval::seconds((int)$model[0]->timediff)
 			->cascade()
 			->forHumans();
-
-
 		return response()->json(compact('data', 'totalOrders', 'html', 'totalEarning', 'completeOrders', 'branchHtml', 'averageCompletionTime'));
 	}
 
@@ -124,20 +124,20 @@ class HomeController extends Controller
 	}
 	public function index()
 	{
-		$getTotal = OrderItem::all()->sum('quantity');
-		$data = DB::table('order_variations')
-			->join('menu_items', 'order_variations.item_id', 'menu_items.id')
+		// $getTotal = OrderItem::all()->sum('quantity');
+		$data = DB::table('orders')
+			->join('order_types', 'orders.order_type_id', 'order_types.id')
 			->select(
-				DB::raw('menu_items.name as name'),
-				DB::raw('sum(order_variations.quantity) as total'),
+				DB::raw('order_types.type as name'),
+				DB::raw('count(orders.order_type_id) as total'),
 			)
-			->groupBy(DB::raw('name'))->orderBy('total', 'DESC')
-			->limit(Helper::getRestaurants()->count())
+			->groupBy(DB::raw('name'))
+			->orderBy('total', 'desc')
 			->get();
 
 		// print_r($data);
 		// die;
-		return view('home', compact('data', 'getTotal'));
+		return view('home', compact('data'));
 	}
 	//
 	//
@@ -421,5 +421,30 @@ class HomeController extends Controller
 
 		return Order::select('total', 'created_at')->whereBetween('created_at', [$startMonth, $endMonth])
 			->orderBy('created_at', 'desc')->first();
+	}
+
+	public function orderDetail()
+	{
+		DB::table('orders')
+			->join('order_types', 'orders.order_type_id', 'order_types.id')
+			->select(
+				DB::raw('order_types.type as name'),
+				DB::raw('count(orders.order_type_id) as total'),
+			)
+			->groupBy(DB::raw('name'))
+			->get();
+		return DB::table('orders')
+			->join('order_types', 'orders.order_type_id', 'order_types.id')
+			->select(
+				DB::raw('order_types.type as name'),
+				DB::raw('count(orders.order_type_id) as total'),
+				DB::raw('DATE_FORMAT(created_at, "%M-%Y") month'),
+				// DB::raw('YEAR(created_at) year')
+			)
+			->where('orders.status', 6)
+			->limit(5)
+			->groupBy('month', 'name')
+			->get();
+		// return $model;
 	}
 }

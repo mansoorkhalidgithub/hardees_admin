@@ -70,4 +70,9 @@ class ItemVariation extends Model
 	{
 		return $this->hasMany(Addon::class, 'menu_item_id', 'menu_item_id');
 	}
+
+	public function getVariationNameAttribute()
+	{
+		return Variation::find($this->variation_id)->name;
+	}
 }

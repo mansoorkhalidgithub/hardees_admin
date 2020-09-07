@@ -480,7 +480,7 @@
     <script src="{{ asset('js/Chart.min.js') }}" defer></script>
     <script src="{{ asset('js/chart-area-demo.js') }}" defer></script>
     <!-- <script src="{{ asset('js/pyramid-chart.js') }}" defer></script> -->
-    <script src="{{ asset('js/pie-chart.js') }}" defer></script>
+    <!-- <script src="{{ asset('js/pie-chart.js') }}" defer></script> -->
     <!-- <script src="{{ asset('js/chart-pie-demo.js') }}" defer></script> -->
     <script src="{{ asset('admin/dist/js/custom.js') }}" defer></script>
     <script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>

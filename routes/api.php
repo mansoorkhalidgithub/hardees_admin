@@ -40,11 +40,13 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 Route::post('signup', 'Api\AuthApiController@signup');
 Route::post('login', 'Api\AuthApiController@login');
+
 Route::post('forgot-password', 'Api\AuthApiController@forgetPassword');
 
 Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('customer-logout', 'Api\AuthApiController@logout');
 	Route::get('get-profile', 'Api\CustomerApiController@profile');
-	Route::post('update-profile', 'Api\CustomerApiController@updateProfile');
+	Route::post('customer-update-profile', 'Api\CustomerApiController@updateProfile');
 	Route::post('update-profile-picture', 'Api\CustomerApiController@updateProfilePicture');
 	Route::post('change-password', 'Api\CustomerApiController@changePassword');
 });
@@ -69,6 +71,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('getbucket', 'Api\OrderApiController@getBucket');
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
+	Route::post('cart-count', 'Api\OrderApiController@cartCount');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -79,6 +82,12 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart');
 	Route::post('checkout', 'Api\OrderApiController@checkout');
+
+	Route::post('current-order', 'Api\OrderApiController@currentOrder');
+
+	Route::post('customer-order-history', 'Api\OrderApiController@ordersHistory');
+
+	Route::post('track-order', 'Api\OrderApiController@trackorder');
 });
 
 /********** End Customer Side API's ***************************/

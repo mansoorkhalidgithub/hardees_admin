@@ -191,7 +191,8 @@ class Order extends Model
 		if (!empty($model)) :
 			foreach ($model as $key => $items) {
 				$menu_item = MenuItem::where('id', $items->item_id)->first();
-				$menu_items = $menu_item->name;
+				$variation = Variation::find($items->variation_id);
+				$menu_items = $menu_item->name . '(' . $variation->name . ')';
 				$quantity = $items->quantity;
 				if (!empty($items->drink_id)) {
 					$drink = Drink::where('id', $items->drink_id)->pluck('name');
@@ -199,12 +200,19 @@ class Order extends Model
 				} else {
 					$drinks = array();
 				}
+				if (!empty($items->side_id)) {
+					$site = Side::where('id', $items->side_id)->pluck('name');
+					$sides = $site;
+				} else {
+					$sides = array();
+				}
 				if (!empty($items->extra_id)) {
-					$extra = Extra::where('id', $items->drink_id)->pluck('name');
+					$extra = Extra::where('id', $items->extra_id)->pluck('name');
 					$extras = $extra;
 				} else {
 					$extras = array();
 				}
+
 				if (!empty($items->addons)) {
 					$addon_ids = unserialize($items->addons);
 					$addons = Addon::whereIn('id', $addon_ids)->pluck('name');
@@ -214,6 +222,7 @@ class Order extends Model
 				$data[] = [
 					'name' => $menu_items,
 					'quantity' => $quantity,
+					'sites' => $sides,
 					'drinks' => $drinks,
 					'extras' => $extras,
 					'addons' => $addons
