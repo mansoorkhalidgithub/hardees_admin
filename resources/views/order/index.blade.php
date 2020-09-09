@@ -88,10 +88,6 @@
 	</div>
 </div>
 <script src="{{ asset('extra') }}/plugins/jquery/jquery.min.js"></script>
-<script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
-<script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-
-
 
 <script>
 	$(document).ready(function() {

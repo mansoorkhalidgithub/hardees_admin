@@ -75,6 +75,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
+	// these are end points for customer deals api
 	Route::post('add-to-cart', 'Api\OrderApiController@addCart');
 	Route::post('update-cart', 'Api\OrderApiController@updateCart');
 	Route::post('get-cart', 'Api\OrderApiController@getCart');
@@ -82,7 +83,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart');
 	Route::post('checkout', 'Api\OrderApiController@checkout');
-
+	// end here
 	Route::post('current-order', 'Api\OrderApiController@currentOrder');
 
 	Route::post('customer-order-history', 'Api\OrderApiController@ordersHistory');

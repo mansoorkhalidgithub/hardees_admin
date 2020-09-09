@@ -13,7 +13,7 @@ class CustomerController extends Controller
 
 	public function index()
 	{
-		$model = User::role('customer')->get();
+		$model = User::with('country', 'state', 'city')->role('customer')->get();
 		$model->each->append('orderCount', 'rating');
 
 		return view('customer.index', compact('model'));

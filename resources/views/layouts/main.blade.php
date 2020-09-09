@@ -15,13 +15,11 @@
     <!-- Custom fonts for this template-->
     <script src="{{ asset('js/all.min.js') }}" defer></script>
     <link href="{{ asset('css/all.min.css') }}" rel="stylesheet" type="text/css">
-    <link href="{{ asset('https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i') }}" rel="stylesheet">
+    <link href="{{ asset('admin')}}/css/font.css" rel="stylesheet">
     <link href="{{ asset('css/sb-admin-2.css')}}" rel="stylesheet" type="text/css">
     <link rel="stylesheet" href="{{ asset('extra') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
     <link rel="stylesheet" href="{{ asset('extra') }}/plugins/datatables-bs4/css/dataTables.bootstrap4.css">
-    <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
-    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
+
     <!--link rel="stylesheet" href="{{ asset('admin') }}/dist/css/adminlte.min.css"-->
 
 
@@ -474,14 +472,8 @@
 
     <script type="text/javascript" src="{{ asset('admin') }}/js/canvasjs.min.js"></script>
     <script src="{{ asset('js/jquery.min.js') }}" defer></script>
-    <script src="{{ asset('js/bootstrap.bundle.min.js') }}" defer></script>
-    <script src="{{ asset('js/jquery.easing.min.js') }}" defer></script>
-    <script src="{{ asset('js/sb-admin-2.js') }}" defer></script>
     <script src="{{ asset('js/Chart.min.js') }}" defer></script>
-    <script src="{{ asset('js/chart-area-demo.js') }}" defer></script>
-    <!-- <script src="{{ asset('js/pyramid-chart.js') }}" defer></script> -->
-    <!-- <script src="{{ asset('js/pie-chart.js') }}" defer></script> -->
-    <!-- <script src="{{ asset('js/chart-pie-demo.js') }}" defer></script> -->
+
     <script src="{{ asset('admin/dist/js/custom.js') }}" defer></script>
     <script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
     <script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>

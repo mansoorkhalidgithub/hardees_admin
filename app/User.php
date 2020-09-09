@@ -2,11 +2,13 @@
 
 namespace App;
 
+use Carbon\CarbonInterval;
 use Laravel\Passport\HasApiTokens;
 use Illuminate\Support\Facades\Config;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\DB;
 
 class User extends Authenticatable
 {
@@ -100,17 +102,17 @@ class User extends Authenticatable
 
 	public function country()
 	{
-		return $this->hasOne(Country::class, 'id', 'country_id');
+		return $this->belongsTo(Country::class);
 	}
 
 	public function state()
 	{
-		return $this->hasOne(State::class, 'id', 'state_id');
+		return $this->belongsTo(State::class);
 	}
 
 	public function city()
 	{
-		return $this->hasOne(City::class, 'id', 'city_id');
+		return $this->belongsTo(City::class);
 	}
 
 	public function vehicle()
@@ -133,5 +135,35 @@ class User extends Authenticatable
 	{
 		return OrderAssigned::where('rider_id', $this->id)
 			->where('trip_status_id', 5)->count();
+	}
+
+	public function getRiderAverageAttribute()
+	{
+		$odr_ids = OrderAssigned::where('rider_id', $this->id)
+			->where('trip_status_id', 5)->pluck('order_id');
+
+		$averageCompletionTime = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->whereIn('id', $odr_ids)
+			->get();
+		return CarbonInterval::seconds((int)$averageCompletionTime[0]->timediff)
+			->cascade()
+			->forHumans();
+	}
+
+	public function getRiderAverageTimeAttribute()
+	{
+		$odr_ids = OrderAssigned::where('rider_id', $this->id)
+			->where('trip_status_id', 5)->pluck('order_id');
+
+		$averageCompletionTime = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->whereIn('id', $odr_ids)
+			->get();
+		return CarbonInterval::seconds((int)$averageCompletionTime[0]->timediff)
+			->cascade()
+			->forHumans();
 	}
 }

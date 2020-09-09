@@ -7,6 +7,15 @@
  	.table-bordered tfoot tr td {
  		border: 1px solid transparent;
  	}
+
+ 	#myChart {
+ 		height: 25%;
+ 		width: 100%;
+ 	}
+
+ 	.zc-ref {
+ 		display: none;
+ 	}
  </style>
  <div style="margin: 0px 10px 10px 10px">
  	<div class="card">
@@ -106,11 +115,7 @@
 
  			</div>
  			<div class="row">
- 				<marquee>
- 					<p style="font-family: Impact; font-size: 18pt">Average Delivery Time In Current Week:
- 						<span style="color:red" id="avg_delivery">{{$averageCompletionTime}}</span>
- 					</p>
- 				</marquee>
+ 				<div id='myChart'><a class="zc-ref" href="https://www.zingchart.com/">Charts by ZingChart</a></div>
  			</div>
  			<hr>
  			<div class="row">
@@ -185,6 +190,7 @@
  									<th>Rider Name</th>
  									<th>Total Amount</th>
  									<th>Rider Status</th>
+ 									<th>Average Time</th>
  								</tr>
  							</thead>
  							<tbody>
@@ -203,6 +209,7 @@
  											</span>
  										</a>
  									</td>
+ 									<td>{{$rider->RiderAverage}}</td>
  								</tr>
  								@endforeach
 
@@ -221,6 +228,7 @@
  									<th>Rider Name</th>
  									<th>Total Amount</th>
  									<th>Rider Status</th>
+ 									<th>Average Time</th>
  								</tr>
  							</thead>
  							<tbody>
@@ -240,6 +248,7 @@
  											</span>
  										</a>
  									</td>
+ 									<td>{{$rider->RiderAverage}}</td>
  								</tr>
  								@endforeach
 
@@ -256,7 +265,7 @@
  <script src="{{ asset('extra') }}/plugins/jquery/jquery.min.js"></script>
  <script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
  <script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-
+ <script src="https://cdn.zingchart.com/zingchart.min.js"></script>
 
 
  <script>
@@ -337,7 +346,7 @@
  				},
  				success: function(data) {
  					console.log(data)
- 					$('#avg_delivery').text(data.averageCompletionTime);
+ 					tick.plot0 = data.avg_delivery;
  					myPieChart.data.datasets[0].data = data.data;
  					myPieChart.update();
  					earningChart.data.datasets[0].data = data.earning;
@@ -349,6 +358,108 @@
  			});
  		});
  	});
- </script>
 
+ 	window.feed = function(callback) {
+ 		var tick = {};
+ 		tick.plot0 = <?php echo $avg_delivery ?>;
+ 		callback(JSON.stringify(tick));
+ 	};
+
+ 	var myConfig = {
+ 		type: "gauge",
+ 		globals: {
+ 			fontSize: 25
+ 		},
+ 		plotarea: {
+ 			marginTop: 80
+ 		},
+ 		plot: {
+ 			size: '100%',
+ 			valueBox: {
+ 				placement: 'center',
+ 				text: '%v', //default
+ 				fontSize: 35,
+ 				rules: [{
+ 						rule: '%v <= 45',
+ 					},
+ 					{
+ 						rule: '%v < 45 && %v > 75',
+ 					},
+ 					{
+ 						rule: '%v < 75 && %v > 110',
+ 					},
+ 					{
+ 						rule: '%v <  150',
+ 					}
+ 				]
+ 			}
+ 		},
+ 		tooltip: {
+ 			borderRadius: 15
+ 		},
+ 		scaleR: {
+ 			aperture: 180,
+ 			minValue: 0,
+ 			maxValue: <?php echo $max_delivery ?>,
+ 			step: 50,
+ 			center: {
+ 				visible: true
+ 			},
+ 			tick: {
+ 				visible: true
+ 			},
+ 			item: {
+ 				offsetR: 0,
+ 				rules: [{
+ 					rule: '%i == 9',
+ 					offsetX: 15
+ 				}]
+ 			},
+ 			labels: ['0', '45', '110', '150'],
+ 			ring: {
+ 				size: 50,
+ 				rules: [{
+ 						rule: '%v <= 45',
+ 						backgroundColor: '#88a80d'
+ 					},
+ 					{
+ 						rule: '%v > 45 && %v < 75',
+ 						backgroundColor: '#fbae17'
+ 					},
+ 					{
+ 						rule: '%v >= 75 && %v < 110',
+ 						backgroundColor: '#fbae17'
+ 					},
+ 					{
+ 						rule: '%v >= 110',
+ 						backgroundColor: '#c1272d'
+ 					}
+ 				]
+ 			}
+ 		},
+ 		refresh: {
+ 			type: "feed",
+ 			transport: "js",
+ 			url: "feed()",
+ 			interval: 1500,
+ 			resetTimeout: 1000
+ 		},
+ 		series: [{
+ 			values: [0], // starting value
+ 			backgroundColor: '#88a80d',
+ 			animation: {
+ 				effect: 2,
+ 				method: 1,
+ 				sequence: 4,
+ 				speed: 900
+ 			},
+ 		}]
+ 	};
+
+ 	zingchart.render({
+ 		id: 'myChart',
+ 		data: myConfig,
+ 		width: '100%'
+ 	});
+ </script>
  @endsection

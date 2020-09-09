@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Cart;
 use App\Bucket;
 use App\User;
@@ -13,6 +12,7 @@ use App\DealCategory;
 use App\MenuCategory;
 use App\AddonCategory;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class BookingController extends Controller
 {
@@ -23,28 +23,28 @@ class BookingController extends Controller
      */
     public function index()
     {
-		$userId = Auth::user()->id;
-		
-		$cart = Bucket::where('user_id', $userId)->get();
-		
-		$cartIds = $cart->pluck('id');
-		
-		Bucket::destroy($cartIds);
-		
-		$itemCategories = MenuCategory::with('menuItems')->where('created_by', $userId)->orderBy('type', 'ASC')->get();
-		$items = MenuItem::all();
-		$dealCategories = DealCategory::where('status', 1)->get();
-		$deals = Deal::where('status', 1)->get();
-		$addonCategories = AddonCategory::all();
-		$addons = Addon::all();
-		
+        $userId = Auth::user()->id;
+
+        $cart = Bucket::where('user_id', $userId)->get();
+
+        $cartIds = $cart->pluck('id');
+
+        Bucket::destroy($cartIds);
+
+        $itemCategories = MenuCategory::with('menuItems')->where('web_status', 1)->orderBy('sequence', 'ASC')->get();
+        $items = MenuItem::all();
+        $dealCategories = DealCategory::where('status', 1)->get();
+        $deals = Deal::where('status', 1)->get();
+        $addonCategories = AddonCategory::all();
+        $addons = Addon::all();
+
         return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addonCategories', 'addons'));
     }
-	
-	public function save(Request $request)
-	{
-		dd($request->all());
-	}
+
+    public function save(Request $request)
+    {
+        dd($request->all());
+    }
 
     /**
      * Show the form for creating a new resource.

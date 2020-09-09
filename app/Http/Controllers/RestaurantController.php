@@ -126,13 +126,20 @@ class RestaurantController extends Controller
 			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
 			->where('status', 6)
 			->where('restaurant_id', $id)
-			->whereBetween('created_at', [$startMonth, $endMonth])
+			// ->whereBetween('created_at', [$startMonth, $endMonth])
 			->get();
+		$avg_delivery = floor((int)$averageCompletionTime[0]->timediff / 60);
+		$maxCompletionTime = DB::table('orders')
+			->select(DB::raw("AVG(TIME_TO_SEC(TIMEDIFF(updated_at, created_at))) AS timediff"))
+			->where('status', 6)
+			->get();
+		$max_delivery = floor((int)$maxCompletionTime[0]->timediff / 60);
+
 		$averageCompletionTime = CarbonInterval::seconds((int)$averageCompletionTime[0]->timediff)
 			->cascade()
 			->forHumans();
 		// dd($averageCompletionTime);
-		return view('restaurant.show', compact('averageCompletionTime', 'model', 'rider_1', 'rider', 'total', 'today', 'week', 'month', 'pre_month', 'complete', 'inprogress'));
+		return view('restaurant.show', compact('max_delivery', 'avg_delivery', 'averageCompletionTime', 'model', 'rider_1', 'rider', 'total', 'today', 'week', 'month', 'pre_month', 'complete', 'inprogress'));
 	}
 
 	protected function getriderDetail($id)
@@ -143,7 +150,7 @@ class RestaurantController extends Controller
 			->where('trip_status_id', 5)->pluck('rider_id');
 		$riders = User::whereIn('id', $odr_ass)
 			->get();
-		return $riders->each->append('RiderOrderCount');
+		return $riders->each->append('RiderOrderCount', 'RiderAverage');
 	}
 	protected function get_rider_detail($id)
 	{
@@ -151,9 +158,9 @@ class RestaurantController extends Controller
 			->where('status', 6)->pluck('id');
 		$odr_ass = OrderAssigned::whereIn('order_id', $order_ids)
 			->where('trip_status_id', 11)->pluck('rider_id');
-		return User::whereIn('id', $odr_ass)
+		$riders = User::whereIn('id', $odr_ass)
 			->get();
-		// return $riders->each->append('RiderOrderCount');
+		return $riders->each->append('RiderAverageTime');
 	}
 	public function update(RestaurantRequest $request)
 	{

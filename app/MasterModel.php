@@ -116,4 +116,9 @@ class MasterModel extends Model
         $model->trip_status = $st;
         $model->save();
     }
+
+
+    public static function duration()
+    {
+    }
 }

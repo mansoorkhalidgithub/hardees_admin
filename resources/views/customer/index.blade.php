@@ -25,27 +25,18 @@
             <tbody style="color: black">
                 @foreach($model as $key => $user)
                 <tr>
-                    <td>1</td>
+                    <td>{{++$key}}</td>
                     <td>
-                        @if(!empty($rider->country_id))
-                        {{ $rider->country->name }}
-                        @else
-                        Not set
-                        @endif
+                        {{ $user->country->name ?? 'Not Set' }}
+
                     </td>
                     <td>
-                        @if(!empty($rider->state_id))
-                        {{ $rider->state->name }}
-                        @else
-                        Not set
-                        @endif
+                        {{ $user->state->name ?? 'Not Set' }}
+
                     </td>
                     <td>
-                        @if(!empty($rider->city_id))
-                        {{ $rider->city->name }}
-                        @else
-                        Not set
-                        @endif
+                        {{ $user->city->name ?? 'Not Set' }}
+
                     </td>
                     <td> {{ $user->name }} </td>
                     <td> {{ $user->phone_number }} </td>
@@ -63,10 +54,6 @@
     </div>
 </div>
 <script src="{{ asset('extra') }}/plugins/jquery/jquery.min.js"></script>
-<script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
-<script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
-
-
 
 <script>
     $(document).ready(function() {
