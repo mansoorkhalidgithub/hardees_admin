@@ -65,8 +65,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
 	Route::post('menu', 'Api\OrderApiController@getMenu');
-	Route::post('menu-item', 'Api\OrderApiController@getMenuItems');
-	Route::post('variations', 'Api\OrderApiController@variations');
+	Route::post('menu-item', 'Api\OrderApiController@getMenuItems'); // api for for get deal in if part
+	Route::post('variations', 'Api\OrderApiController@variations'); // get deal variation 
 	Route::post('addbucket', 'Api\OrderApiController@addBucket');
 	Route::post('getbucket', 'Api\OrderApiController@getBucket');
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
@@ -75,7 +75,6 @@ Route::group(['middleware' => 'auth:api'], function () {
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
-	// these are end points for customer deals api
 	Route::post('add-to-cart', 'Api\OrderApiController@addCart');
 	Route::post('update-cart', 'Api\OrderApiController@updateCart');
 	Route::post('get-cart', 'Api\OrderApiController@getCart');
@@ -83,7 +82,7 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::delete('delete-cart', 'Api\OrderApiController@deleteCart');
 	Route::post('checkout', 'Api\OrderApiController@checkout');
-	// end here
+
 	Route::post('current-order', 'Api\OrderApiController@currentOrder');
 
 	Route::post('customer-order-history', 'Api\OrderApiController@ordersHistory');
