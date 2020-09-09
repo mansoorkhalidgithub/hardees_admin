@@ -9,6 +9,7 @@ use App\Drink;
 use App\Addon;
 use App\Bucket;
 use App\MenuItem;
+use App\MenuCategory;
 use App\Variation;
 use App\ItemVariation;
 use Illuminate\Http\Request;
@@ -221,6 +222,17 @@ class VariationController extends Controller
 	
 	public function manageDeal(Request $request)
 	{
-		echo $request->id;
+		$itemId = $request->id;
+		$item = MenuItem::where('id', $itemId)->first();
+
+		$variations = Variation::all();
+		
+		$menuCategories = MenuCategory::where('type', 'single_item')->get();
+		
+		$drinks = Drink::all();
+		$sides = Side::all();
+		$extras = Extra::all();
+
+		return view('variation/create-deal', compact('menuCategories', 'drinks', 'sides', 'extras', 'item'));
 	}
 }
