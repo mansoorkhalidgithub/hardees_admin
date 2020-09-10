@@ -455,20 +455,20 @@ class OrderApiController extends Controller
 		}
 		$id = $request->item_id;
 		$category = MenuCategory::find($id);
-		if ($category->name == 'deals')
-			$items = [];
 
-		else
-			$items = MenuItem::where('menu_category_id', $id)->get();
-		
-		$categoryIds = MenuCategory::where('type', 'deal')->pluck('id');
-		$deals = MenuItem::whereIn('menu_category_id', $categoryIds->all())->get();
+		if ($category->name == 'Deals') {
+			$items = MenuItem::where('menu_category_id', $id)->where('web_status', 1)->get();
+			$message = 'Deals Fetched successfully';
+		} else {
+			$items = MenuItem::where('menu_category_id', $id)->where('web_status', 1)->get();
+			$message = 'Items Fetched successfully';
+		}
+
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
-			'message' => 'Items Fetched successfully',
+			'message' => $message,
 			'items' => $items,
-			'deals' => $deals,
 		];
 
 		return response()->json($response);
@@ -620,7 +620,6 @@ class OrderApiController extends Controller
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'success',
 		];
-
 
 		return response()->json($response);
 	}
@@ -916,6 +915,19 @@ class OrderApiController extends Controller
 				'rider_lng' => $rider_lng,
 				'rider' => $model->riderAsigned
 			]
+		];
+
+		return response()->json($response);
+	}
+
+	public function getDeals(Request $request)
+	{
+		$deals = MenuItem::where('menu_category_id', 10)->where('web_status', 1)->get();
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => 'Deals Fetched successfully',
+			'deals' => $deals,
 		];
 
 		return response()->json($response);

@@ -72,7 +72,9 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::post('cart-count', 'Api\OrderApiController@cartCount');
+	Route::post('get-deals', 'Api\OrderApiController@getDeals');
 });
+
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('add-to-cart', 'Api\OrderApiController@addCart');
