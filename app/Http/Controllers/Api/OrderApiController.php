@@ -460,11 +460,15 @@ class OrderApiController extends Controller
 
 		else
 			$items = MenuItem::where('menu_category_id', $id)->get();
+		
+		$categoryIds = MenuCategory::where('type', 'deal')->pluck('id');
+		$deals = MenuItem::whereIn('menu_category_id', $categoryIds->all())->get();
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
 			'message' => 'Items Fetched successfully',
 			'items' => $items,
+			'deals' => $deals,
 		];
 
 		return response()->json($response);
