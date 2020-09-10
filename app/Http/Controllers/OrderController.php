@@ -788,6 +788,8 @@ class OrderController extends Controller
 				'quantity' => $entry->quantity,
 
 				'addons' => $entry->addons,
+				
+				'drinks' => $entry->drinks,
 
 			];
 

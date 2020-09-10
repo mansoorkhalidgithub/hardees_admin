@@ -97,6 +97,46 @@ class VariationController extends Controller
 
 		echo $html;
 	}
+	
+	public function dealVariations(Request $request)
+	{
+		$itemId = $request->item_id;
+
+		$model = ItemVariation::where('menu_item_id', $itemId)->get();
+
+		$html = '<table class="table" id="variations"><tbody>';
+		foreach ($model as $ItemVariation) {
+			$html .= '<tr id="' . $ItemVariation->variation_id . '">
+				<td  id="' . $ItemVariation->variation_id . '" style="border-bottom:1px solid transparent;color:black"><input checked onclick="vItems(this)" id="' . $ItemVariation->variation_id . '" item-id="' . $itemId . '" type="radio" name="variation"> ' . $ItemVariation->variation->name . '</td>
+				<td  id="' . $ItemVariation->variation_id . '" style="border-bottom:1px solid transparent;color:black; font-size: 12px">+ PKR ' . $ItemVariation->price . '</td>
+			</tr>';
+		}
+		$html .= "<tbody></table>";
+		
+		$drinks = Drink::all();
+		
+		for($i = 1; $i < 4; $i++) :
+		if (count($drinks) > 0) {
+			$html .= '<h5 style="color:black; font-size: 16px">Choose your Drink ' . $i . '<span style="font-size: 12px; color:#7c888d; float: right; "> 1 REQUIRED</span></h5><br>';
+			$html .= '<table class="table text-light" style="border-top:1px solid white;"><tbody>';
+			foreach ($drinks as $drink) {
+				$price = "";
+				if ($drink->default !== 1) {
+					$price = "+ PKR " . $drink->price;
+				}
+
+				$html .= '<tr>
+					<td style="border-bottom:1px solid transparent;color:black"><input class="drinkClass" id="' . $drink->id . '" type="radio" name="drink_'. $i .'" value="' . $drink->id . '"> ' . $drink->name . '</td>
+					<!--<td style="border-bottom:1px solid transparent;color:black; font-size: 12px">' . $price . '</td>-->
+				</tr>';
+			}
+			$html .= '</tbody></table><hr><br>';
+		}
+		
+		endfor;
+
+		echo $html;
+	}
 
 	public function items(Request $request)
 	{
@@ -211,6 +251,35 @@ class VariationController extends Controller
 			'extra_id' => $request->extra_id,
 			'quantity' => $request->quantity,
 			'addons' => $addons,
+		];
+
+		$bucket = Bucket::create($data);
+
+		$response = ['code' => 1];
+
+		echo json_encode($response);
+	}
+	
+	public function addDealToBucket(Request $request)
+	{
+		$userId = Auth::user()->id;
+		
+		$drinkIds  = [];
+		
+		$drink1 = $request->drink_1;
+		$drink2 = $request->drink_2;
+		$drink3 = $request->drink_3;
+		
+		array_push($drinkIds, $drink1);
+		array_push($drinkIds, $drink2);
+		array_push($drinkIds, $drink3);
+
+		$data = [
+			'user_id' => $userId,
+			'item_id' => $request->item_id,
+			'variation_id' => $request->variation_id,
+			'quantity' => $request->quantity,
+			'drinks' => serialize($drinkIds)
 		];
 
 		$bucket = Bucket::create($data);

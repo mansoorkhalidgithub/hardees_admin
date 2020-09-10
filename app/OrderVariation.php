@@ -8,7 +8,7 @@ class OrderVariation extends Model
 {
 	public $timestamps = false;
 
-	protected $appends = ['addon', 'total'];
+	protected $appends = ['addon', 'total', 'deal_drinks'];
 	
     protected $fillable = [
 		'user_id',
@@ -21,7 +21,8 @@ class OrderVariation extends Model
 		'quantity',
 		'addons',
 		'deal_id',
-		'deal_quantity'
+		'deal_quantity',
+		'drinks'
 	];
 	
 	
@@ -108,5 +109,15 @@ class OrderVariation extends Model
 		$total = $total * $this->quantity;
 
 		return $total;
+	}
+	
+	public function getDealDrinksAttribute($value)
+	{
+		$data = [];
+		if ($value) {
+			$drinkIds = unserialize($value);
+			$data = Drink::whereIn('id', $drinkIds)->pluck('name');
+		}
+		return $data;
 	}
 }

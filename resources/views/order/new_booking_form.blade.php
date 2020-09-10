@@ -296,8 +296,12 @@
                         <div class="row" id="menu-container" style="margin: 10px 10px 10px 30px">
                             @foreach($menuCategory->menuItems as $key => $item)
                             <div class="col-sm-2">
-                                <a onclick="itemAddonModel(this)" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-price="{{ $item->price }}" id="menu-item-{{ $item->id}}" class="menu-item-{{ $item->id}}">
-                                    <label class="category">
+								@if($item->category->type == 'Single Item')
+									<a onclick="itemAddonModel(this)" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-price="{{ $item->price }}" id="menu-item-{{ $item->id}}" class="menu-item-{{ $item->id}}">
+                                @else
+									<a onclick="itemDealModel(this)" data-id="{{ $item->id }}" data-name="{{ $item->name }}" data-price="{{ $item->price }}" id="menu-item-{{ $item->id}}" class="menu-item-{{ $item->id}}">
+								@endif
+									<label class="category">
                                         <div>
                                             <p class="product_label"> {{ $item->name }} </p><br>
                                             <div class="popup"><img src="{{ env('APP_URL') . $item->image }}" class="product_image">
@@ -410,6 +414,47 @@
 
     </div>
 </div>
+
+<div class="modal fade" id="dealModal" style="display: none" tabindex="-1" role="dialog" aria-labelledby="addonModal" aria-hidden="true">
+
+    <div class="modal-dialog">
+
+        <div class="modal-content">
+
+            <button type="button" class="btn waves-effect ml-auto" style="border-radius: 0px; color: #f6bf2d; background-color: black" data-dismiss="modal">Close</button>
+            <!-- <div><img src="{{asset('user')}}/img/burger.png" width="100%" height="250px"> </div>-->
+            <div class="modal-header">
+
+                <h4 id="item-name" class="modal-title text-dark font-weight-bold"> </h4>
+                <p id="item-price" class="font-weight-bold"><br></p>
+
+            </div>
+
+            <div class="modal-body">
+                <h5 style="color:black; font-size: 16px">Select variation<span style="font-size: 12px; color:#7c888d; float: right; "> ( 1 Required )</span></h5>
+
+                <div id="dealVariations">
+
+                </table>
+                <hr><br>
+                
+            </div>
+
+            <div class="modal-footer">
+
+                <!--<button type="button" id="minus" class="btn text-warning" style="background-color: black; border: 1px solid #f6bf2d;" data-type="minus" data-field="">-</button>-->
+
+                <label> Quantity </label> <input type="text" id="vquantity" name="vquantity" style="width: 50px; text-align:center" class="input-number" value="1" min="1" max="100">
+
+                <!--<button id="qtyadd" type="button" class="quantity-right-plus btn text-warning btn-number" style="background-color: black; border: 1px solid #f6bf2d;" data-type="plus" data-field="">+</button>-->
+                <a href="#" onclick="addDealToBucket()" class="btn btn-sm btn-light" style=" color: black; font-weight: 600; background-color: #f6bf2d; margin-top:0px; border:2px solid #f6bf2d; margin-left:10px;"><b>ADD TO BUCKET</b></a>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
 <link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 <script src="//code.jquery.com/ui/1.10.2/jquery-ui.js"></script>
@@ -883,6 +928,36 @@
 
         $('#addonModal').modal('toggle');
     }
+	
+	 function itemDealModel(element) {
+        $('#variation-items').html("");
+
+        var itemId = element.getAttribute('data-id');
+        var itemName = element.getAttribute('data-name');
+        var itemPrice = element.getAttribute('data-price');
+
+        $('#item-name').html(itemName);
+        $('#item-price').html(itemPrice);
+
+        $.ajax({
+            'type': 'POST',
+            'url': 'item-deal-variations',
+            'data': {
+                item_id: itemId
+            },
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            'success': function(response) {
+                $("#dealVariations").html(response);
+            },
+            'error': function(response) {
+                alert("Error");
+            }
+        })
+
+        $('#dealModal').modal('toggle');
+    }
 
     function vItems(element) {
         var variationId = element.id;
@@ -960,6 +1035,50 @@
                 extra_id: extraId,
                 quantity: quantity,
                 addons: addons,
+            },
+            success: function(response) {
+                Swal.fire({
+                    title: 'Success',
+                    text: "Item added successfully.",
+                    icon: 'success',
+                    confirmButtonText: 'Continue'
+                })
+            },
+            error: function(response) {
+                console.log(response);
+            }
+        });
+
+    }
+	
+	function addDealToBucket() {
+        var vElement = document.querySelector("input[name=variation]:checked");
+        var itemId = vElement.getAttribute('item-id');
+
+        var variationId = vElement.id;
+
+        var drinkIds = [];
+        var drink1 =  $('input[name="drink_1"]:checked').val();
+		console.log(drink1);
+		drinkIds.push(drink1);
+        var drink2 =  $('input[name="drink_2"]:checked').val();
+		console.log(drink2);
+		drinkIds.push(drink2);
+        var drink3 =  $('input[name="drink_3"]:checked').val();
+		console.log(drink3);
+		drinkIds.push(drink3);
+     
+        console.log(drinkIds);
+
+        $.ajax({
+            'type': 'POST',
+            'url': 'add-deal-to-bucket',
+            'data': {
+                item_id: itemId,
+                variation_id: variationId,
+                drink_1: drink1,
+                drink_2: drink2,
+                drink_3: drink3,
             },
             success: function(response) {
                 Swal.fire({

@@ -72,11 +72,8 @@
 
 	<!-- 							<a href="edit-menu/{{$item->id}}" class="btn btn-success btn-sm"><i class="fas fa-edit"></i></a> -->
 									<a href="show-menu-item/{{$item->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-eye"></a></i>
-									@if($item->category->type == 'Single Item')
-										<a href="{{ route('menu-variation', ['id' => $item->id ]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-plus"></a></i>
-									@else
-										<a href="{{ route('manage-deal', ['id' => $item->id ]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-plus"></a></i>
-									@endif
+									<a href="{{ route('menu-variation', ['id' => $item->id ]) }}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;"><i class="fas fa-plus"></a></i>
+
 									</td>
 							</tr>
 							@endforeach

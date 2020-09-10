@@ -7,6 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Bucket extends Model
 {
 	protected $table = "bucket";
+	
+	protected $appends = "deal_drinks";
 
 	protected $fillable = [
 		'user_id',
@@ -18,7 +20,8 @@ class Bucket extends Model
 		'quantity',
 		'addons',
 		'deal_id',
-		'deal_quantity'
+		'deal_quantity',
+		'drinks'
 	];
 	public function item()
 	{
@@ -78,6 +81,16 @@ class Bucket extends Model
 		if ($this->addons) {
 			$addonIds = unserialize($this->addons);
 			$data = Addon::whereIn('id', $addonIds)->pluck('name');
+		}
+		return $data;
+	}
+	
+	public function getDealDrinksAttribute($value)
+	{
+		$data = [];
+		if ($value) {
+			$drinkIds = unserialize($value);
+			$data = Drink::whereIn('id', $drinkIds)->pluck('name');
 		}
 		return $data;
 	}

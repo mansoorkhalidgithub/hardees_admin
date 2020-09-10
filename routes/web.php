@@ -233,8 +233,10 @@ Route::group(['middleware' => 'auth'], function () {
 
 Route::group(['middleware' => 'auth'], function () {
 	Route::post('item-variations', 'VariationController@variations')->name('item-variations');
+	Route::post('item-deal-variations', 'VariationController@dealVariations')->name('item-deal-variations');
 	Route::post('variation-items', 'VariationController@items')->name('variation-items');
 	Route::post('add-to-bucket', 'VariationController@addToBucket')->name('add-to-bucket');
+	Route::post('add-deal-to-bucket', 'VariationController@addDealToBucket')->name('add-to-bucket');
 	Route::post('saveOrder', 'OrderController@saveOrder')->name('saveOrder');
 	Route::post('remove-order-item', 'OrderController@removeOrderItem')->name('remove-order-item');
 });
