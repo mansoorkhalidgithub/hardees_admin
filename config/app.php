@@ -67,7 +67,7 @@ return [
     |
     */
 
-    'timezone' => 'Asia/Karachi',
+    'timezone' => 'UTC',
 
     /*
     |--------------------------------------------------------------------------
@@ -165,9 +165,8 @@ return [
         /*
          * Package Service Providers...
          */
-        Spatie\Permission\PermissionServiceProvider::class,
-        Intervention\Image\ImageServiceProvider::class,
-		Kreait\Laravel\Firebase\ServiceProvider::class,
+		Spatie\Permission\PermissionServiceProvider::class,
+		Intervention\Image\ImageServiceProvider::class,
         /*
          * Application Service Providers...
          */
@@ -227,9 +226,9 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
-        'Helper' => App\Helpers\Helper::class,
+		'Helper' => App\Helpers\Helper::class,
         'UserHelper' => App\Helpers\UserHelper::class,
-        'Image' => Intervention\Image\Facades\Image::class,
+		'Image' => Intervention\Image\Facades\Image::class,
     ],
 
 ];

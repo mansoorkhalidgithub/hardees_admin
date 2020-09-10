@@ -12,13 +12,7 @@ class DealController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    
-	public function index() {
-		$model = Deal::all();
-		return view('deal/index', compact('model'));
-	}
-	
-	public function specialOffers()
+    public function index()
     {
         //
     }

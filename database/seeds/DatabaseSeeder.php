@@ -13,25 +13,18 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        factory(Category::class, 10)->create();
+		factory(Category::class, 10)->create();
         $this->call([
-            Permissions::class,
+			Permissions::class,
             Roles::class,
-			OrderStatusSeeder::class,
-            //AdminPermissions::class,
-            //SubAdminPermissions::class,
-            //AuthPermissions::class,
+            AdminPermissions::class,
+            SubAdminPermissions::class,
+            AuthPermissions::class,
             PaymentMethodSeeder::class,
             RestaurantSeeder::class,
             MenuSeeder::class,
-            //VariationSeeder::class,
-            DrinkSeeder::class,
             DealSeeder::class,
-            CountriesTableSeeder::class,
-            StatesTableSeeder::class,
-            CitiesTableSeeder::class,
-			//AddonSeeder::class
         ]);
-        factory(DealItem::class, 30)->create();
+		factory(DealItem::class, 30)->create();
     }
 }

@@ -2,20 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\City;
-use App\User;
-use App\Rider;
-use App\State;
-use App\Country;
 use App\Restaurant;
-use App\Helpers\Helper;
+use App\RestaurantUser;
 use Illuminate\Http\Request;
-use App\Http\Requests\RiderRequest;
+use PHPMailer\PHPMailer\PHPMailer;
 use Illuminate\Support\Facades\Hash;
-use Intervention\Image\Facades\Image;
-use Illuminate\Support\Facades\Config;
-use Illuminate\Support\Facades\Session;
-use Illuminate\Support\Facades\Redirect;
 
 class RestaurantUserController extends Controller
 {
@@ -26,8 +17,9 @@ class RestaurantUserController extends Controller
      */
     public function index()
     {
-        $model = User::role('user')->get();
-        return view('restaurant_user.index', compact('model'));
+        $model  = RestaurantUser::all();
+		
+		return view('restaurantuser/index', compact('model'));
     }
 
     /**
@@ -37,7 +29,9 @@ class RestaurantUserController extends Controller
      */
     public function create()
     {
-        return view('restaurant_user.create');
+		$restaurants = Restaurant::all();
+		
+        return view('restaurantuser/create', compact('restaurants'));
     }
 
     /**
@@ -46,295 +40,95 @@ class RestaurantUserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(RiderRequest $request)
+    public function save(Request $request)
     {
-        $data = [];
-        $parts = explode("@", $request['email']);
-        $t = explode(" ", $request['title']);
-        $ridername = $parts[0];
-        if ($request->has('profile')) {
-            $image = $request->file('profile');
-            $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
+		$parts = explode("@", $request['email']);
+        $username = $parts[0];
+		
+		$data = [
+			'restaurant_id' => $request->restaurant_id,
+			'username' => $username,
+			'email' => $request->email,
+			'password' => Hash::make($request->password),
+		];
+		
+		$user = RestaurantUser::create($data);
+		
+		if($user) {
+			
+			$text = "Hi ". $data['username'];
+			$text .= "<p>Your account information is given below:</p>";
+			$text .= "Username: ". $data['username'] ."<br/>";
+			$text .= "Email: ". $data['email'] ."<br/>";
+			$text .= "Password: ". $request->password ."<br/>";
+			
+			
+			
+			$mail = new PHPMailer(true);
 
-            $destinationPath = public_path('/uploads/profile');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $img = Image::make($image->getRealPath());
-            $img->save($destinationPath . '/' . $input['imagename']);
-
-            $profilePath = 'uploads/profile/' . $input['imagename'];
-
-            $data['profile_picture'] = $profilePath;
-        }
-        $data = [
-            'first_name' => $request->first_name,
-            'last_name' => $request->last_name,
-            'username' => $ridername,
-            'email' => $request->email,
-            // 'created_by' => auth()->user()->id,
-            'restaurant_id' => $request->restaurant_id,
-            'state_id' => $request->state_id,
-            'city_id' => $request->city_id,
-            'cnic' => $request->cnic,
-            'cnic_expire_date' => $request->cnic_expire_date,
-            'country_id' => $request->country_id,
-            'latitude' => $request->latitude,
-            'longitude' => $request->longitude,
-            'phone_number' => $request->phone_number,
-            'password' => Hash::make($request->password),
-        ];
-
-        // print_r($data);
-        // die;
-        $rider = User::create($data);
-        $rider->assignrole('user');
-        Session::flash('success', 'New User created successfully');
-        return Redirect::route('restaurant_user.index');
+			$mail->IsSMTP();  
+			$mail->SMTPAuth = true;    
+			$mail->SMTPSecure = "tls";
+			$mail->Host = "smtp.gmail.com";  
+			$mail->Port = 587;
+			$mail->Username = "mansoor.shahriya469@gmail.com";  
+			$mail->Password = "mk4897589";
+			
+			$mail->SetFrom("mansoor.shahriya469@gmail.com", 'Hardees');
+			
+			$mail->IsHTML(true);
+			$mail->Subject = "Login Credentials";
+			$mail->Body    = $text;
+			$mail->AddAddress($data['email']);
+			$mail->Send();
+			
+		}
+		
+		return redirect('restaurant-users');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\RestuarantUser  $restuarantUser
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(RestuarantUser $restuarantUser)
     {
-        $model = $this->findModel($id);
-        return view('restaurant_user.show', compact('model'));
+        //
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param  \App\RestuarantUser  $restuarantUser
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(RestuarantUser $restuarantUser)
     {
-        $model = $this->findModel($id);
-        return view('restaurant_user.edit', compact('model'));
+        //
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param  \App\RestuarantUser  $restuarantUser
      * @return \Illuminate\Http\Response
      */
-    public function update(RiderRequest $request)
+    public function update(Request $request, RestuarantUser $restuarantUser)
     {
-        $rider = $this->findModel($request->id);
-        $data = $request->all();
-        // $data['created_by'] = auth()->user()->id;
-        if ($request->has('profile')) {
-            if (!empty($rider->profile_picture)) {
-                $riderImage = public_path($rider->profile_picture); // get previous image from folder
-                if (file_exists($riderImage)) { // unlink or remove previous image from folder
-                    unlink($riderImage);
-                }
-            }
-            $image = $request->file('profile');
-            $input['imagename'] = Helper::generateRandomString() . '.' . $image->getClientOriginalExtension();
-
-            $destinationPath = public_path('/uploads/profile');
-            if (!file_exists($destinationPath)) {
-                mkdir($destinationPath, 0777, true);
-            }
-            $img = Image::make($image->getRealPath());
-            $img->save($destinationPath . '/' . $input['imagename']);
-
-            $profilePath = 'uploads/profile/' . $input['imagename'];
-
-            $data['profile_picture'] = $profilePath;
-        }
-        // dd($data);
-        $rider->update($data);
-        return Redirect::route('restaurant_user.index');
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \App\RestuarantUser  $restuarantUser
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Request $request)
+    public function destroy(RestuarantUser $restuarantUser)
     {
-        $model = $this->findModel($request->id);
-        $model->delete();
-        return redirect()->route('restaurant_user.index');
-    }
-    protected function findModel($id)
-    {
-        return User::find($id);
-    }
-    public function getCities(Request $request)
-    {
-        if (!$request->id) {
-            $html = '<option value="">Select City</option>';
-        } else {
-            $html = '';
-            $cities = City::where('state_id', $request->id)->get();
-            foreach ($cities as $city) {
-                $html .= '<option value="' . $city->id . '">' . $city->name . '</option>';
-            }
-        }
-        if (!empty($html))
-            return response()->json(['html' => $html]);
-        else {
-            $html = '<option value="">Select City</option>';
-            return response()->json(['html' => $html]);
-        }
-    }
-
-    public function getBranches(Request $request)
-    {
-        $total = '';
-        $online = '';
-        $offline = '';
-        if (isset($request) && !empty($request->name)) {
-            $city_id = City::where('name', '=', $request->name)->firstOrFail();
-            $total = User::where('city_id', '=', $city_id->id)->count();
-            // $online = User::where('eStatus', '=', Config::get('constants.STATUS_ONLINE'))
-            //     ->where('city_id', '=', $city_id->id)->count();
-            // $offline = User::where('eStatus', '=', Config::get('constants.STATUS_OFFLINE'))
-            //     ->where('city_id', '=', $city_id->id)->count();
-            $online = 1;
-            $offline = 0;
-            if (!$city_id->id) {
-                $html = '<option value="">Select Branch</option>';
-            } else {
-                $html = '<option value="">Select Branch</option>';
-                $restaurants = Restaurant::where('city_id', $city_id->id)->get();
-                foreach ($restaurants as $restaurant) {
-                    $html .= '<option value="' . $restaurant->name . '">' . $restaurant->name . '</option>';
-                }
-            }
-            if (!empty($html))
-                echo json_encode([
-                    'total' => $total,
-                    'html' => $html,
-                    'online' => $online,
-                    'offline' => $offline,
-                ]);
-            else {
-                $html = '<option value="">Select Branch</option>';
-                echo json_encode([
-                    'total' => $total,
-                    'html' => $html,
-                    'online' => $online,
-                    'offline' => $offline,
-                ]);
-            }
-        } else {
-            $html = '<option value="">Select City First</option>';
-            echo json_encode([
-                'total' => $total,
-                'html' => $html,
-                'online' => $online,
-                'offline' => $offline,
-            ]);
-        }
-    }
-    public function getStates(Request $request)
-    {
-        $total = '';
-        $online = '';
-        $offline = '';
-        if (isset($request) && !empty($request->name)) {
-            $country_id = Country::where('name', '=', $request->name)
-                ->where('status', '=', 1)
-                ->firstOrFail();
-            $total = User::where('country_id', '=', $country_id->id)->count();
-            // $online = User::where('eStatus', '=', Config::get('constants.STATUS_ONLINE'))
-            //     ->where('country_id', '=', $country_id->id)->count();
-            // $offline = User::where('eStatus', '=', Config::get('constants.STATUS_OFFLINE'))
-            //     ->where('country_id', '=', $country_id->id)->count();
-            $online = 5;
-            $offline = 1;
-            if (!$country_id->id) {
-                $html = '<option value="">Select State</option>';
-            } else {
-                $html = '<option value="">Select State</option>';
-                $states = State::where('country_id', '=', $country_id->id)->get();
-                foreach ($states as $state) {
-                    $html .= '<option value="' . $state->name . '">' . $state->name . '</option>';
-                }
-            }
-            if (!empty($html)) {
-                echo json_encode([
-                    'total' => $total,
-                    'html' => $html,
-                    'online' => $online,
-                    'offline' => $offline,
-                ]);
-                // return response()->json(['html' => $html]);
-            } else {
-                $html = '<option value="">Select State</option>';
-                echo json_encode([
-                    'total' => $total,
-                    'html' => $html,
-                    'online' => $online,
-                    'offline' => $offline,
-                ]);
-            }
-        } else {
-            $html = '<option value="">Select State</option>';
-            echo json_encode([
-                'total' => $total,
-                'html' => $html,
-                'online' => $online,
-                'offline' => $offline,
-            ]);
-        }
-    }
-    public function info(Request $request)
-    {
-        $restaurant = Restaurant::find($request->id);
-        $data = [
-            'address' => $restaurant->address,
-            'latitude' => $restaurant->latitude,
-            'longitude' => $restaurant->longitude,
-        ];
-
-        echo json_encode($data);
-    }
-
-    public function delivery_boy_management()
-    {
-        $cities = '';
-        $countries = '';
-        $model = User::role('user')->get();
-        if (!empty($model)) {
-            foreach ($model as $key => $rider) {
-                $city[] = $rider->city->name;
-                $cities = array_unique($city);
-                $country[] = $rider->country->name;
-                $countries = array_unique($country);
-            }
-        }
-        // dd($city);
-        return view('restaurant_user.delivery_boy_management', compact('model', 'cities', 'countries'));
-    }
-
-    public function status($id)
-    {
-        $rider = $this->findModel($id);
-        $st = $rider->status === Config::get('constants.STATUS_ACTIVE') ? Config::get('constants.STATUS_INACTIVE') : Config::get('constants.STATUS_ACTIVE');
-        $rider->status = $st;
-        $rider->save();
-        return redirect()->back();
-    }
-
-    public function eStatus($id)
-    {
-        $rider = $this->findModel($id);
-        $st = $rider->eStatus === Config::get('constants.STATUS_ONLINE') ? Config::get('constants.STATUS_OFFLINE') : Config::get('constants.STATUS_ONLINE');
-        $rider->eStatus = $st;
-        $rider->save();
-        return redirect()->back();
+        //
     }
 }
