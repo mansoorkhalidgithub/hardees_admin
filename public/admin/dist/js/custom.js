@@ -1,38 +1,37 @@
 $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-	
-	
-$(document).ready(function() {
-    $("#search").on("keyup", function() {
+    headers: {
+        "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+    },
+});
+
+$(document).ready(function () {
+    $("#search").on("keyup", function () {
         $value = $(this).val();
         $.ajax({
             headers: {
-                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
+                "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
             },
             type: "post",
             url: "search",
             data: {
-                search: $value
+                search: $value,
             },
-            success: function(data) {
+            success: function (data) {
                 $("tbody").html(data);
-            }
+            },
         });
     });
 });
-$(document).ready(function() {
+$(document).ready(function () {
     $.ajaxSetup({
         headers: {
-            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content")
-        }
+            "X-CSRF-TOKEN": $('meta[name="csrf-token"]').attr("content"),
+        },
     });
 
-    $("body").on("click", "#edit_category", function() {
+    $("body").on("click", "#edit_category", function () {
         var cat_id = $(this).data("id");
-        $.get("/category/" + "edit/" + cat_id, function(data) {
+        $.get("/category/" + "edit/" + cat_id, function (data) {
             console.log(data);
             $("#update_category").modal("show");
             $("#cat_id1").val(data.id);
@@ -41,19 +40,19 @@ $(document).ready(function() {
         });
     });
 
-    $("body").on("click", ".del_category", function() {
+    $("body").on("click", ".del_category", function () {
         var cat_id = $(this).data("id");
         if (confirm("Are You sure want to delete !")) {
             $.ajax({
                 type: "delete",
                 url: "/category/" + cat_id,
-                success: function(data) {
+                success: function (data) {
                     console.log(data);
                     $("#category_" + cat_id).remove();
                 },
-                error: function(data) {
+                error: function (data) {
                     console.log("Error:", data);
-                }
+                },
             });
         }
     });
@@ -61,7 +60,6 @@ $(document).ready(function() {
 
 var timing = 1;
 function timing_fields() {
-    console.log("fff");
     timing++;
     var objTime = document.getElementById("timing_fields");
     var ItemTime = document.getElementById("time");
@@ -97,6 +95,7 @@ function remove_timing_fields(rid) {
 }
 var room = 1;
 function restaurantCategories() {
+    console.log("fff");
     room++;
     var objTo = document.getElementById("restaurant_categories");
     var Item = document.getElementById("item");
