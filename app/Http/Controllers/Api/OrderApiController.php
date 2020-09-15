@@ -761,8 +761,11 @@ class OrderApiController extends Controller
 			$bucketIds = $bucket->pluck('id');
 			Bucket::destroy($bucketIds);
 			$restaurantUsers = User::role('user')->where('restaurant_id', $restaurant_id)->get();
-
+			
+			Log::info('Restaurant Id : ' . $restaurant_id);
+			
 			foreach ($restaurantUsers as $user) {
+				Log::info('Restaurant Device Token : ' . $user->device_token);
 				$restaurantNotificationData = [
 					"order_id" => '',
 					"device_token" => $user->device_token,
@@ -770,7 +773,7 @@ class OrderApiController extends Controller
 					"message" => "New Order Arrived"
 				];
 
-				// Helper::sendNotification($restaurantNotificationData, '');
+				Helper::sendNotification($restaurantNotificationData, '');
 				break;
 			}
 		}
@@ -782,6 +785,9 @@ class OrderApiController extends Controller
 				'trip_status_id' => 1,
 			];
 			$rider = User::find($riderId);
+			
+			Log::info('Rider Device Token : ' . $rider->device_token);
+			
 			$riderNotificationData = [
 				"order_id" => $orderId,
 				"device_token" => $rider->device_token,
