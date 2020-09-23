@@ -167,4 +167,14 @@ class User extends Authenticatable
 			->cascade()
 			->forHumans();
 	}
+
+	public function getType()
+	{
+		return $this->hasOne(OrderType::class, 'id', 'type');
+	}
+
+	public function getregion()
+	{
+		return $this->hasOne(Region::class, 'id', 'region_id');
+	}
 }

@@ -13,9 +13,9 @@ class CustomerController extends Controller
 
 	public function index()
 	{
-		$model = User::with('country', 'state', 'city')->role('customer')->get();
+		$model = User::role('customer')->get();
 		$model->each->append('orderCount', 'rating');
-
+		// dd($model->where('is_verified', 1));
 		return view('customer.index', compact('model'));
 	}
 

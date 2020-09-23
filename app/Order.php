@@ -192,43 +192,46 @@ class Order extends Model
 		if (!empty($model)) :
 			foreach ($model as $key => $items) {
 				$item = $items->item_id ?? $items->deal_id;
-				$menu_item = MenuItem::where('id', $item)->first();
-				$variation = Variation::find($items->variation_id)->name ?? '';
-				$menu_items = (!empty($variation)) ? $menu_item->name . '(' . $variation . ')' : $menu_item->name;
+				$menu_item = MenuItem::find($item);
+				$variation = Variation::find($items->variation_id) ?? '';
+				$menu_items = (!empty($variation)) ? $menu_item->name . '(' . $variation->name . ')' : $menu_item->name;
+				$price = (!empty($variation)) ? ItemVariation::where('menu_item_id', $item)->first()->price
+					: DealVariation::where('menu_item_id', $item)->first()->price;
 				$quantity = $items->quantity;
 				if (!empty($items->deal_drinks)) {
 					$drink_ids = unserialize($items->deal_drinks);
-					$drink = Drink::whereIn('id', $drink_ids)->pluck('name');
+					$drink = Drink::whereIn('id', $drink_ids)->get();
 					$drinks = $drink;
 				} else {
 					if (!empty($items->drink_id)) {
-						$drink = Drink::where('id', $items->drink_id)->pluck('name');
+						$drink = Drink::where('id', $items->drink_id)->first();
 						$drinks = $drink;
 					} else {
 						$drinks = array();
 					}
 				}
 				if (!empty($items->side_id)) {
-					$site = Side::where('id', $items->side_id)->pluck('name');
-					$sides = $site;
+					$side = Side::where('id', $items->side_id)->first();
+					$sides = $side;
 				} else {
-					$sides = array();
+					$sides = (object)array();
 				}
 				if (!empty($items->extra_id)) {
-					$extra = Extra::where('id', $items->extra_id)->pluck('name');
+					$extra = Extra::where('id', $items->extra_id)->first();
 					$extras = $extra;
 				} else {
-					$extras = array();
+					$extras = (object) array();
 				}
 
 				if (!empty($items->addons)) {
 					$addon_ids = unserialize($items->addons);
-					$addons = Addon::whereIn('id', $addon_ids)->pluck('name');
+					$addons = Addon::whereIn('id', $addon_ids)->select('name', 'price')->get();
 				} else {
-					$addons = array();
+					$addons = (object)array();
 				}
 				$data[] = [
 					'name' => $menu_items,
+					'price' => $price,
 					'quantity' => $quantity,
 					'sides' => $sides,
 					'drinks' => $drinks,

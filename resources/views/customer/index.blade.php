@@ -2,7 +2,7 @@
 
 <div style="margin: 0px 10px 10px 10px">
     <div class="d-sm-flex align-items-center justify-content-between mb-4">
-        <h3 style="color: black; font-family: serif; font-weight: bold">UAN Users</h3>
+        <h3 style="color: black; font-family: serif; font-weight: bold">Customers</h3>
     </div>
     <div class="uper" style="overflow-x: scroll; font-size: 13px">
         @if(session()->get('success'))
@@ -12,9 +12,9 @@
             <thead>
                 <tr style="color:black">
                     <th>#</th>
-                    <th>Country</th>
-                    <th>State</th>
-                    <th>City</th>
+                    <th>Customer Type</th>
+                    <th>Region</th>
+                    <th>Verified</th>
                     <th>Name</th>
                     <th style="min-width: 80px">Phone No.</th>
                     <th>Avg. Rating</th>
@@ -27,15 +27,15 @@
                 <tr>
                     <td>{{++$key}}</td>
                     <td>
-                        {{ $user->country->name ?? 'Not Set' }}
+                        {{ $user->getType->type ?? 'Not Set' }}
 
                     </td>
                     <td>
-                        {{ $user->state->name ?? 'Not Set' }}
+                        {{ $user->getregion->name ?? 'Not Set' }}
 
                     </td>
                     <td>
-                        {{ $user->city->name ?? 'Not Set' }}
+                        {{ ($user->is_verified == 1) ?'Verified' : 'Not Verified' }}
 
                     </td>
                     <td> {{ $user->name }} </td>

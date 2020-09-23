@@ -37,7 +37,7 @@ Route::get('/clear', function () {
 
 	return "Cleared!";
 });
-
+Route::get('customers', 'CustomerController@index')->name('customers');
 Route::group([
 	'middleware' => 'auth',
 ], function () {
@@ -46,7 +46,7 @@ Route::group([
 	Route::get('menu-categories', 'MenuController@menuCategories')->name('menu-categories');
 	Route::get('menu', 'MenuController@index')->name('menu');
 	Route::get('orders', 'OrderController@index')->name('orders');
-	Route::get('customers', 'CustomerController@index')->name('customers');
+	// Route::get('customers', 'CustomerController@index')->name('customers');
 	// Route::get('riders', 'RiderController@index')->name('riders');
 	Route::get('inbox', 'HomeController@message')->name('inbox');
 	Route::get('app-sliders', 'HomeController@appSiders')->name('app-sliders');

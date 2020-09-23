@@ -15,6 +15,7 @@ class AddColumnToUserTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->tinyInteger('is_verified')->default(0);
+            $table->tinyInteger('type')->default(1);
         });
     }
 
@@ -27,6 +28,7 @@ class AddColumnToUserTable extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->tinyInteger('is_verified');
+            $table->tinyInteger('type')->default(1);
         });
     }
 }
