@@ -361,15 +361,15 @@
                                          @foreach($order->orderVariations as $key => $v)
                                          <tr>
                                              <th scope="row"> {{ ++$key }} </th>
-                                             <td> {{ App\MenuItem::find($v->item_id)->name }} </td>
-                                             <td> {{ App\Variation::find($v->variation_id)->name }} </td>
-                                             <td> {{ App\ItemVariation::where('variation_id',$v->variation_id)->where('menu_item_id',$v->item_id)->first()->price }} </td>
+                                             <td> {{ App\MenuItem::find($v->item_id)->name ?? App\MenuItem::find($v->deal_id)->name }} </td>
+                                             <td> {{ App\Variation::find($v->variation_id)->name ?? '' }} </td>
+                                             <td> {{ App\ItemVariation::where('variation_id',$v->variation_id)->where('menu_item_id',$v->item_id)->first()->price ?? App\DealVariation::where('menu_item_id',$v->deal_id)->first()->price }} </td>
                                              <td> {{ ($v->drink) ? $v->drink->price : '' }} </td>
                                              <td> {{ ($v->side) ?  $v->side->price : '' }} </td>
                                              <td> {{ ($v->extra) ? $v->extra->price : '' }} </td>
                                              <td> {{ $v->addon ? $v->addon : '' }} </td>
                                              <td> {{ $v->quantity }} </td>
-                                             <td>  <i onclick="removeOrderItem({{ $order->id }},{{ $v->id }})" class="fa fa-trash"></i>  </td>
+                                             <td> <i onclick="removeOrderItem({{ $order->id }},{{ $v->id }})" class="fa fa-trash"></i> </td>
                                          </tr>
                                          @endforeach
 
@@ -424,12 +424,12 @@
                                              </tr>
                                              <tr class="order-total border-0">
 
-													<th>Addtion</th>
-													<td data-title="Addtion">
-														<span>
-															<input type="number" name="addition" class="form-control" id="addition">
-														</span>
-													</td>
+                                                 <th>Addtion</th>
+                                                 <td data-title="Addtion">
+                                                     <span>
+                                                         <input type="number" name="addition" class="form-control" id="addition">
+                                                     </span>
+                                                 </td>
                                              </tr>
                                          </table>
                                      </div>
@@ -457,7 +457,7 @@
  <script src="//cdn.jsdelivr.net/npm/sweetalert2@9/dist/sweetalert2.min.js"></script>
 
  <script>
-    function sendNotification(orderId, restaurantId, riderId) {
+     function sendNotification(orderId, restaurantId, riderId) {
          // Disable the submit button to prevent repeated clicks
          document.getElementById('submit-btn').disabled = true;
          var deductionAmount = $("#deduction").val();
@@ -487,32 +487,32 @@
              }
          });
      }
-	 
-	function removeOrderItem(orderId, OrderVariationId) {
-		
-        $.ajax({
-            type: "POST",
-            url: "remove-order-item",
-            data: {
-                order_id: orderId,
-                order_variation_id: OrderVariationId
-            },
-			headers: {
-                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-            },
-            success: function(response) {
-                console.log(response);
-                Swal.fire({
-                    title: 'Success',
-                    text: "Item removed successfully.",
-                    icon: 'success'
-                }).then((result) => {
-                    location.reload();
-                })
-            },
-            error: function(error) {
+
+     function removeOrderItem(orderId, OrderVariationId) {
+         console.log(OrderVariationId)
+         $.ajax({
+             type: "POST",
+             url: "remove-order-item",
+             data: {
+                 order_id: orderId,
+                 order_variation_id: OrderVariationId
+             },
+             headers: {
+                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+             },
+             success: function(response) {
+                 console.log(response);
+                 Swal.fire({
+                     title: 'Success',
+                     text: "Item removed successfully.",
+                     icon: 'success'
+                 }).then((result) => {
+                     location.reload();
+                 })
+             },
+             error: function(error) {
                  console.log(error);
-            }
-        });
-    }
+             }
+         });
+     }
  </script>

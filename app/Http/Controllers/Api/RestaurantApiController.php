@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use app\Helpers\Helper;
 use App\Http\Controllers\Controller;
 use App\Order;
 use App\User;
@@ -119,6 +120,15 @@ class RestaurantApiController extends Controller
 		$dataUpdate = Order::where('id', $request->order_id)->first();
 		$dataUpdate->status = Config::get('constants.order_accepted');
 		$dataUpdate->save();
+		$customer = User::find($dataUpdate->user_id);
+		$customerNotification = [
+			"order_id" => $dataUpdate->id,
+			"device_token" => $customer->device_token,
+			"status" => "OA",
+			"message" => "Your Food Is preparing"
+		];
+
+		Helper::sendNotification($customerNotification);
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),

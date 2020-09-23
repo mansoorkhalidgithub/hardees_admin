@@ -101,9 +101,46 @@
  					<td>{{$order->orderStatus}}</td>
  					<td>{{$order->total}}</td>
  					<td>
- 						@foreach($order->items as $key => $item)
- 						{{++$key.":".$item}} <br>
+ 						@if(empty($order->orderItems)) {{$order->menu}}
+ 						@else
+ 						@foreach($order->orderItems as $key => $items)
+ 						<p>1 X {{$items['name']}}</p>
+ 						@if(isset($items['drinks']) && !empty($items['drinks']))
+ 						<p>
+ 							<span class="addons_details">Drink:</span>
+ 							@foreach($items['drinks'] as $key => $drink)
+ 							{{++$key}} : {{$drink}}</br>
+ 							@endforeach
+ 						</p>
+ 						@endif
+ 						@if(isset($items['sides']) && !empty($items['sides']))
+ 						<p>
+ 							<span class="addons_details">Sides:</span>
+
+ 							@foreach($items['sides'] as $key => $side)
+ 							{{++$key}} : {{$side}}</br>
+ 							@endforeach
+
+ 						</p>
+ 						@endif
+ 						@if(isset($items['extras']) && !empty($items['extras']))
+ 						<p><span class="addons_details">Extra Patty:</span>
+ 							@foreach($items['extras'] as $key => $extra)
+ 							{{++$key}} : {{$extra}} </br>
+ 							@endforeach
+ 						</p>
+ 						@endif
+ 						@if(isset($items['addons']) && !empty($items['addons']))
+ 						<p>
+ 							<span class="addons_details">Addons:</span>
+ 							@foreach($items['addons'] as $key => $addon)
+ 							{{++$key}} : {{$addon}} </br>
+ 							@endforeach
+ 						</p>
+ 						@endif
+ 						<div class="divider"></div>
  						@endforeach
+ 						@endif
  					</td>
  					<td>{{$order->customer->address}}</td>
  					<td>{{$order->paymentType->name}}</td>

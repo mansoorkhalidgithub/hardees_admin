@@ -13,13 +13,13 @@ class UpdateAddon extends Migration
      */
     public function up()
     {
-		Schema::table('addons', function (Blueprint $table) {
-			
-			$table->unsignedBigInteger('menu_item_id')->nullable();
-			
-			$table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
-		});
-	}
+        Schema::table('addons', function (Blueprint $table) {
+
+            // $table->unsignedBigInteger('menu_item_id')->nullable();
+
+            $table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
+        });
+    }
 
     /**
      * Reverse the migrations.

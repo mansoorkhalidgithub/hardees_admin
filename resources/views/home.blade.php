@@ -1,11 +1,15 @@
-<?php
-
-use App\OrderAssigned;
-use App\Helpers\Helper;
-?>
 @extends('layouts.main')
 @section('content')
+<style>
+  #myChart {
+    height: 25%;
+    width: 100%;
+  }
 
+  .zc-ref {
+    display: none;
+  }
+</style>
 <!-- Begin Page Content -->
 <div style="margin: 0px 10px 10px 10px">
 
@@ -227,7 +231,10 @@ use App\Helpers\Helper;
       </div>
     </div>
   </div>
-
+  <div class="row">
+    <div id='myChart'><a class="zc-ref" href="https://www.zingchart.com/">Charts by ZingChart</a></div>
+  </div>
+  <hr>
   <!-- Content Row -->
   <div class="row">
 

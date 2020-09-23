@@ -11,6 +11,9 @@ use App\Restaurant;
 use App\PaymentMethod;
 use App\CurrencySymbols;
 use App\Order;
+use App\OrderAssigned;
+use App\Region;
+use Exception;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\DB;
 use Spatie\Permission\Models\Role;
@@ -113,7 +116,7 @@ class Helper
 
         $fcmNotification = [
             'to' => $token, //single token
-            'notification' => $notification,
+            // 'notification' => $notification,
             'data' => [
                 'order_id' => $data['order_id'],
                 'type' => $data['status'],
@@ -158,32 +161,47 @@ class Helper
 
     public static function sendMessage($data)
     {
+
         $number = $data['number'];
+
         $message = $data['message'];
+
         try {
+
             $url = 'https://connect.jazzcmt.com/sendsms_url.html?Username=03051582863&Password=Jazz@1234&From=HARDEES&To=' . $number . '&Message=' . $message;
 
             $ch = curl_init();
 
             curl_setopt($ch, CURLOPT_URL, $url);
+
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+
             $result = curl_exec($ch);
+
             if ($result === false) {
+
                 die('Curl failed: ' . curl_error($ch));
             }
-
             curl_close($ch);
         } catch (Exception $e) {
+
             $result = $e->getMessage();
         }
+
+
 
         return $result;
     }
 
     public static function assignedStatus($orderId)
     {
-        $orderAssignedRecord = OrderAssign::where('order_id', $orderId)->count();
+        $orderAssignedRecord = OrderAssigned::where('order_id', $orderId)->count();
 
         return $orderAssignedRecord;
+    }
+
+    public static function getRegions()
+    {
+        return Region::all();
     }
 }

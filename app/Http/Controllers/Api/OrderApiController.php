@@ -7,6 +7,7 @@ namespace App\Http\Controllers\Api;
 use App\Bucket;
 use Log;
 use App\Cart;
+use App\DealVariation;
 use App\User;
 use App\Order;
 use App\MenuItem;
@@ -428,7 +429,7 @@ class OrderApiController extends Controller
 
 	public function getMenu(Request $request)
 	{
-		$categories = MenuCategory::all();
+		$categories = MenuCategory::where('web_status', 1)->orderBy('sequence', 'asc')->get();
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -442,7 +443,7 @@ class OrderApiController extends Controller
 	public function getMenuItems(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'item_id' => 'required',
+			'category_id' => 'required',
 		]);
 		if ($validator->fails()) {
 			$response = [
@@ -453,9 +454,8 @@ class OrderApiController extends Controller
 
 			return response()->json($response);
 		}
-		$id = $request->item_id;
+		$id = $request->category_id;
 		$category = MenuCategory::find($id);
-
 		if ($category->name == 'Deals') {
 			$items = MenuItem::where('menu_category_id', $id)->where('web_status', 1)->get();
 			$message = 'Deals Fetched successfully';
@@ -489,8 +489,16 @@ class OrderApiController extends Controller
 			return response()->json($response);
 		}
 		$item_id = $request->item_id;
-		$variations = ItemVariation::with('variation', 'addon')->where('menu_item_id', $item_id)->get();
-		$variations->each->append('drinks', 'sides', 'extras');
+		$getcat = MenuItem::find($item_id)->menu_category_id;
+		$category = MenuCategory::find($getcat);
+		if ($category->name != 'Deals') {
+			$variations = ItemVariation::with('variation', 'addon')->where('menu_item_id', $item_id)->get();
+			$variations->each->append('drinks', 'sides', 'extras');
+		} else {
+			$variations = DealVariation::with('addon')->where('menu_item_id', $item_id)->first();
+			if (!empty($variations))
+				$variations->append('drinks');
+		}
 		$response = [
 			'status' => 1,
 			'method' => $request->route()->getActionMethod(),
@@ -507,9 +515,10 @@ class OrderApiController extends Controller
 		$userId = Auth::user()->id;
 		$validator = Validator::make($request->all(), [
 			'item_id' => 'required',
-			'variation_id' => 'required',
+			// 'variation_id' => 'required',
 			'quantity' => 'required',
 		]);
+		// dd($request->all());
 		if ($validator->fails()) {
 			$response = [
 				'status' => 0,
@@ -518,16 +527,42 @@ class OrderApiController extends Controller
 			];
 			return response()->json($response);
 		}
-
+		$data = $request->all();
 		$addons = "";
 		if (!empty($request->addons)) {
 			$addons = serialize(json_decode($request->addons));
 		}
-		$model = Bucket::where('user_id', $userId)
-			->where('item_id', $request->item_id)
-			->where('addons', $addons)
-			->where('variation_id', $request->variation_id)
-			->first();
+		$getcat = MenuItem::find($request->item_id)->menu_category_id;
+		$category = MenuCategory::find($getcat);
+		if ($category->name != 'Deals') {
+			$model = Bucket::where('user_id', $userId)
+				->where('item_id', $request->item_id)
+				->where('addons', $addons)
+				->where('variation_id', $request->variation_id)
+				->first();
+			$data['item_id'] = $request->item_id;
+		} else {
+			$deal_drinks = "";
+			if (!empty($request->drinks)) {
+				$deal_drinks = serialize(json_decode($request->drinks));
+			}
+			$model = Bucket::where('user_id', $userId)
+				->where('deal_id', $request->item_id)
+				->where('addons', $addons)
+				->where('deal_drinks', $deal_drinks)
+				->first();
+			if ($model) {
+				$model->update(['quantity' => $model->quantity + $request->quantity]);
+				$response = [
+					'status' => 1,
+					'method' => $request->route()->getActionMethod(),
+					'message' => 'success',
+				];
+				return response()->json($response);
+			}
+			$data['deal_id'] = $request->item_id;
+			$data['deal_drinks'] = $deal_drinks;
+		}
 		if ($model) {
 			if (isset($request->drink_id, $request->side_id, $request->extra_id)) {
 				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
@@ -609,7 +644,7 @@ class OrderApiController extends Controller
 				return response()->json($response);
 			}
 		}
-		$data = $request->all();
+
 		$data['user_id'] = $userId;
 		$data['addons'] = $addons;
 
@@ -621,6 +656,7 @@ class OrderApiController extends Controller
 			'message' => 'success',
 		];
 
+
 		return response()->json($response);
 	}
 
@@ -628,7 +664,7 @@ class OrderApiController extends Controller
 	{
 		$user = Auth::user();
 		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
-		$bucket->each->append('total', 'addon');
+		$bucket->each->append('total', 'addon', 'dealDrink', 'item');
 		$vat = $bucket->sum('total') * .0;
 		$delivery_charges = 0;
 		$response = [
@@ -742,7 +778,13 @@ class OrderApiController extends Controller
 			];
 			$newOrder = Order::create($orderData);
 			$orderId = $newOrder->id;
-
+			$customerNotification = [
+				"order_id" => $orderId,
+				"device_token" => Auth::user()->device_token,
+				"status" => 1,
+				"message" => "Order Placed Successfully"
+			];
+			Helper::sendNotification($customerNotification);
 			foreach ($bucket as $key => $entry) {
 				$data = [
 					'order_id' => $orderId,
@@ -761,19 +803,16 @@ class OrderApiController extends Controller
 			$bucketIds = $bucket->pluck('id');
 			Bucket::destroy($bucketIds);
 			$restaurantUsers = User::role('user')->where('restaurant_id', $restaurant_id)->get();
-			
-			Log::info('Restaurant Id : ' . $restaurant_id);
-			
+
 			foreach ($restaurantUsers as $user) {
-				Log::info('Restaurant Device Token : ' . $user->device_token);
 				$restaurantNotificationData = [
-					"order_id" => '',
+					"order_id" => $orderId,
 					"device_token" => $user->device_token,
-					"status" => 1,
+					"status" => 'TR',
 					"message" => "New Order Arrived"
 				];
 
-				Helper::sendNotification($restaurantNotificationData, '');
+				Helper::sendNotification($restaurantNotificationData);
 				break;
 			}
 		}
@@ -785,9 +824,6 @@ class OrderApiController extends Controller
 				'trip_status_id' => 1,
 			];
 			$rider = User::find($riderId);
-			
-			Log::info('Rider Device Token : ' . $rider->device_token);
-			
 			$riderNotificationData = [
 				"order_id" => $orderId,
 				"device_token" => $rider->device_token,
@@ -795,7 +831,7 @@ class OrderApiController extends Controller
 				"message" => "New Order Assigned"
 			];
 
-			Helper::sendNotification($riderNotificationData, $rider->device_type);
+			Helper::sendNotification($riderNotificationData);
 			$modelAssign = new OrderAssigned();
 
 			$modelAssign->create($assignData);
@@ -925,7 +961,6 @@ class OrderApiController extends Controller
 
 		return response()->json($response);
 	}
-
 	public function getDeals(Request $request)
 	{
 		$deals = MenuItem::where('menu_category_id', 10)->where('web_status', 1)->get();
@@ -937,5 +972,20 @@ class OrderApiController extends Controller
 		];
 
 		return response()->json($response);
+	}
+
+	public function testNoti(Request $request)
+	{
+		$id = Auth::user()->id;
+		$user = User::find($id);
+		// $user->device_token;
+		$restaurantNotificationData = [
+			"order_id" => 2292,
+			"device_token" => $user->device_token,
+			"status" => 1,
+			"message" => "New Order Arrived"
+		];
+
+		Helper::sendNotification($restaurantNotificationData);
 	}
 }

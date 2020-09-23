@@ -24,21 +24,21 @@ class BookingController extends Controller
     public function index()
     {
         $userId = Auth::user()->id;
-
+        $region_id = Auth::user()->region_id;
         $cart = Bucket::where('user_id', $userId)->get();
 
         $cartIds = $cart->pluck('id');
 
         Bucket::destroy($cartIds);
 
-        $itemCategories = MenuCategory::with('menuItems')->where('web_status', 1)->orderBy('sequence', 'ASC')->get();
+        $itemCategories = MenuCategory::with('menuItems')->where('region_id', $region_id)->orderBy('sequence', 'ASC')->get();
         $items = MenuItem::all();
         $dealCategories = DealCategory::where('status', 1)->get();
         $deals = Deal::where('status', 1)->get();
-        $addonCategories = AddonCategory::all();
+        // $addonCategories = AddonCategory::all();
         $addons = Addon::all();
 
-        return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addonCategories', 'addons'));
+        return view('order.new_booking_form', compact('itemCategories', 'items', 'dealCategories', 'deals', 'addons'));
     }
 
     public function save(Request $request)

@@ -8,9 +8,9 @@ class OrderVariation extends Model
 {
 	public $timestamps = false;
 
-	protected $appends = ['addon', 'total', 'deal_drinks'];
-	
-    protected $fillable = [
+	protected $appends = ['addon', 'total'];
+
+	protected $fillable = [
 		'user_id',
 		'order_id',
 		'item_id',
@@ -21,11 +21,10 @@ class OrderVariation extends Model
 		'quantity',
 		'addons',
 		'deal_id',
-		'deal_quantity',
-		'drinks'
+		'deal_drinks'
 	];
-	
-	
+
+
 	public function itemVariation()
 	{
 		return $this->belongsTo(ItemVariation::class, 'variation_id');
@@ -50,11 +49,11 @@ class OrderVariation extends Model
 	{
 		$total = 0;
 
-		if($this->addons) {
+		if ($this->addons) {
 			$addonIds = unserialize($this->addons);
 			$addons = Addon::whereIn('id', $addonIds)->get();
-			if(count($addons) > 0) {
-				foreach($addons as $addon) {
+			if (count($addons) > 0) {
+				foreach ($addons as $addon) {
 					$total = $total + $addon->price;
 				}
 			}
@@ -62,14 +61,15 @@ class OrderVariation extends Model
 
 		return $total;
 	}
-	
+
 	public function getTotalAttribute()
 	{
 		$variationId = $this->variation_id;
-		$itemId = $this->item_id;
-
-		$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
-
+		$itemId = $this->item_id ?? $this->deal_id;
+		if (!empty($variationId))
+			$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
+		else
+			$variation = DealVariation::where('menu_item_id', $itemId)->first();
 		$total = $variation->price;
 
 		if ($this->addons) {
@@ -109,15 +109,5 @@ class OrderVariation extends Model
 		$total = $total * $this->quantity;
 
 		return $total;
-	}
-	
-	public function getDealDrinksAttribute($value)
-	{
-		$data = [];
-		if ($value) {
-			$drinkIds = unserialize($value);
-			$data = Drink::whereIn('id', $drinkIds)->pluck('name');
-		}
-		return $data;
 	}
 }

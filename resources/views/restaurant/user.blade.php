@@ -4,10 +4,10 @@
  	<div class="d-sm-flex align-items-center justify-content-between mb-4">
  		<h3 style="color: black; font-family: serif; font-weight: bold">User List</h3>
  		@if(session()->has('message'))
-				<div class="alert alert-success">
-					{{ session()->get('message') }}
-				</div>
-				@endif
+ 		<div class="alert alert-success">
+ 			{{ session()->get('message') }}
+ 		</div>
+ 		@endif
  		<a href="{{ route('restaurant.create-user') }}" class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>Create User</a>
  	</div>
  	<div class="uper" style="overflow-x: scroll; margin-bottom: 50px">
@@ -22,7 +22,7 @@
  					<th>State</th>
  					<th>City</th> -->
  					<th>Name</th>
-<!--  					<th>Area</th> -->
+ 					<!--  					<th>Area</th> -->
  					<th>Mobile No.</th>
  					<th>Email</th>
  					<!-- <th style="min-width: 80px">Vehical No.</th> -->
@@ -49,11 +49,11 @@
  					<td>
  						{{$user->last_name? $user->first_name.' '.$user->last_name: $user->first_name }}
  					</td>
- 					<td> {{$user->phone_number	}}</td>
- 					<td> {{$user->email	}}</td>
+ 					<td> {{$user->phone_number }}</td>
+ 					<td> {{$user->email }}</td>
 
  					<!-- <td> -->
- 						<!-- <a href="" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;" title="View"><i class="fas fa-eye" style="color: black"></i></a>
+ 					<!-- <a href="" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;" title="View"><i class="fas fa-eye" style="color: black"></i></a>
  						<a href="" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a>
  						<form action="" method="POST" onsubmit="return confirm('Please confirm you want to delete! ');" style="display: inline-block;">
  							@csrf
@@ -61,7 +61,7 @@
  							<button type="submit" style="background-color: #F6BF2D;" class="d-none d-sm-inline btn btn-sm shadow-sm" title="Delete">
  								<i class="fas fa-trash-alt" style="color: #dc3545"></i>
  							</button> -->
- 						</form>
+ 					</form>
  					<!-- </td> -->
  				</tr>
  				@endforeach

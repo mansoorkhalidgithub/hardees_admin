@@ -31,7 +31,8 @@ class Restaurant extends Authenticatable
 		'tags',
 		'city_id',
 		'state_id',
-		'country_id'
+		'country_id',
+		'region_id'
 	];
 
 	public function category()

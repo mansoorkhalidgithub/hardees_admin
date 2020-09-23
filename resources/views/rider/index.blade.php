@@ -131,7 +131,7 @@
  	$(document).ready(function() {
  		$.noConflict();
  		var table = $('#rider_list').DataTable();
- 		$(':input[type="submit"]').prop('disabled', true);
+ 		// $(':input[type="submit"]').prop('disabled', true);
  		setTimeout(function() {
  			window.location = window.location
  		}, 120000);

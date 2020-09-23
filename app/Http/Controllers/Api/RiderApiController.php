@@ -267,7 +267,6 @@ class RiderApiController extends Controller
                 'method' => $request->route()->getActionMethod(),
                 'message' => $status->description,
             ];
-            MasterModel::notification($user->device_token, 'Your Order is Pickup');
             MasterModel::notification($rider->device_token, $status->description);
             return response()->json($response);
         }
@@ -297,7 +296,13 @@ class RiderApiController extends Controller
                     'message' => $message,
                 ];
                 // Helper::sendMessage($messageData);
-                MasterModel::notification($user->device_token, 'Your Order is on the Way');
+                $customerNotification = [
+                    'order_id' => $order->id,
+                    'device_token' => $user->device_token,
+                    'status' => 'OFD',
+                    'message' => 'Your Order is on the Way'
+                ];
+                Helper::sendNotification($customerNotification);
                 MasterModel::notification($rider->device_token, $status->description);
             } else {
                 $response = [
@@ -341,7 +346,14 @@ class RiderApiController extends Controller
             $order_assigned->save();
             $start = date_create($order_assigned->created_at);
             $end = date_create($order_assigned->updated_at);
-            MasterModel::notification($user->device_token, 'Your Order is Delivered Now');
+            $customerNotification = [
+                'order_id' => $order->id,
+                'device_token' => $user->device_token,
+                'status' => 'TC',
+                'message' => 'Your Order is Delivered Now'
+            ];
+            Helper::sendNotification($customerNotification);
+            // MasterModel::notification($user->device_token, 'Your Order is Delivered Now');
             MasterModel::notification($rider->device_token, $status->description);
             $total_time = date_diff($end, $start)->format('%H:%i:%s');
         }

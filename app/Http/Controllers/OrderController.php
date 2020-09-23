@@ -38,12 +38,7 @@ class OrderController extends Controller
 
 	public function index()
 	{
-
-		$model = Order::where('status', '!=', 1)->orderBy('id', 'DESC')->get();
-
-		$model->each->append('ridername');
-
-		return view('order/index', compact('model'));
+		return view('order/index');
 	}
 
 	public function edit(Request $request)
@@ -788,8 +783,10 @@ class OrderController extends Controller
 				'quantity' => $entry->quantity,
 
 				'addons' => $entry->addons,
-				
-				'drinks' => $entry->drinks,
+
+				'deal_id' => $entry->deal_id,
+
+				'deal_drinks' => $entry->deal_drinks
 
 			];
 

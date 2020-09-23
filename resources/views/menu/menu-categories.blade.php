@@ -1,63 +1,60 @@
-@extends('layouts.main')
+@extends('layouts.main') @section('content')
 
-@section('title', 'Products')
+<div  style="margin: 0px 10px 10px 10px">
+	<div class="card">
 
-@section('content')
+        <div class="card-header d-sm-flex align-items-center justify-content-between mb-4">
+			<h3 style="color: black; font-family: serif; font-weight: bold">Menu Category List</h3>
+					@if(session()->has('message'))
+					<div class="alert alert-success">
+						{{ session()->get('message') }}
+					</div>
+					@endif
+					<a href="{{ route('add_category') }}"
+					   class="d-none d-sm-inline-block btn btn-sm font-weight-bold shadow-sm" style="background-color: #ffc107; color: black"><i
+				class="fas fa-fw fa-1x fa-plus fa-sm text-dark-300"></i>Add New Category</a>
 
-<div class="row">
-	<div class="col-12">
-		<div class="card">
-			<div class="card-header">
-				<h3 class="card-title"> Manage @yield('title') </h3>
-				<div class="card-tools">
-					<a href="{{ route('add-menu-category') }}" class="btn btn-success btn-sm"> <i class="fa fa-plus"></i> Add @yield('title') </a>
-				</div>
-			</div>
-			<!-- /.card-header -->
-			<div class="card-body">
-				<div class="">
-					<table id="products" class="table table-striped">
-						<thead>
-							<tr>
-								<th scope="col">ID</th>
-								<th scope="col">Name</th>
-								
-								<th scope="col">Action</th>
-							</tr>
-						</thead>
-						<tbody>
-							@foreach($model as $key => $product)
-							<tr>
-								<th scope="row"> {{ ++$key }} </th>
-								<td> {{ $product->name }} </td>
-								
-								<td> <i class="fas fa-edit"></i> <i class="fas fa-eye"></i> </td>
-							</tr>
-							@endforeach
-						</tbody>
-						
-							
-								
-							
-						
-					</table>
-				</div>
-			</div>
 		</div>
-	</div>
-</div>
+		<div class="card-body">
+			@if(session()->get('success'))
+			<div class="alert alert-success">{{ session()->get('success') }}</div>
+			@endif
+					<table class="table table-striped table-hover" id="menu_category">
+				<thead>
+					<tr style="color:black">
+						<th scope="col">ID</th>
+						<th scope="col">Category Name</th>
+						<th scope="col">Type</th>
 
-@stop
+						<th scope="col">Action</th>
+					</tr>
+				</thead>
+				<tbody>
+	@foreach($model as $key => $product)
+								<tr>
+									<th scope="row"> {{ ++$key }} </th>
+									<td> {{ $product->name }} </td>
+									<td> {{ $product->type }} </td>
 
-<script src="{{ asset('admin') }}/plugins/jquery/jquery.min.js"></script>
-<script src="{{ asset('admin') }}/plugins/datatables/jquery.dataTables.js"></script>
-<script src="{{ asset('admin') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+									<td>
+	<a href="edit-category/{{$product->id}}" class="d-none d-sm-inline btn btn-sm shadow-sm" style="background-color: #F6BF2D;cursor: pointer;" title="Edit"><i class="fas fa-pencil-alt" style="color: #28a745"></i></a></td>
+								</tr>
+								@endforeach
 
-<meta name="csrf-token" content="{{ csrf_token() }}" />
+				</tbody>
+			</table>
+        </div>
+    </div>
+                <script src="{{ asset('extra') }}/plugins/jquery/jquery.min.js"></script>
+<script src="{{ asset('extra') }}/plugins/datatables/jquery.dataTables.js"></script>
+<script src="{{ asset('extra') }}/plugins/datatables-bs4/js/dataTables.bootstrap4.js"></script>
+
+
 
 <script>
 	$(document).ready(function() {
 		$.noConflict();
-		var table = $('#products').DataTable();
+		var table = $('#menu_category').DataTable();
 	});
 </script>
+		@endsection

@@ -6,10 +6,10 @@ use App\MasterModel;
 
 class MenuItem extends MasterModel
 {
-	// public function getIngredientsAttribute($value)
-	// {
-		// return implode(', ', unserialize($value));
-	// }
+	public function getIngredientsAttribute($value)
+	{
+		return implode(', ', unserialize($value));
+	}
 
 	public function getWeightAttribute($value)
 	{

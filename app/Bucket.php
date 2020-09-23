@@ -7,8 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class Bucket extends Model
 {
 	protected $table = "bucket";
-	
-	protected $appends = "deal_drinks";
 
 	protected $fillable = [
 		'user_id',
@@ -20,8 +18,7 @@ class Bucket extends Model
 		'quantity',
 		'addons',
 		'deal_id',
-		'deal_quantity',
-		'drinks'
+		'deal_drinks'
 	];
 	public function item()
 	{
@@ -30,10 +27,11 @@ class Bucket extends Model
 	public function getTotalAttribute()
 	{
 		$variationId = $this->variation_id;
-		$itemId = $this->item_id;
-
-		$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
-
+		$itemId = $this->item_id ?? $this->deal_id;
+		if (!empty($variationId))
+			$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
+		else
+			$variation = DealVariation::where('menu_item_id', $itemId)->first();
 		$total = $variation->price;
 
 		if ($this->addons) {
@@ -84,14 +82,22 @@ class Bucket extends Model
 		}
 		return $data;
 	}
-	
-	public function getDealDrinksAttribute($value)
+
+	public function getDealDrinkAttribute()
 	{
 		$data = [];
-		if ($value) {
-			$drinkIds = unserialize($value);
+		if ($this->deal_drinks) {
+			$drinkIds = unserialize($this->deal_drinks);
 			$data = Drink::whereIn('id', $drinkIds)->pluck('name');
 		}
 		return $data;
+	}
+
+	public function getItemAttribute()
+	{
+		if (!empty($this->item_id))
+			return MenuItem::find($this->item_id);
+		else
+			return MenuItem::find($this->deal_id);
 	}
 }

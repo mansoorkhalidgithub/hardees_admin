@@ -40,7 +40,8 @@ Route::group(['middleware' => 'auth:api'], function () {
 
 Route::post('signup', 'Api\AuthApiController@signup');
 Route::post('login', 'Api\AuthApiController@login');
-
+Route::post('verify-otp', 'Api\AuthApiController@verifyotp');
+Route::post('resend-otp', 'Api\AuthApiController@resend');
 Route::post('forgot-password', 'Api\AuthApiController@forgetPassword');
 
 Route::group(['middleware' => 'auth:api'], function () {
@@ -58,23 +59,21 @@ Route::group(['middleware' => 'auth:api'], function () {
 	Route::get('get-special-offers', 'Api\HardeesApiController@getSpecialOffers');
 	Route::get('get-categories', 'Api\HardeesApiController@getCategories');
 	Route::post('get-menu-items', 'Api\HardeesApiController@menuItems');
-	Route::get('get-deals', 'Api\HardeesApiController@getDeals');
+	Route::get('get-deals', 'Api\OrderApiController@getDeals');
 	Route::post('create-customer-deal', 'Api\HardeesApiController@createCustomDeal');
 });
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('place-order', 'Api\OrderApiController@placeOrder');
 	Route::post('menu', 'Api\OrderApiController@getMenu');
-	Route::post('menu-item', 'Api\OrderApiController@getMenuItems'); // api for for get deal in if part
-	Route::post('variations', 'Api\OrderApiController@variations'); // get deal variation 
+	Route::post('menu-item', 'Api\OrderApiController@getMenuItems');
+	Route::post('variations', 'Api\OrderApiController@variations');
 	Route::post('addbucket', 'Api\OrderApiController@addBucket');
 	Route::post('getbucket', 'Api\OrderApiController@getBucket');
 	Route::post('add-quantity', 'Api\OrderApiController@addQuantity');
 	Route::post('remove-quantity', 'Api\OrderApiController@removeQuantity');
 	Route::post('cart-count', 'Api\OrderApiController@cartCount');
-	Route::post('get-deals', 'Api\OrderApiController@getDeals');
 });
-
 
 Route::group(['middleware' => 'auth:api'], function () {
 	Route::post('add-to-cart', 'Api\OrderApiController@addCart');

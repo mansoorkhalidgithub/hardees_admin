@@ -52,6 +52,7 @@ class User extends Authenticatable
 		'state_id',
 		'country_id',
 		'user_type',
+		'is_verified'
 	];
 
 	/**

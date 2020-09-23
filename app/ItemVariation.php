@@ -29,16 +29,13 @@ class ItemVariation extends Model
 
 	public function getDrinksAttribute()
 	{
-		$menuItem = MenuItem::where('id', $this->menu_item_id)->first();
-		$menuCategory = MenuCategory::where('id', $menuItem->menu_category_id)->first();
-		
 		$drinks = [];
 
 		$is_drink = $this->is_drink;
 
-		if ($is_drink == 1 || $menuCategory->type == 'Deal') {
+		if ($is_drink == 1) {
 			$drinks = Drink::all();
-		} 
+		}
 
 		return $drinks;
 	}

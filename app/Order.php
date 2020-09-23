@@ -26,6 +26,7 @@ class Order extends Model
 		'customer_address',
 		'order_type_id',
 		'menu',
+		'region_id'
 	];
 
 	public function orderItems()
@@ -190,15 +191,22 @@ class Order extends Model
 		// return array();
 		if (!empty($model)) :
 			foreach ($model as $key => $items) {
-				$menu_item = MenuItem::where('id', $items->item_id)->first();
-				$variation = Variation::find($items->variation_id);
-				$menu_items = $menu_item->name . '(' . $variation->name . ')';
+				$item = $items->item_id ?? $items->deal_id;
+				$menu_item = MenuItem::where('id', $item)->first();
+				$variation = Variation::find($items->variation_id)->name ?? '';
+				$menu_items = (!empty($variation)) ? $menu_item->name . '(' . $variation . ')' : $menu_item->name;
 				$quantity = $items->quantity;
-				if (!empty($items->drink_id)) {
-					$drink = Drink::where('id', $items->drink_id)->pluck('name');
+				if (!empty($items->deal_drinks)) {
+					$drink_ids = unserialize($items->deal_drinks);
+					$drink = Drink::whereIn('id', $drink_ids)->pluck('name');
 					$drinks = $drink;
 				} else {
-					$drinks = array();
+					if (!empty($items->drink_id)) {
+						$drink = Drink::where('id', $items->drink_id)->pluck('name');
+						$drinks = $drink;
+					} else {
+						$drinks = array();
+					}
 				}
 				if (!empty($items->side_id)) {
 					$site = Side::where('id', $items->side_id)->pluck('name');
@@ -222,7 +230,7 @@ class Order extends Model
 				$data[] = [
 					'name' => $menu_items,
 					'quantity' => $quantity,
-					'sites' => $sides,
+					'sides' => $sides,
 					'drinks' => $drinks,
 					'extras' => $extras,
 					'addons' => $addons
