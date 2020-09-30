@@ -89,8 +89,10 @@ class Bucket extends Model
 		if ($this->deal_drinks) {
 			$drinkIds = unserialize($this->deal_drinks);
 			$data = Drink::whereIn('id', $drinkIds)->pluck('name');
+		} elseif ($this->drink_id) {
+			$data = Drink::find($this->drink_id)->pluck('name');
 		}
-		return $data;
+		return (object)$data;
 	}
 
 	public function getItemAttribute()
@@ -99,5 +101,29 @@ class Bucket extends Model
 			return MenuItem::find($this->item_id);
 		else
 			return MenuItem::find($this->deal_id);
+	}
+
+	public function getDrinkAttribute()
+	{
+		$data = [];
+		if (!empty($this->drink_id))
+			return Drink::find($this->drink_id);
+		else return (object)$data;
+	}
+
+	public function getSideAttribute()
+	{
+		$data = [];
+		if (!empty($this->side_id))
+			return Side::find($this->side_id);
+		else return (object)$data;
+	}
+
+	public function getExtraAttribute()
+	{
+		$data = [];
+		if (!empty($this->extra_id))
+			return Extra::find($this->extra_id);
+		else return (object)$data;
 	}
 }

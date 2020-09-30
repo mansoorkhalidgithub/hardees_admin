@@ -270,7 +270,7 @@ class AuthApiController extends Controller
 			];
 			Helper::sendMessage($message_data);
 			$response = [
-				'status' => 2,
+				'status' => 1,
 				'method' => $request->route()->getActionMethod(),
 				'message' => "OTP Resend",
 			];

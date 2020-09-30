@@ -664,7 +664,7 @@ class OrderApiController extends Controller
 	{
 		$user = Auth::user();
 		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
-		$bucket->each->append('total', 'addon', 'dealDrink', 'item');
+		$bucket->each->append('total', 'addon', 'dealDrink', 'item', 'drink', 'extra', 'side');
 		$vat = $bucket->sum('total') * .0;
 		$delivery_charges = 0;
 		$response = [

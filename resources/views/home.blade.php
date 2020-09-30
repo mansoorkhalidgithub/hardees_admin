@@ -477,8 +477,42 @@
     });
 
     order_detail.render();
+
+
   });
 </script>
 
 <script src="https://canvasjs.com/assets/script/jquery-1.11.1.min.js"></script>
 <script src="https://canvasjs.com/assets/script/jquery.canvasjs.min.js"></script>
+
+<!-- The core Firebase JS SDK is always required and must be listed first -->
+<script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-app.js"></script>
+
+<!-- TODO: Add SDKs for Firebase products that you want to use
+     https://firebase.google.com/docs/web/setup#available-libraries -->
+<script src="https://www.gstatic.com/firebasejs/7.21.1/firebase-messaging.js"></script>
+
+<script>
+  // Your web app's Firebase configuration
+  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
+  var firebaseConfig = {
+    apiKey: "AIzaSyCrv43I9NsUt0WYPSsRjHA7LIJIEjEIi5c",
+    authDomain: "hardees-web.firebaseapp.com",
+    databaseURL: "https://hardees-web.firebaseio.com",
+    projectId: "hardees-web",
+    storageBucket: "hardees-web.appspot.com",
+    messagingSenderId: "813168978629",
+    appId: "1:813168978629:web:bdcc58b0337e3e98959eac",
+    measurementId: "G-SBDRZR71VR"
+  };
+  // Initialize Firebase
+  firebase.initializeApp(firebaseConfig);
+  const messaging = firebase.messaging();
+  console.log(messaging)
+  messaging.requestPermission()
+    .then(function() {
+      console.log('notification permation granted');
+    }).catch(function(error) {
+      console.log('unable to get permation', error);
+    })
+</script>

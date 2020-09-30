@@ -201,13 +201,13 @@ class Order extends Model
 				if (!empty($items->deal_drinks)) {
 					$drink_ids = unserialize($items->deal_drinks);
 					$drink = Drink::whereIn('id', $drink_ids)->get();
-					$drinks = $drink;
+					$drinks = (object)$drink;
 				} else {
 					if (!empty($items->drink_id)) {
 						$drink = Drink::where('id', $items->drink_id)->first();
 						$drinks = $drink;
 					} else {
-						$drinks = array();
+						$drinks = (object)array();
 					}
 				}
 				if (!empty($items->side_id)) {
@@ -227,7 +227,7 @@ class Order extends Model
 					$addon_ids = unserialize($items->addons);
 					$addons = Addon::whereIn('id', $addon_ids)->select('name', 'price')->get();
 				} else {
-					$addons = (object)array();
+					$addons = array();
 				}
 				$data[] = [
 					'name' => $menu_items,

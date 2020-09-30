@@ -21,6 +21,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 // retaurant apis
 Route::post('restaurantlogin', 'Api\RestaurantApiController@login');
 Route::group(['middleware' => 'auth:api'], function () {
+	Route::post('restaurant-items', 'Api\RestaurantApiController@getMenuItems');
+	Route::post('item-status', 'Api\RestaurantApiController@itemStatus');
 	Route::get('restaurant/dashboard-today', 'Api\RestaurantApiController@dashboardByToday');
 	Route::get('restaurant/dashboard-week', 'Api\RestaurantApiController@dashboardByWeek');
 	Route::get('restaurant/dashboard-month', 'Api\RestaurantApiController@dashboardByMonth');

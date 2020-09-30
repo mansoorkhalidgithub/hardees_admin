@@ -15,14 +15,11 @@ class CerateDealVariation extends Migration
     {
         Schema::create('deal_variations', function (Blueprint $table) {
             $table->bigIncrements('id');
-			$table->unsignedBigInteger('menu_item_id')->nullable();
+            $table->unsignedBigInteger('menu_item_id')->nullable();
             $table->string('items')->nullable();
-            $table->string('drinks')->nullable();
-            $table->string('sides')->nullable();
-            $table->string('extras')->nullable();
-            $table->string('addons')->nullable();
-			
-			$table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
+            $table->string('drinks_quantity')->nullable();
+
+            $table->foreign('menu_item_id')->references('id')->on('menu_items')->onDelete('cascade');
         });
     }
 

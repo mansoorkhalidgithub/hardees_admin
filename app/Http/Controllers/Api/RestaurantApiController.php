@@ -4,13 +4,17 @@ namespace App\Http\Controllers\Api;
 
 use app\Helpers\Helper;
 use App\Http\Controllers\Controller;
+use App\MenuCategory;
+use App\MenuItem;
 use App\Order;
+use App\RestaurantItems;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Validator;
 
 class RestaurantApiController extends Controller
 {
@@ -352,6 +356,78 @@ class RestaurantApiController extends Controller
 			'message' => 'Order processing',
 			'accptedOrders' => $accptedOrders,
 			'newOrders' => $newOrders,
+		];
+
+		return response()->json($response);
+	}
+
+	public function getMenuItems(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'category_id' => 'required',
+		]);
+		if ($validator->fails()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'errors' => $validator->messages()
+			];
+
+			return response()->json($response);
+		}
+		$id = $request->category_id;
+		$category = MenuCategory::find($id);
+		if ($category->name == 'Deals') {
+			$items = MenuItem::where('menu_category_id', $id)->where('web_status', 1)->get();
+			$items->each->append('itemAvailability');
+			$message = 'Deals Fetched successfully';
+		} else {
+			$items = MenuItem::where('menu_category_id', $id)->where('web_status', 1)->get();
+			$items->each->append('itemAvailability');
+			$message = 'Items Fetched successfully';
+		}
+
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => $message,
+			'items' => $items,
+		];
+
+		return response()->json($response);
+	}
+
+	public function itemStatus(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'category_id' => 'required',
+			'item_id' => 'required'
+		]);
+		if ($validator->fails()) {
+			$response = [
+				'status' => 0,
+				'method' => $request->route()->getActionMethod(),
+				'errors' => $validator->messages()
+			];
+
+			return response()->json($response);
+		}
+		$model = "";
+		$auth_id = Auth::user()->restaurant_id;
+		$data = [
+			'restaurant_id' => $auth_id,
+			'menu_cat_id' => $request->category_id,
+			'menu_item_id' => $request->item_id
+		];
+		$model = RestaurantItems::where($data)->first();
+		if (empty($model))
+			RestaurantItems::create($data);
+		else
+			RestaurantItems::where($data)->delete();
+		$response = [
+			'status' => 1,
+			'method' => $request->route()->getActionMethod(),
+			'message' => "Success",
 		];
 
 		return response()->json($response);

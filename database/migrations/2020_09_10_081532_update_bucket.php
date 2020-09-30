@@ -14,16 +14,16 @@ class UpdateBucket extends Migration
     public function up()
     {
         Schema::table('bucket', function (Blueprint $table) {
-			
-			$table->string('drinks')->nullable();
-			
-		});
-		
-		Schema::table('order_variations', function (Blueprint $table) {
-			
-			$table->string('drinks')->nullable();
-			
-		});
+            $table->renameColumn('deal_quantity', 'deal_drinks');
+        });
+
+        Schema::table('order_variations', function (Blueprint $table) {
+            $table->renameColumn('deal_quantity', 'deal_drinks');
+        });
+
+        // Schema::table('bucket', function (Blueprint $table) {
+        //     $table->renameColumn('deal_quantity', 'deal_drinks');
+        // });
     }
 
     /**

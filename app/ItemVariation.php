@@ -34,7 +34,7 @@ class ItemVariation extends Model
 		$is_drink = $this->is_drink;
 
 		if ($is_drink == 1) {
-			$drinks = Drink::all();
+			$drinks = Drink::where('web_status', 1)->get();
 		}
 
 		return $drinks;
