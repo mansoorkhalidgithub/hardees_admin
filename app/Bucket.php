@@ -28,10 +28,12 @@ class Bucket extends Model
 	{
 		$variationId = $this->variation_id;
 		$itemId = $this->item_id ?? $this->deal_id;
+		
 		if (!empty($variationId))
 			$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
 		else
 			$variation = DealVariation::where('menu_item_id', $itemId)->first();
+
 		$total = $variation->price;
 
 		if ($this->addons) {
@@ -78,7 +80,7 @@ class Bucket extends Model
 		$data = [];
 		if ($this->addons) {
 			$addonIds = unserialize($this->addons);
-			$data = Addon::whereIn('id', $addonIds)->select('name', 'price')->get();
+			$data = Addon::whereIn('id', $addonIds)->get();
 		}
 		return $data;
 	}

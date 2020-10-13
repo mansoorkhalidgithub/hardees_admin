@@ -720,7 +720,7 @@ class OrderApiController extends Controller
 	{
 		$user = Auth::user();
 		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
-		$bucket->each->append('total', 'addon', 'dealDrink','item','drink','extra','side');
+		$bucket->each->append('total', 'addon', 'deal_drink','item','drink','extra','side');
 		$vat = $bucket->sum('total') * .0;
 		$delivery_charges = 0;
 		$response = [
@@ -968,7 +968,7 @@ class OrderApiController extends Controller
 
 	public function currentOrder(Request $request)
 	{
-		$model = Order::with('restaurant')->where('user_id', Auth::user()->id)
+		$model = Order::with('restaurant', 'orderVariations')->where('user_id', Auth::user()->id)
 			->whereIn('status', [1, 2, 3, 4, 5])->where('order_type_id', 4)->first();
 		if (!empty($model)) {
 			$model->append('orderStatus', 'orderItems', 'riderAsigned');
