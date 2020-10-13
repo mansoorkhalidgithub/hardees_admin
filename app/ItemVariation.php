@@ -7,6 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class ItemVariation extends Model
 {
 	public $timestamps = false;
+	
+	protected $with = ['memuItem', 'variation'];
+	
+	protected $appends = [];
 
 	protected $fillable = [
 		'menu_item_id',

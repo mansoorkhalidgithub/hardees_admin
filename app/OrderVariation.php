@@ -8,8 +8,8 @@ class OrderVariation extends Model
 {
 	public $timestamps = false;
 
-	protected $appends = ['addon', 'total'];
-
+	protected $appends = ['addon', 'total', 'item_variation'];
+	
 	protected $fillable = [
 		'user_id',
 		'order_id',
@@ -109,5 +109,11 @@ class OrderVariation extends Model
 		$total = $total * $this->quantity;
 
 		return $total;
+	}
+	
+	
+	public function getItemVariationAttribute()
+	{
+		return ItemVariation::where('menu_item_id', $this->item_id)->where('variation_id', $this->variation_id)->first();
 	}
 }
