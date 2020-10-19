@@ -10,6 +10,10 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\DB;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Notifications\ResetPassword as ResetPasswordNotification;
+
+
 class User extends Authenticatable
 {
 	use HasApiTokens, HasRoles, Notifiable;
@@ -171,4 +175,10 @@ class User extends Authenticatable
 			->cascade()
 			->forHumans();
 	}
+
+	public function sendPasswordResetNotification($token)
+    {
+        // Your your own implementation.
+        $this->notify(new ResetPasswordNotification($token));
+    }
 }
