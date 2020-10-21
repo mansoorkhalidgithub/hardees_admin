@@ -320,3 +320,22 @@ Route::group([
 Route::get('jsonobj', 'HomeController@jsonObj')->name('json');
 
 Route::get('order-detail', 'HomeController@orderDetail')->name('order.detail');
+
+//forgot password
+Route::get('password/reset', 'Auth\ForgotPasswordController@showLinkRequestForm')->name('password.reset');
+//Route::post('password/email', 'Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
+//Route::get('password/reset/{token}', 'Auth\ResetPasswordController@showResetForm')->name('password.reset.token');
+Route::post('password/reset', 'Auth\ResetPasswordController@reset')->name('password.update');
+
+
+Route::group([    
+    //'namespace' => 'mobile',    
+    //'middleware' => 'api',    
+    'prefix' => 'mobile/password'
+], function () {    
+    //Route::get('find/{token}', 'PasswordResetController@find');
+
+    //Route::post('create', 'PasswordResetController@create');
+    Route::get('reset-form/{token}', 'Api\PasswordResetController@resetForm');
+    Route::post('reset', 'Api\PasswordResetController@reset')->name('api.password.reset');
+});

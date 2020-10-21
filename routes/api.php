@@ -130,3 +130,16 @@ Route::post('version', 'Api\RiderApiController@version');
 Route::post('test-notification', 'Api\OrderApiController@notification');
 
 Route::post('notification-test', 'Api\RiderApiController@token');
+
+//forgot password
+Route::group([    
+    'namespace' => 'Api',    
+    'middleware' => 'api',    
+    'prefix' => 'password'
+], function () {    
+    //Route::get('find/{token}', 'PasswordResetController@find');
+
+    Route::post('create', 'PasswordResetController@create');
+    //Route::get('reset-form', 'PasswordResetController@resetForm');
+    //Route::post('reset', 'PasswordResetController@reset')->name('api.password.reset');
+});
