@@ -55,7 +55,10 @@ class AuthApiController extends Controller
 		$data = $request->all();
 		$data['password'] = Hash::make($request->password);
 		$data['user_type'] = 'customer';
+		$data['first_name'] = $request->first_name . " " . $request->last_name;
 		$data['type'] = 4;
+
+		//dd($data);
 		$otp = rand(1000, 9999);		
 		$user = User::create($data);
 		$user->assignRole('customer');
