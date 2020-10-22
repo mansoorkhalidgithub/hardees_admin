@@ -15,6 +15,7 @@ class Bucket extends Model
 		'drink_id',
 		'side_id',
 		'extra_id',
+		'flavor_id',
 		'quantity',
 		'addons',
 		'deal_id',
@@ -28,12 +29,10 @@ class Bucket extends Model
 	{
 		$variationId = $this->variation_id;
 		$itemId = $this->item_id ?? $this->deal_id;
-		
 		if (!empty($variationId))
 			$variation = ItemVariation::where('variation_id', $variationId)->where('menu_item_id', $itemId)->first();
 		else
 			$variation = DealVariation::where('menu_item_id', $itemId)->first();
-
 		$total = $variation->price;
 
 		if ($this->addons) {
@@ -69,6 +68,12 @@ class Bucket extends Model
 
 			$total = $total + $extra->price;
 		}
+		
+		if ($this->flavor_id) {
+			$flavor = Flavor::find($this->flavor_id);
+
+			$total = $total;
+		}
 
 		$total = $total * $this->quantity;
 
@@ -80,7 +85,7 @@ class Bucket extends Model
 		$data = [];
 		if ($this->addons) {
 			$addonIds = unserialize($this->addons);
-			$data = Addon::whereIn('id', $addonIds)->get();
+			$data = Addon::whereIn('id', $addonIds)->select('name', 'price')->get();
 		}
 		return $data;
 	}
@@ -121,6 +126,12 @@ class Bucket extends Model
 		$data = [];
 		if(!empty($this->extra_id))
 			return Extra::find($this->extra_id);
+		else return (object)$data;
+	}
+	public function getFlavorAttribute(){
+		$data = [];
+		if(!empty($this->flavor_id))
+			return Flavor::find($this->flavor_id);
 		else return (object)$data;
 	}
 }

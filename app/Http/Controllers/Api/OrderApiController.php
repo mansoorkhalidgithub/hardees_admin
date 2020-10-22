@@ -144,6 +144,7 @@ class OrderApiController extends Controller
 			$bucket->variation_id = $value->variation_id;
 			$bucket->drink_id = $value->drink_id;
 			$bucket->side_id = $value->side_id;
+			$bucket->flavor_id = $value->flavor_id;
 			$bucket->extra_id = $value->extra_id;
 			$bucket->quantity = $value->quantity;
 			$bucket->addons = $value->addons;
@@ -549,7 +550,7 @@ class OrderApiController extends Controller
 		$category = MenuCategory::find($getcat);
 		if ($category->name != 'Deals') {
 			$variations = ItemVariation::with('variation', 'addon')->where('menu_item_id', $item_id)->get();
-			$variations->each->append('drinks', 'sides', 'extras');
+			$variations->each->append('drinks', 'sides', 'extras','flavors');
 		} else {
 			$variations = DealVariation::with('addon')->where('menu_item_id', $item_id)->first();
             if(!empty($variations))
@@ -620,7 +621,18 @@ class OrderApiController extends Controller
 			$data['deal_drinks'] = $deal_drinks;
 		}
 		if ($model) {
-			if (isset($request->drink_id, $request->side_id, $request->extra_id)) {
+			if (isset($request->drink_id, $request->side_id, $request->extra_id, $request->flavor_id)) {
+				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id && $model->extra_id == $request->extra_id && $model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->drink_id, $request->side_id, $request->extra_id)) {
 				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
@@ -630,8 +642,9 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->side_id, $request->extra_id)) {
-				if ($model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
+			}
+                        elseif (isset($request->drink_id, $request->side_id, $request->flavor_id)) {
+				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id && $model->flavor_id == $request->flavor_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
 						'status' => 1,
@@ -640,8 +653,9 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->drink_id, $request->extra_id)) {
-				if ($model->drink_id == $request->drink_id && $model->extra_id == $request->extra_id) {
+			}
+                        elseif (isset($request->drink_id, $request->extra_id, $request->flavor_id)) {
+				if ($model->drink_id == $request->drink_id && $model->extra_id == $request->extra_id && $model->flavor_id == $request->flavor_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
 						'status' => 1,
@@ -650,7 +664,19 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->drink_id, $request->side_id)) {
+			}
+                        elseif (isset($request->side_id, $request->extra_id, $request->flavor_id)) {
+				if ($model->side_id == $request->side_id && $model->extra_id == $request->extra_id && $model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			}
+                        elseif (isset($request->drink_id, $request->side_id)) {
 				if ($model->drink_id == $request->drink_id && $model->side_id == $request->side_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
@@ -660,7 +686,63 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->side_id)) {
+			} 
+                        elseif (isset($request->drink_id, $request->extra_id)) {
+				if ($model->drink_id == $request->drink_id && $model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->drink_id, $request->flavor_id)) {
+				if ($model->drink_id == $request->drink_id && $model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->side_id, $request->extra_id)) {
+				if ($model->side_id == $request->side_id && $model->extra_id == $request->extra_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->side_id, $request->flavor_id)) {
+				if ($model->side_id == $request->side_id && $model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->extra_id, $request->flavor_id)) {
+				if ($model->extra_id == $request->extra_id && $model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+                        elseif (isset($request->side_id)) {
 				if ($model->side_id == $request->side_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
@@ -670,7 +752,8 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->drink_id)) {
+			} 
+                        elseif (isset($request->drink_id)) {
 				if ($model->drink_id == $request->drink_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
@@ -680,7 +763,8 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} elseif (isset($request->extra_id)) {
+			} 
+                        elseif (isset($request->extra_id)) {
 				if ($model->extra_id == $request->extra_id) {
 					$model->update(['quantity' => $model->quantity + $request->quantity]);
 					$response = [
@@ -690,7 +774,19 @@ class OrderApiController extends Controller
 					];
 					return response()->json($response);
 				}
-			} else {
+			} 
+                        elseif (isset($request->flavor_id)) {
+				if ($model->flavor_id == $request->flavor_id) {
+					$model->update(['quantity' => $model->quantity + $request->quantity]);
+					$response = [
+						'status' => 1,
+						'method' => $request->route()->getActionMethod(),
+						'message' => 'success',
+					];
+					return response()->json($response);
+				}
+			} 
+			 else {
 				$model->update(['quantity' => $model->quantity + $request->quantity]);
 				$response = [
 					'status' => 1,
@@ -720,7 +816,7 @@ class OrderApiController extends Controller
 	{
 		$user = Auth::user();
 		$bucket = Bucket::where('user_id', $user->id)->where('status', 1)->get();
-		$bucket->each->append('total', 'addon', 'deal_drink','item','drink','extra','side');
+		$bucket->each->append('total', 'addon', 'dealDrink','item','drink','extra','side','flavor');
 		$vat = $bucket->sum('total') * .0;
 		$delivery_charges = 0;
 		$response = [
@@ -865,6 +961,7 @@ class OrderApiController extends Controller
 					'variation_id' => $entry->variation_id,
 					'drink_id' => $entry->drink_id,
 					'side_id' => $entry->side_id,
+					'flavor_id' => $entry->flavor_id,
 					'extra_id' => $entry->extra_id,
 					'quantity' => $entry->quantity,
 					'addons' => $entry->addons,
@@ -991,7 +1088,8 @@ class OrderApiController extends Controller
 	{
 		$model = Order::with('restaurant')->where('user_id', Auth::user()->id)
 			->where('status', 6)
-			->where('order_type_id', 4)->get();
+			->where('order_type_id', 4)
+			->orderBy('id', 'DESC')->get();
 		if (!empty($model))
 			$model->each->append('orderStatus', 'orderItems', 'riderAsigned');
 		$response = [

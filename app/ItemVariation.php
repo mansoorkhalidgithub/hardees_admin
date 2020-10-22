@@ -7,9 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class ItemVariation extends Model
 {
 	public $timestamps = false;
-	
-	protected $with = ['memuItem', 'variation'];
-	
+		protected $with = ['memuItem', 'variation'];
+
 	protected $appends = [];
 
 	protected $fillable = [
@@ -18,7 +17,8 @@ class ItemVariation extends Model
 		'price',
 		'is_drink',
 		'is_side',
-		'is_extra'
+		'is_extra',
+		'is_flavor'
 	];
 
 	public function memuItem()
@@ -70,9 +70,22 @@ class ItemVariation extends Model
 		return $extras;
 	}
 
+	public function getFlavorsAttribute()
+	{
+		$flavors = [];
+
+		$is_flavor = $this->is_flavor;
+
+		if ($is_flavor == 1) {
+			$flavors = Flavor::where('menu_item_id', $this->menu_item_id)->get();
+		}
+
+		return $flavors;
+	}
+
 	public function addon()
 	{
-		return $this->hasMany(Addon::class, 'menu_item_id', 'menu_item_id');
+		return $this->hasMany(Addon::class, 'menu_item_id', 'menu_item_id')->where('web_status',1);
 	}
 
 	public function getVariationNameAttribute()
